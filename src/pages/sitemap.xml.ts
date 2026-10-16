@@ -2,6 +2,7 @@
 import type { APIRoute } from "astro";
 import { site } from "@/data/site";
 import { cloudinaryImage } from "@/lib/cloudinary";
+import { getRoomMedia } from "@/lib/cloudinary-gallery";
 
 const escape = (value: string) =>
   value.replace(/[<>&'"]/g, (char) => `&#${char.charCodeAt(0)};`);
@@ -14,9 +15,9 @@ export const GET: APIRoute = () => {
       return site.services.map((service) => ({ loc: cloudinaryImage(service.image, { width: 1600, fit: "limit" }), title: service.title }));
     if (href === "/projekty/")
       return site.references.flatMap((room) =>
-        room.images
-          .filter((image) => !image.hidden)
-          .map((image) => ({ loc: cloudinaryImage(image.src, { width: 1600, fit: "limit" }), title: image.alt || room.title })),
+        getRoomMedia(room)
+          .filter((item) => item.type === "image")
+          .map((item) => ({ loc: item.full, title: item.alt })),
       );
     return [];
   };

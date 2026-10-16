@@ -11,7 +11,7 @@ na stejné doméně tři malé serverové funkce:
 
 ## 1. Cloudflare Pages – jednorázově
 
-1. <https://dash.cloudflare.com> → **Workers & Pages → Create → Pages → Connect to Git** → repozitář `Luko248/crystalinteriors.cz`.
+1. <https://dash.cloudflare.com> → **Workers & Pages → Create → Pages → Connect to Git** → repozitář `depthark/crystalinteriors.cz`.
 2. Build:
    - **Production branch:** `main`
    - **Build command:** `bun run build`
@@ -42,18 +42,35 @@ na stejné doméně tři malé serverové funkce:
 > `public/admin/config.yml` má `base_url: https://www.crystalinteriors.cz` a `branch: main`.
 > Přihlášení proto funguje na produkční doméně, ne na `*.pages.dev`.
 
-## 3. Cloudinary
+## 3. Cloudinary (stejně jako anewstyle.cz)
 
-- **Settings → Security → Strict transformations: vypnuto** (web si říká o velikosti a formáty – AVIF/WebP – sám).
-- **Settings → Security → Allowed fetch domains**: přidejte domény původních obrázků (např. `d9775ec23a.clvaw-cdnwnd.com`), nebo nechte prázdné.
-- Fotky z administrace se ukládají do `CrystalInteriors/Reference/<sekce>` a `CrystalInteriors/Web`.
-- *(Volitelné)* Náhradní zdroj galerií: sekce bez fotek v CMS načte za běhu fotky s tagem (`kuchyne`, `loznice`…). Vyžaduje **Security → Restricted media types → odškrtnout „Resource list“**.
+**Jak to funguje**
+
+1. Editorka v administraci nahraje fotky / videa (*Reference → sekce → Nahrát fotky / videa*). Soubory jdou přímo z prohlížeče do Cloudinary, do složky `CrystalInteriors/Reference/<sekce>` (např. `…/kuchyne`). Nahrání podepisuje `/api/cloudinary` – jen pro přihlášené s právem zápisu do repozitáře, editorky nepotřebují účet v Cloudinary.
+2. CMS uloží do `src/data/content/references/<sekce>.json` pořadí, popisky a skryté položky.
+3. Při každém buildu `scripts/build-cloudinary-gallery.mjs` načte (Admin Search API, `CLOUDINARY_URL`) všechny fotky a videa ze složek sekcí, spojí je s údaji z CMS a zapíše `public/data/references-gallery.json` (náhledy 4:3 se `srcset`, AVIF/WebP přes `f_auto`, videa MP4 + náhled). Stránka Projekty, schema.org, sitemap i `/agent/site.json` čtou tenhle soubor.
+
+**Co se zobrazí**
+
+- Sekce **má fotky v CMS** → přesně ty, v pořadí z CMS (skryté vynechá). Soubory, které jsou jen v Cloudinary, build vypíše a nezobrazí – editorka je přidá tlačítkem **Přidat z Cloudinary**.
+- Sekce **nemá v CMS nic** → automaticky vše ze složky v Cloudinary (popisek z názvu souboru).
+- Bez `CLOUDINARY_URL` (nebo při výpadku API) build projde a použije fotky z CMS; prázdné sekce zkusí za běhu tag list (viz níže).
+
+**Nastavení účtu**
+
+- **Settings → Security → Strict transformations: vypnuto** (web si říká o velikosti a formáty sám).
+- **Allowed fetch domains**: domény původních obrázků (např. `d9775ec23a.clvaw-cdnwnd.com`, `duyn491kcolsw.cloudfront.net`), nebo nechte prázdné.
+- Fotky webu (hero, služby, sdílení) z administrace jdou do `CrystalInteriors/Web`.
+- *(Volitelné)* Za běhu: sekce bez jakýchkoli fotek načte fotky s tagem (`kuchyne`, `loznice`…) – vyžaduje **Security → Restricted media types → odškrtnout „Resource list“**.
+- `DEPLOY_HOOK_URL` (volitelně): po nahrání lze web přestavět i bez publikování.
+
+**GitHub Pages build** (dočasný hosting): v repozitáři *Settings → Secrets and variables → Actions* přidejte secret `CLOUDINARY_URL` a variable `PUBLIC_CLOUDINARY_CLOUD_NAME` – workflow je už předává do buildu.
 
 ## 4. Jak editorky pracují (`/admin/`)
 
 1. `https://www.crystalinteriors.cz/admin/` → **Přihlásit se přes GitHub**.
 2. Při prvním otevření každé obrazovky se spustí **průvodce** (driver.js); kdykoli znovu přes **Nápověda** vlevo dole.
-3. **Reference** – jedna položka = jedna sekce galerie. *Nahrát fotky* (i víc najednou, přetažením), doplnit *Popis fotky*, hvězdičkou vybrat hlavní fotku, šipkami pořadí.
+3. **Reference** – jedna položka = jedna sekce galerie. *Nahrát fotky / videa* (i víc najednou, přetažením), *Přidat z Cloudinary* (soubory už nahrané ve složce sekce), doplnit *Popis fotky*, hvězdičkou vybrat hlavní fotku, šipkami pořadí.
 4. **Stránky** – texty, služby, ceník, časté dotazy, SEO titulky a popisy.
 5. **Nastavení** – kontakty, adresa, otevírací doba, sociální sítě.
 6. **Uložit** → vznikne koncept (pull request, Cloudflare postaví náhled) → **Publikovat → Publikovat nyní**. Panel vpravo dole hlídá sestavení (`/build.json`) a ohlásí, až je změna na webu (2–3 min).
@@ -66,7 +83,8 @@ Před každým odebráním se administrace zeptá. Odebraná fotka v Cloudinary 
 bun install
 bun run dev          # http://localhost:4321
 bun run cms:local    # ve druhém terminálu → http://localhost:4321/admin/ (zapisuje přímo do souborů)
-bun run build        # css → astro check → astro build
+bun run build        # css → Cloudinary galerie → astro check + TS 7 → astro build
+bun run gallery:build # jen načtení galerií z Cloudinary (potřebuje CLOUDINARY_URL v .env)
 bun run icons        # přegeneruje favicony / PWA ikony ze scripts/generate-icons.mjs
 ```
 

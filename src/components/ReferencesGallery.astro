@@ -2,14 +2,14 @@
 /**
  * One room-type gallery on /projekty/.
  *
- * Images managed in the CMS (Reference → room → Fotky) render at build time:
- * crawlable, AVIF/WebP via Cloudinary, sized with srcset. When a room has no
- * CMS images yet, the page script falls back to the Cloudinary tag list
- * (`image/list/<tag>.json`) at runtime.
+ * Media come from `getRoomMedia()`: the build-time Cloudinary scan merged
+ * with the CMS (anewstyle approach), or the CMS list alone. They render at
+ * build time – crawlable, AVIF/WebP via Cloudinary, sized with srcset.
+ * Videos open as HTML5 video in Fancybox. Rooms without any media fall back
+ * to the Cloudinary tag list at runtime (src/pages/projekty.astro).
  */
 import type { ReferenceRoom } from "@/data/site";
-import { cloudinaryImage } from "@/lib/cloudinary";
-import CloudImage from "./ui/CloudImage.astro";
+import { getRoomMedia } from "@/lib/cloudinary-gallery";
 
 export interface Props {
   category: ReferenceRoom;
@@ -19,8 +19,9 @@ const { category } = Astro.props;
 const galleryId = `references-${category.slug}`;
 const headingId = `${galleryId}-title`;
 const descriptionId = `${galleryId}-description`;
-const images = (category.images ?? []).filter((image) => image.src && !image.hidden);
-const isStatic = images.length > 0;
+const media = getRoomMedia(category);
+const isStatic = media.length > 0;
+const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
 ---
 
 <section
@@ -53,30 +54,44 @@ const isStatic = images.length > 0;
       aria-label={`Galerie — ${category.title}`}
     >
       {
-        images.map((image, i) => {
-          const alt = image.alt || `${category.title} — reference ${i + 1}`;
-          return (
-            <li>
-              <a
-                href={cloudinaryImage(image.src, { width: 2000, fit: "limit" })}
-                data-fancybox={galleryId}
-                data-caption={alt}
-                aria-label={`Zvětšit: ${alt}`}
-                class="glass-hover group relative block overflow-hidden rounded-lg bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lifted"
-              >
-                <CloudImage
-                  src={image.src}
-                  alt={alt}
-                  width={800}
-                  height={600}
-                  widths={[360, 540, 800, 1080]}
-                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw"
-                  class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </a>
-            </li>
-          );
-        })
+        media.map((item) => (
+          <li>
+            <a
+              href={item.full}
+              data-fancybox={galleryId}
+              data-caption={item.alt}
+              data-type={item.type === "video" ? "html5video" : undefined}
+              data-width={item.fullWidth}
+              data-height={item.fullHeight}
+              aria-label={`${item.type === "video" ? "Přehrát video" : "Zvětšit"}: ${item.alt}`}
+              class="glass-hover group relative block overflow-hidden rounded-lg bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lifted"
+            >
+              <img
+                src={item.thumb}
+                srcset={item.thumbSrcset}
+                sizes={item.thumbSrcset ? sizes : undefined}
+                alt={item.alt}
+                width={item.width}
+                height={item.height}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {
+                item.type === "video" && (
+                  <span
+                    class="pointer-events-none absolute inset-0 z-[3] grid place-items-center"
+                    aria-hidden="true"
+                  >
+                    <span class="grid h-14 w-14 place-items-center rounded-full bg-black/55 text-white shadow-lifted backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+                    </span>
+                  </span>
+                )
+              }
+            </a>
+          </li>
+        ))
       }
     </ul>
   </div>

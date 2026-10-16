@@ -151,8 +151,10 @@
     gallery: () => [
       step(".rg-help", "Galerie místnosti",
         "Tady jsou všechny fotky jedné sekce referencí. Co vidíte tady, je na webu – ve stejném pořadí."),
-      step(".rg-primary", "Nahrát fotky",
-        "Klikněte, nebo fotky rovnou přetáhněte do okna. Můžete vybrat víc fotek najednou, velké soubory zmenšíme automaticky. Nové fotky se přidají na konec.", "left"),
+      step(".rg-primary", "Nahrát fotky a videa",
+        "Klikněte, nebo soubory rovnou přetáhněte do okna. Můžete vybrat víc najednou, velké fotky zmenšíme automaticky. Uloží se do složky této sekce v Cloudinary a přidají se na konec.", "left"),
+      step(".rg-secondary", "Přidat z Cloudinary",
+        "Máte fotky nahrané přímo v Cloudinary (složka <b>CrystalInteriors/Reference/…</b>)? Tady je vyberete a přidáte do galerie. Dokud je galerie v administraci prázdná, web ukazuje automaticky vše ze složky.", "left"),
       step(".rg-card", "Karta fotky",
         "<b>Popis fotky</b> – krátce, co je na fotce (čtou ho nevidomí a Google). <b>Hvězdička</b> udělá z fotky hlavní – na webu je velká. Šipky mění pořadí, <b>Dočasně skrýt</b> fotku schová a koš ji odebere (v Cloudinary zůstane).", "right"),
       step('[class*="SaveButton"]', "Nezapomeňte uložit a publikovat",

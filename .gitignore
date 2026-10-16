@@ -16,3 +16,6 @@ node_modules
 .codex/
 .windsurf/
 *.code-workspace
+
+# Cloudinary gallery data (generated at build time by scripts/build-cloudinary-gallery.mjs)
+public/data/references-gallery.json

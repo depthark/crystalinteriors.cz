@@ -10,6 +10,10 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   PUBLIC_SITE_URL: "https://luko248.github.io/crystalinteriors.cz"
   PUBLIC_BASE_PATH: "/crystalinteriors.cz"
+  # Optional: build-time Cloudinary gallery scan + image delivery. Without
+  # them the build still succeeds (CMS photos only, no fetch transforms).
+  CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+  PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ vars.PUBLIC_CLOUDINARY_CLOUD_NAME }}
 
 permissions:
   contents: read

@@ -25,11 +25,12 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
 | Images / CDN | [Cloudinary](https://cloudinary.com) – upload + fetch delivery, `f_auto` (AVIF/WebP), `q_auto`, `g_auto`, `srcset` | — | `src/lib/cloudinary.ts`, `src/components/ui/CloudImage.astro` |
+| Gallery data | `cloudinary` Node SDK – build-time Admin Search API scan of `CrystalInteriors/Reference/<room>`, merged with CMS metadata (anewstyle approach), photos + videos | 2.11 | `scripts/build-cloudinary-gallery.mjs` → `public/data/references-gallery.json` → `src/lib/cloudinary-gallery.ts` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
 | CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
 | Hosting | [Cloudflare Pages](https://pages.cloudflare.com) | — | `wrangler.toml`, `public/_headers` |
-| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth, Cloudinary upload signing), `functions/mcp.ts` |
+| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth; Cloudinary upload signing + folder listing), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
 | Mail / contact | No mail library or server: `mailto:` inquiry form + `tel:`/`mailto:` links | — | `src/pages/kontakt.astro` |
@@ -44,7 +45,7 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 
 All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
 
-Installed but currently unused in `src/`: `cloudinary` (Node SDK – URLs are built by hand), `@googlemaps/js-api-loader`, `@toolwind/anchors`.
+Installed but currently unused: `@googlemaps/js-api-loader`, `@toolwind/anchors`.
 
 Hosting today: **GitHub Pages** (`.github/workflows/static.yml`, on push to `main`, base path `/crystalinteriors.cz/` via `PUBLIC_BASE_PATH`). Target: **Cloudflare Pages** at `https://www.crystalinteriors.cz` – needed for `/admin/` login, Cloudinary upload signing and `/mcp` (see `DEPLOY.md`). Everything public (pages, PWA, sitemap, llms.txt) works on both; paths go through `import.meta.env.BASE_URL` / `withBase()`, and `public/sw.js` + `manifest.webmanifest` are scope-relative.
 
@@ -83,7 +84,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
 - `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image taken from old site CDN (`duyn491kcolsw.cloudfront.net/files/1u/1um/1umned.jpg`).
 - `src/components/HeroSection.astro` — full-bleed hero with Cloudinary image, gradient overlay, eyebrow + title + CTAs.
-- `src/components/ReferencesGallery.astro` — room section; CMS images render statically (crawlable), empty rooms fall back to the Cloudinary tag list at runtime; Fancybox lightbox.
+- `src/components/ReferencesGallery.astro` — room section from `getRoomMedia()` (build-time Cloudinary scan merged with CMS → else CMS list → else runtime tag list); photos + videos, Fancybox lightbox.
 
 ### Icons
 
@@ -148,7 +149,8 @@ Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + emai
 Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 
 - Config `public/admin/config.yml` – collections *Reference* (folder, one entry per room), *Stránky*, *Nastavení*; Czech UI; editorial workflow (drafts are PRs → preview build → publish).
-- Custom widgets: `room-gallery` (`gallery-manager.js`), `cloud-image` (`media-widgets.js`); uploads in `cloudinary-upload.js` go straight to Cloudinary (`CrystalInteriors/Reference/<slug>`, `CrystalInteriors/Web`), signed by `functions/api/cloudinary.ts` for GitHub users with push access.
+- Custom widgets: `room-gallery` (`gallery-manager.js`, upload photos/videos + „Přidat z Cloudinary“ folder picker), `cloud-image` (`media-widgets.js`); uploads in `cloudinary-upload.js` go straight to Cloudinary (`CrystalInteriors/Reference/<slug>`, `CrystalInteriors/Web`), signed by `functions/api/cloudinary.ts` for GitHub users with push access.
+- Same model as anewstyle.cz: Cloudinary folders hold the media, the CMS list holds order/alt/hidden and is the source of truth once non-empty; `scripts/build-cloudinary-gallery.mjs` merges both at build time (needs `CLOUDINARY_URL`, fails soft).
 - Editor UX: driver.js guided tours + help button + removal confirmations (`admin-ux.js`), publish progress panel polling `/build.json` (`publish-status.js`).
 - Auth: GitHub OAuth via `functions/api/auth.ts` + `callback.ts` (env `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `CLOUDINARY_URL`). Works only on Cloudflare Pages (`base_url` in config). Local: `bun run cms:local`.
 
@@ -181,7 +183,7 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 
 - `bun run dev` — concurrent Tailwind watcher + Astro dev server
 - `bun run cms:local` — local Decap backend (edit at `http://localhost:4321/admin/`, writes files directly)
-- `bun run build` — minify CSS → `astro check` → TypeScript 7 `tsc --noEmit` → `astro build`
+- `bun run build` — minify CSS → Cloudinary gallery scan (`gallery:build`) → `astro check` → TypeScript 7 `tsc --noEmit` → `astro build`
 - `bun run icons` — regenerate favicon/PWA icons (`scripts/generate-icons.mjs`)
 - `bun run preview` — preview production build
 - `/dist` is gitignored. `public/styles/tailwind.css` is generated (by `bun run dev`/`build`) but committed – regenerate it, never edit by hand.

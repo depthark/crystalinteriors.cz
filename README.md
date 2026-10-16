@@ -17,11 +17,12 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
 | Images / CDN | [Cloudinary](https://cloudinary.com) – upload + fetch delivery, `f_auto` (AVIF/WebP), `q_auto`, `g_auto`, `srcset` | — | `src/lib/cloudinary.ts`, `src/components/ui/CloudImage.astro` |
+| Gallery data | `cloudinary` Node SDK – build-time Admin Search API scan of `CrystalInteriors/Reference/<room>`, merged with CMS metadata (anewstyle approach), photos + videos | 2.11 | `scripts/build-cloudinary-gallery.mjs` → `public/data/references-gallery.json` → `src/lib/cloudinary-gallery.ts` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
 | CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
 | Hosting | [Cloudflare Pages](https://pages.cloudflare.com) | — | `wrangler.toml`, `public/_headers` |
-| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth, Cloudinary upload signing), `functions/mcp.ts` |
+| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth; Cloudinary upload signing + folder listing), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
 | Mail / contact | No mail library or server: `mailto:` inquiry form + `tel:`/`mailto:` links | — | `src/pages/kontakt.astro` |
@@ -38,7 +39,7 @@ Hosting: GitHub Pages today (`.github/workflows/static.yml`, base path `/crystal
 
 All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
 
-Installed but currently unused in `src/`: `cloudinary` (Node SDK – URLs are built by hand), `@googlemaps/js-api-loader`, `@toolwind/anchors`.
+Installed but currently unused: `@googlemaps/js-api-loader`, `@toolwind/anchors`.
 
 ## Development
 ```bash

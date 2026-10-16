@@ -8,6 +8,7 @@
  */
 import { site, type ReferenceRoom } from "@/data/site";
 import { cloudinaryImage } from "@/lib/cloudinary";
+import { galleryGeneratedAt, getRoomMedia } from "@/lib/cloudinary-gallery";
 
 type Node = Record<string, unknown>;
 
@@ -184,19 +185,32 @@ export const serviceNodes = (): Node[] =>
 
 export const referenceGalleries = (rooms: ReferenceRoom[]): Node[] =>
   rooms
-    .map((room) => ({ room, images: room.images.filter((image) => !image.hidden) }))
-    .filter(({ images }) => images.length)
-    .map(({ room, images }) => ({
+    .map((room) => ({ room, media: getRoomMedia(room) }))
+    .filter(({ media }) => media.length)
+    .map(({ room, media }) => ({
       "@type": "ImageGallery",
       "@id": `${site.siteUrl}/projekty/#${room.slug}`,
       name: `${room.title} – reference ${site.name}`,
       description: room.text,
       creator: { "@id": ids.business },
-      image: images.map((image) => ({
-        "@type": "ImageObject",
-        contentUrl: cloudinaryImage(image.src, { width: 1600, fit: "limit" }),
-        caption: image.alt || room.title,
-        creator: { "@id": ids.business },
-        copyrightHolder: { "@id": ids.business },
-      })),
+      image: media
+        .filter((item) => item.type === "image")
+        .map((item) => ({
+          "@type": "ImageObject",
+          contentUrl: item.full,
+          thumbnailUrl: item.thumb,
+          caption: item.alt,
+          creator: { "@id": ids.business },
+          copyrightHolder: { "@id": ids.business },
+        })),
+      video: media
+        .filter((item) => item.type === "video")
+        .map((item) => ({
+          "@type": "VideoObject",
+          name: item.alt,
+          description: `${room.title} – ${item.alt}`,
+          contentUrl: item.full,
+          thumbnailUrl: item.poster ?? item.thumb,
+          uploadDate: item.uploadedAt ?? galleryGeneratedAt() ?? undefined,
+        })),
     }));

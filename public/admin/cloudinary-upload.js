@@ -64,7 +64,7 @@
       form.append("use_filename", "true");
       form.append("unique_filename", "true");
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`);
+      xhr.open("POST", `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`);
       xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(e.loaded / e.total);
       xhr.onload = () => {
         let data = {};
@@ -75,17 +75,20 @@
       xhr.send(form);
     });
 
-  /** res.cloudinary.com URL → { cloud, id } */
+  /** res.cloudinary.com URL → { cloud, kind, id } */
   const parse = (url) => {
-    const m = /res\.cloudinary\.com\/([^/]+)\/image\/upload\/(?:[^/]*,[^/]*\/)*(?:v\d+\/)?(.+?)(?:\.[a-z0-9]+)?(?:\?.*)?$/i.exec(url || "");
-    return m ? { cloud: m[1], id: m[2] } : null;
+    const m = /res\.cloudinary\.com\/([^/]+)\/(image|video)\/upload\/(?:[^/]*,[^/]*\/)*(?:v\d+\/)?(.+?)(?:\.[a-z0-9]+)?(?:\?.*)?$/i.exec(url || "");
+    return m ? { cloud: m[1], kind: m[2], id: m[3] } : null;
   };
 
   /** Small thumbnail; the same 4:3 crop the website uses for gallery tiles. */
   const thumbOf = (url, w = 480) => {
     const p = parse(url);
-    if (p) return `https://res.cloudinary.com/${p.cloud}/image/upload/f_auto,q_auto,c_fill,g_auto,w_${w},h_${Math.round((w * 3) / 4)}/${p.id}`;
-    return url || "";
+    if (!p) return url || "";
+    const crop = `q_auto,c_fill,g_auto,w_${w},h_${Math.round((w * 3) / 4)}`;
+    return p.kind === "video"
+      ? `https://res.cloudinary.com/${p.cloud}/video/upload/${crop}/${p.id}.jpg`
+      : `https://res.cloudinary.com/${p.cloud}/image/upload/f_auto,${crop}/${p.id}`;
   };
 
   const css = `
@@ -116,7 +119,7 @@
    * Upload dialog. Resolves with [{ url, width, height, name }] for every
    * uploaded file (empty array when cancelled).
    */
-  function openDialog({ folder = "CrystalInteriors/Web", label = "", multiple = false } = {}) {
+  function openDialog({ folder = "CrystalInteriors/Web", label = "", multiple = false, video = false } = {}) {
     return new Promise((resolve) => {
       const results = [];
       const dialog = document.createElement("dialog");
@@ -125,13 +128,13 @@
       dialog.innerHTML = `
         <style>${css}</style>
         <form method="dialog">
-          <h2 id="ccu-title">Nahrát ${multiple ? "fotky" : "fotku"}</h2>
+          <h2 id="ccu-title">Nahrát ${multiple ? "fotky a videa" : "fotku"}</h2>
           ${label ? `<p class="where">Fotky se přidají do: <strong>${escapeHtml(label)}</strong></p>` : ""}
           <label class="drop">
-            <strong>Přetáhněte ${multiple ? "fotky" : "fotku"} sem</strong>
+            <strong>Přetáhněte ${multiple ? "fotky nebo videa" : "fotku"} sem</strong>
             <span>nebo klikněte a vyberte z počítače</span>
-            <input type="file" name="file" accept="image/*" ${multiple ? "multiple" : ""} required>
-            <small>JPG, PNG, WebP nebo HEIC. Ideálně alespoň 2000 px na delší straně. Velké soubory zmenšíme automaticky.</small>
+            <input type="file" name="file" accept="${video ? "image/*,video/*" : "image/*"}" ${multiple ? "multiple" : ""} required>
+            <small>Fotky JPG, PNG, WebP nebo HEIC – ideálně alespoň 2000 px, velké zmenšíme automaticky.${video ? " Videa MP4 (H.264), 1080p, do 100 MB." : ""}</small>
           </label>
           <ul class="files" aria-label="Vybrané soubory"></ul>
           <progress value="0" max="1" hidden></progress>
@@ -154,7 +157,7 @@
 
       const close = () => { dialog.close(); dialog.remove(); resolve(results); };
       const show = (files) => {
-        picked = files.filter((f) => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name));
+        picked = files.filter((f) => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name) || (video && f.type.startsWith("video/")));
         if (!multiple) picked = picked.slice(0, 1);
         list.innerHTML = picked.map((f) => `<li>${escapeHtml(f.name)} · ${(f.size / 1048576).toFixed(1)} MB</li>`).join("");
         msg.className = "msg";
@@ -184,7 +187,7 @@
               progress.value = (i + p) / picked.length;
               msg.textContent = `${prefix}nahrávám ${original.name} – ${Math.round(p * 100)} %`;
             });
-            results.push({ url: result.secure_url, width: result.width, height: result.height, name: original.name });
+            results.push({ url: result.secure_url, type: result.resource_type, width: result.width, height: result.height, name: original.name });
           }
           progress.value = 1;
           msg.textContent = picked.length > 1 ? `Hotovo – nahráno ${picked.length} fotek.` : "Hotovo – fotka je nahraná.";

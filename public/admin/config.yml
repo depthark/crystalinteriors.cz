@@ -7,7 +7,7 @@
 
 backend:
   name: github
-  repo: Luko248/crystalinteriors.cz
+  repo: depthark/crystalinteriors.cz
   branch: main
   base_url: https://www.crystalinteriors.cz
   auth_endpoint: api/auth

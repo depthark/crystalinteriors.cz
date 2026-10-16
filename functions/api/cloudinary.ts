@@ -7,6 +7,10 @@
  *   The browser then uploads the file straight to Cloudinary, so big photos
  *   never pass through this function.
  *
+ * POST /api/cloudinary  { action: "list", folder }
+ *   → { items: [{ url, type, width, height, createdAt }] } – everything in
+ *   that folder, so editors can add photos uploaded straight in Cloudinary.
+ *
  * POST /api/cloudinary  { action: "rebuild" }
  *   → triggers the Pages deploy hook (optional).
  *
@@ -17,7 +21,7 @@
  *
  * Environment (Pages → Settings → Variables and Secrets):
  *   CLOUDINARY_URL   – cloudinary://API_KEY:API_SECRET@CLOUD_NAME (encrypted)
- *   CMS_REPO         – optional, defaults to Luko248/crystalinteriors.cz
+ *   CMS_REPO         – optional, defaults to depthark/crystalinteriors.cz
  *   DEPLOY_HOOK_URL  – optional Pages deploy hook URL
  */
 interface Env {
@@ -31,7 +35,7 @@ interface Context {
   env: Env;
 }
 
-const DEFAULT_REPO = "Luko248/crystalinteriors.cz";
+const DEFAULT_REPO = "depthark/crystalinteriors.cz";
 const CLOUDINARY_ROOT = "CrystalInteriors";
 // CrystalInteriors/Reference/<room-slug> or CrystalInteriors/Web
 const FOLDER = new RegExp(`^${CLOUDINARY_ROOT}/(Reference/[a-z0-9-]{1,40}|Web)$`);
@@ -63,6 +67,35 @@ async function canPublish(request: Request, repo: string): Promise<boolean> {
   return data.permissions?.push === true;
 }
 
+type Creds = { apiKey: string; apiSecret: string; cloudName: string };
+
+/** Images and videos in a folder (fixed or dynamic folder mode), newest first. */
+async function listFolder(creds: Creds, folder: string): Promise<Response> {
+  const expression =
+    `(folder="${folder}" OR asset_folder="${folder}") AND (resource_type:image OR resource_type:video)`;
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${creds.cloudName}/resources/search`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${btoa(`${creds.apiKey}:${creds.apiSecret}`)}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ expression, sort_by: [{ created_at: "desc" }], max_results: 200 }),
+  });
+  if (!res.ok) return json({ error: `Cloudinary: HTTP ${res.status}` }, 502);
+  const data = (await res.json()) as {
+    resources?: Array<{ secure_url: string; resource_type: string; width: number; height: number; created_at: string }>;
+  };
+  return json({
+    items: (data.resources ?? []).map((r) => ({
+      url: r.secure_url,
+      type: r.resource_type,
+      width: r.width,
+      height: r.height,
+      createdAt: r.created_at,
+    })),
+  });
+}
+
 async function sha1Hex(input: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(input));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -86,13 +119,15 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
     return json({ rebuilt: hook.ok });
   }
 
-  if (body.action !== "sign") return json({ error: "Unknown action." }, 400);
+  if (body.action !== "sign" && body.action !== "list") return json({ error: "Unknown action." }, 400);
 
   const folder = body.folder ?? "";
   if (!FOLDER.test(folder)) return json({ error: "Folder not allowed." }, 400);
 
   const creds = parseCloudinaryUrl(env.CLOUDINARY_URL);
   if (!creds) return json({ error: "CLOUDINARY_URL is not configured." }, 500);
+
+  if (body.action === "list") return listFolder(creds, folder);
 
   // Cloudinary signs the alphabetically sorted params followed by the secret.
   const timestamp = Math.floor(Date.now() / 1000);

@@ -31,7 +31,7 @@
   "scripts": {
     "dev": "run-p css:dev astro:dev",
     "start": "bun run dev",
-    "build": "bun run css:build && bun run typecheck && astro build",
+    "build": "bun run css:build && bun run gallery:build && bun run typecheck && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "astro:dev": "astro dev",
@@ -39,7 +39,8 @@
     "css:build": "tailwindcss -i public/styles/tailwind.source.css -o public/styles/tailwind.css --minify",
     "icons": "node scripts/generate-icons.mjs",
     "cms:local": "decap-server",
-    "typecheck": "astro check && node node_modules/typescript-7/bin/tsc --noEmit"
+    "typecheck": "astro check && node node_modules/typescript-7/bin/tsc --noEmit",
+    "gallery:build": "node scripts/build-cloudinary-gallery.mjs"
   },
   "engines": {
     "node": ">=24.0.0",
