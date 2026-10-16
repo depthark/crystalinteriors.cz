@@ -92,8 +92,8 @@
   );
 
   // ------------------------------------------------------------------ tours
-  const DRIVER_JS = "https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js";
-  const DRIVER_CSS = "https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css";
+  const DRIVER_JS = "https://cdn.jsdelivr.net/npm/driver.js@1.10.1/dist/driver.js.iife.js";
+  const DRIVER_CSS = "https://cdn.jsdelivr.net/npm/driver.js@1.10.1/dist/driver.css";
   const SEEN = (name) => `crystal-tour-${name}-v1`;
 
   let driverReady;

@@ -7,19 +7,19 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Area | Library / service | Version | Where |
 | --- | --- | --- | --- |
 | Framework | [Astro](https://astro.build) (static output) | 7.4 | `astro.config.mjs`, `src/` |
-| Runtime / package manager | [Bun](https://bun.sh) | 1.3+ | `bun install`, `bun run …` |
-| Runtime (tooling) | Node.js | ≥ 22 | `engines` in `package.json` |
+| Runtime / package manager | [Bun](https://bun.sh) | 1.4 | `bun install`, `bun run …` (`packageManager: bun@1.4.3`) |
+| Runtime (tooling) | Node.js 24 LTS (Krypton) | 24 | `engines`, `.node-version`, CI `node-version: 24` |
 | Language | TypeScript 7 (`typescript-7`, native `tsc`) | 7.0 | `bun run typecheck` (`.ts` files) |
 | Language tooling | TypeScript 6 (JS API for `@astrojs/check` / Astro LS) | 6.0 | kept until TS 7.1 ships a stable API |
 | Type check | `@astrojs/check` | 0.9 | `astro check` (`.astro` files) |
 | Styling | Tailwind CSS v4 + `@tailwindcss/cli` | 4.3 | `public/styles/tailwind.source.css` → `tailwind.css` |
 | Design tokens | OKLCH colours, rem spacing, tracking, motion, z-index | — | `@theme` in `tailwind.source.css` |
-| Component variants | `tailwind-variants` + `tailwind-merge` | 3.2 / 3.6 | `src/components/ui/Button.astro` |
+| Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
 | Images / CDN | [Cloudinary](https://cloudinary.com) – upload + fetch delivery, `f_auto` (AVIF/WebP), `q_auto`, `g_auto`, `srcset` | — | `src/lib/cloudinary.ts`, `src/components/ui/CloudImage.astro` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
-| CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.3 | `public/admin/admin-ux.js` |
+| CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
 | Hosting | [Cloudflare Pages](https://pages.cloudflare.com) | — | `wrangler.toml`, `public/_headers` |
 | Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth, Cloudinary upload signing), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
@@ -35,6 +35,8 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
 
 Hosting: GitHub Pages today (`.github/workflows/static.yml`, base path `/crystalinteriors.cz/`); Cloudflare Pages at `www.crystalinteriors.cz` is the target and is required for the CMS login, Cloudinary uploads and `/mcp` – see [DEPLOY.md](DEPLOY.md).
+
+All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
 
 Installed but currently unused in `src/`: `cloudinary` (Node SDK – URLs are built by hand), `@googlemaps/js-api-loader`, `@toolwind/anchors`.
 

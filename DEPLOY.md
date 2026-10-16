@@ -26,7 +26,8 @@ na stejné doméně tři malé serverové funkce:
    | `GITHUB_CLIENT_ID` | z kroku 2 | text |
    | `GITHUB_CLIENT_SECRET` | z kroku 2 | **Secret** |
    | `DEPLOY_HOOK_URL` | volitelně – *Settings → Builds → Deploy hooks* | Secret |
-   | `BUN_VERSION` | volitelně, např. `1.3.1` | text |
+   | `BUN_VERSION` | `1.4.3` | text |
+   | `NODE_VERSION` | `24` (také v `.node-version`) | text |
 
 4. **Custom domains** → `www.crystalinteriors.cz` (+ přesměrování z `crystalinteriors.cz`).
 
