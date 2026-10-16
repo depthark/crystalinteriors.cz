@@ -5,11 +5,16 @@ import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
 import ReferencesGallery from "@/components/ReferencesGallery.astro";
 import { site } from "@/data/site";
+import { referenceGalleries } from "@/lib/structured-data";
+
+const page = site.referencesPage;
 ---
 
 <BaseLayout
-  title="Reference"
-  description="Reference Crystal Interiors podle typu prostoru — kuchyně, obývací pokoje, ložnice, koupelny i komerční interiéry."
+  title={page.seo.title}
+  description={page.seo.description}
+  pageType="CollectionPage"
+  schema={referenceGalleries(site.references)}
   pathname="/projekty/"
   breadcrumbs={[
     { name: "Úvod", href: "/" },
@@ -19,10 +24,28 @@ import { site } from "@/data/site";
   <SiteHeader pathname={Astro.url.pathname} />
   <main id="main" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
     <SectionIntro
+      level={1}
       eyebrow="Reference"
-      title="Realizace a vizualizace podle typu prostoru"
-      text="Vyberte si typ interiéru a prohlédněte si výběr našich realizací i vizualizací. Galerie se načítají přímo z naší Cloudinary knihovny."
+      title={page.intro.title}
+      text={page.intro.text}
     />
+
+    <nav class="mt-10" aria-label="Typy prostor">
+      <ul class="flex list-none flex-wrap gap-2">
+        {
+          site.references.map((room) => (
+            <li>
+              <a
+                href={`#${room.slug}`}
+                class="inline-flex min-h-11 items-center rounded-full border border-border-strong px-4 text-sm text-foreground hover:border-primary hover:text-primary"
+              >
+                {room.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
     <div class="mt-12">
       {
@@ -79,11 +102,13 @@ import { site } from "@/data/site";
     index: number,
   ) => {
     const alt = `${title} — reference ${index + 1}`;
-    const thumb = buildUrl("f_auto,q_auto,w_900,c_limit", res);
-    const full = buildUrl("f_auto,q_auto,w_1920,c_limit", res);
+    const tile = (w: number) =>
+      buildUrl(`f_auto,q_auto,c_fill,g_auto,w_${w},h_${Math.round((w * 3) / 4)}`, res);
+    const thumb = tile(800);
+    const srcset = [360, 540, 800, 1080].map((w) => `${tile(w)} ${w}w`).join(", ");
+    const full = buildUrl("f_auto,q_auto,w_2000,c_limit", res);
 
     const item = document.createElement("li");
-    item.className = "mb-6 break-inside-avoid";
 
     const link = document.createElement("a");
     link.href = full;
@@ -95,12 +120,14 @@ import { site } from "@/data/site";
     link.innerHTML = `
       <img
         src="${escape(thumb)}"
+        srcset="${escape(srcset)}"
+        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw"
         alt="${escape(alt)}"
-        width="${res.width}"
-        height="${res.height}"
+        width="800"
+        height="600"
         loading="lazy"
         decoding="async"
-        class="h-auto w-full transform transition-transform duration-500 group-hover:scale-105"
+        class="aspect-[4/3] h-auto w-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
     `;
     item.appendChild(link);
@@ -122,6 +149,11 @@ import { site } from "@/data/site";
     const settle = () => {
       live?.setAttribute("aria-busy", "false");
     };
+
+    if (section.dataset.static === "true") {
+      settle();
+      return;
+    }
 
     if (!grid || !tag) {
       settle();

@@ -1,11 +1,18 @@
 ---
+/**
+ * One room-type gallery on /projekty/.
+ *
+ * Images managed in the CMS (Reference → room → Fotky) render at build time:
+ * crawlable, AVIF/WebP via Cloudinary, sized with srcset. When a room has no
+ * CMS images yet, the page script falls back to the Cloudinary tag list
+ * (`image/list/<tag>.json`) at runtime.
+ */
+import type { ReferenceRoom } from "@/data/site";
+import { cloudinaryImage } from "@/lib/cloudinary";
+import CloudImage from "./ui/CloudImage.astro";
+
 export interface Props {
-  category: {
-    slug: string;
-    tag: string;
-    title: string;
-    text: string;
-  };
+  category: ReferenceRoom;
   index: number;
 }
 
@@ -13,11 +20,15 @@ const { category, index } = Astro.props;
 const galleryId = `references-${category.slug}`;
 const headingId = `${galleryId}-title`;
 const descriptionId = `${galleryId}-description`;
+const images = (category.images ?? []).filter((image) => image.src && !image.hidden);
+const isStatic = images.length > 0;
 ---
 
 <section
+  id={category.slug}
   class="grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
   data-references-section
+  data-static={isStatic ? "true" : undefined}
   data-tag={category.tag}
   data-gallery-id={galleryId}
   data-title={category.title}
@@ -26,26 +37,76 @@ const descriptionId = `${galleryId}-description`;
 >
   <div class="space-y-4 lg:sticky lg:top-28 lg:self-start">
     <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
-      Sekce {String(index + 1).padStart(2, "0")}
+      {String(index + 1).padStart(2, "0")}
+      {isStatic && <span class="text-muted"> · {images.length} {images.length === 1 ? "fotka" : images.length < 5 ? "fotky" : "fotek"}</span>}
     </p>
     <h2 id={headingId} class="text-3xl leading-tight text-foreground">{category.title}</h2>
     <p id={descriptionId} class="text-base leading-8 text-muted">{category.text}</p>
   </div>
 
-  <div
-    class="py-4"
-    aria-busy="true"
-    aria-live="polite"
-    data-references-live
-  >
-    <p class="text-sm leading-7 text-muted" data-references-status>
-      Načítání referencí…
-    </p>
+  <div class="py-4" aria-busy={isStatic ? "false" : "true"} aria-live="polite" data-references-live>
+    {
+      !isStatic && (
+        <p class="text-sm leading-7 text-muted" data-references-status>
+          Načítání referencí…
+        </p>
+      )
+    }
     <ul
-      class="hidden list-none columns-1 gap-6 sm:columns-2 lg:columns-3"
+      class:list={["references-grid list-none", !isStatic && "hidden"]}
       data-references-grid
       aria-label={`Galerie — ${category.title}`}
     >
+      {
+        images.map((image, i) => {
+          const alt = image.alt || `${category.title} — reference ${i + 1}`;
+          return (
+            <li>
+              <a
+                href={cloudinaryImage(image.src, { width: 2000, fit: "limit" })}
+                data-fancybox={galleryId}
+                data-caption={alt}
+                aria-label={`Zvětšit: ${alt}`}
+                class="glass-hover group relative block overflow-hidden rounded-lg bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lifted"
+              >
+                <CloudImage
+                  src={image.src}
+                  alt={alt}
+                  width={800}
+                  height={600}
+                  widths={[360, 540, 800, 1080]}
+                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw"
+                  class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </a>
+            </li>
+          );
+        })
+      }
     </ul>
   </div>
 </section>
+
+<style>
+  .references-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+    gap: calc(var(--spacing) * 4);
+  }
+
+  .references-grid.hidden {
+    display: none;
+  }
+
+  /* First tile leads: double size on wider screens. */
+  @media (min-width: 640px) {
+    .references-grid > :global(li:first-child:not(:only-child)) {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .references-grid > :global(li:first-child:not(:only-child) img) {
+      height: 100%;
+    }
+  }
+</style>

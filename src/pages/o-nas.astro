@@ -3,12 +3,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
-import { site } from "@/data/site";
+import { site, telHref } from "@/data/site";
 ---
 
 <BaseLayout
-  title="O nás"
-  description="Crystal Interiors tvoří dvě zkušené designérky zaměřené na interiéry, nábytek na míru a funkční realizaci."
+  title={site.about.seo.title}
+  description={site.about.seo.description}
+  pageType="AboutPage"
   pathname="/o-nas/"
   breadcrumbs={[
     { name: "Úvod", href: "/" },
@@ -17,11 +18,29 @@ import { site } from "@/data/site";
 >
   <SiteHeader pathname={Astro.url.pathname} />
   <main id="main" class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-    <SectionIntro eyebrow="O studiu" title={site.about.title} text={site.about.lead} />
+    <SectionIntro level={1} eyebrow="O studiu" title={site.about.title} text={site.about.lead} />
 
-    <div class="mt-12 space-y-8 rounded-3xl border border-border bg-surface p-8 md:p-12">
+    <div class="mt-12 space-y-8 rounded-3xl border border-border bg-surface p-8 md:p-12" data-reveal>
       {site.about.paragraphs.map((paragraph) => <p class="text-lg leading-9 text-muted">{paragraph}</p>)}
     </div>
+
+    <section class="mt-12" aria-labelledby="team-title">
+      <h2 id="team-title" class="text-2xl text-foreground md:text-3xl">Kdo vám bude navrhovat</h2>
+      <ul class="mt-6 grid list-none gap-6 sm:grid-cols-2">
+        {
+          site.company.contacts.map((person) => (
+            <li class="rounded-2xl border border-border bg-background p-7" data-reveal>
+              <p class="font-display text-xl text-foreground">{person.name}</p>
+              <p class="mt-1 text-sm uppercase tracking-eyebrow text-primary">{person.role}</p>
+              <ul class="mt-4 grid list-none gap-1 text-muted">
+                <li><a class="hover:text-primary" href={telHref(person.phone)}>{person.phone}</a></li>
+                <li><a class="hover:text-primary" href={`mailto:${person.email}`}>{person.email}</a></li>
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
   </main>
   <SiteFooter />
 </BaseLayout>

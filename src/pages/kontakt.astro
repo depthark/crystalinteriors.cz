@@ -4,13 +4,24 @@ import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
 import Button from "@/components/ui/Button.astro";
-import { site } from "@/data/site";
+import { site, telHref } from "@/data/site";
+
+const page = site.contactPage;
+const primary = site.company.contacts[0];
+const roomOptions = site.references.map((room) => room.title);
+// Declarative WebMCP (draft spec) — not in Astro's attribute types yet.
+const webMcpForm: Record<string, string> = {
+  toolname: "prefill_inquiry",
+  tooldescription:
+    "Předvyplní poptávkový formulář Crystal Interiors. Neodesílá ho – odeslání potvrzuje návštěvník.",
+};
 ---
 
 <BaseLayout
-  title="Kontakt"
-  description="Kontaktujte Crystal Interiors kvůli návrhu kuchyně, interiéru nebo zakázkového nábytku."
+  title={page.seo.title}
+  description={page.seo.description}
   pathname="/kontakt/"
+  pageType="ContactPage"
   breadcrumbs={[
     { name: "Úvod", href: "/" },
     { name: "Kontakt", href: "/kontakt/" },
@@ -18,82 +29,203 @@ import { site } from "@/data/site";
 >
   <SiteHeader pathname={Astro.url.pathname} />
   <main id="main" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-    <SectionIntro
-      eyebrow="Kontakt"
-      title="Pojďme probrat váš interiér"
-      text="Ať řešíte novou kuchyň, celý byt, dům nebo komerční prostor, první krok je jednoduchý: ozvěte se a sladíme rozsah, rozpočet i další postup."
-    />
+    <SectionIntro level={1} eyebrow="Kontakt" title={page.title} text={page.text} />
 
     <div class="mt-12 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
       <address class="space-y-6 not-italic">
-        <section
-          class="rounded-2xl border border-border bg-surface p-7"
-          aria-labelledby="contact-address-label"
-        >
-          <p id="contact-address-label" class="text-sm font-medium uppercase tracking-eyebrow text-primary">Ateliér</p>
+        <section class="rounded-2xl border border-border bg-surface p-7" aria-labelledby="contact-address-label">
+          <h2 id="contact-address-label" class="text-sm font-medium uppercase tracking-eyebrow text-primary">
+            Vzorkovna
+          </h2>
           <p class="mt-3 text-xl leading-8 text-foreground">{site.company.address}</p>
+          <p class="mt-2 text-sm leading-6 text-muted">{site.company.openingNote}</p>
+          <a
+            class="mt-3 inline-block text-sm text-primary hover:underline"
+            href={`https://www.google.com/maps/dir/?api=1&destination=${site.company.geo.latitude},${site.company.geo.longitude}`}
+            target="_blank"
+            rel="noopener"
+          >
+            Naplánovat trasu<span class="sr-only"> (otevře se v novém okně)</span> &rarr;
+          </a>
         </section>
 
-        <section
-          class="rounded-2xl border border-border bg-surface p-7"
-          aria-labelledby="contact-phone-label"
-        >
-          <p id="contact-phone-label" class="text-sm font-medium uppercase tracking-eyebrow text-primary">Telefon</p>
-          <ul class="mt-3 grid list-none gap-2">
-            {site.company.phones.map((phone) => (
-              <li>
-                <a
-                  href={`tel:${phone.replace(/\s+/g, "")}`}
-                  class="text-xl text-foreground hover:text-primary"
-                  aria-label={`Zavolat na číslo ${phone}`}
-                >
-                  {phone}
-                </a>
-              </li>
-            ))}
-          </ul>
+        {
+          site.company.contacts.map((person, index) => (
+            <section
+              class="rounded-2xl border border-border bg-surface p-7"
+              aria-labelledby={`contact-person-${index}`}
+            >
+              <h2 id={`contact-person-${index}`} class="font-display text-xl text-foreground">
+                {person.name}
+              </h2>
+              <p class="mt-1 text-sm uppercase tracking-eyebrow text-primary">{person.role}</p>
+              <ul class="mt-4 grid list-none gap-2">
+                <li>
+                  <a
+                    href={telHref(person.phone)}
+                    class="text-lg text-foreground hover:text-primary"
+                    aria-label={`Zavolat ${person.name}: ${person.phone}`}
+                  >
+                    {person.phone}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={`mailto:${person.email}`}
+                    class="break-all text-lg text-foreground hover:text-primary"
+                    aria-label={`Napsat e-mail ${person.name}: ${person.email}`}
+                  >
+                    {person.email}
+                  </a>
+                </li>
+              </ul>
+            </section>
+          ))
+        }
+
+        <p class="text-sm leading-6 text-muted">
+          {site.company.legalName} · IČO {site.company.ico} · Sídlo: {site.company.registeredAddress}
+        </p>
+      </address>
+
+      <div class="space-y-8">
+        <section class="rounded-3xl border border-border bg-surface p-7 shadow-card md:p-9" aria-labelledby="inquiry-title">
+          <h2 id="inquiry-title" class="text-2xl text-foreground md:text-3xl">Nezávazná poptávka</h2>
+          <p id="inquiry-help" class="mt-2 leading-7 text-muted">
+            Vyplňte pár údajů a otevře se vám e-mail připravený k odeslání. Odpovídáme obvykle do dvou pracovních dnů.
+          </p>
+
+          <form
+            class="inquiry mt-6 grid gap-5"
+            action={`mailto:${primary.email}`}
+            method="post"
+            enctype="text/plain"
+            aria-describedby="inquiry-help"
+            data-inquiry
+            data-to={primary.email}
+            {...webMcpForm}
+          >
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="inquiry__field">
+                <span>Jméno a příjmení</span>
+                <input name="name" type="text" autocomplete="name" required />
+              </label>
+              <label class="inquiry__field">
+                <span>Telefon <small>(nepovinné)</small></span>
+                <input name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+              </label>
+            </div>
+            <label class="inquiry__field">
+              <span>E-mail</span>
+              <input name="email" type="email" autocomplete="email" required />
+            </label>
+            <label class="inquiry__field">
+              <span>Co řešíte</span>
+              <select name="room">
+                <option value="">Vyberte typ prostoru</option>
+                {roomOptions.map((room) => <option>{room}</option>)}
+                <option>Celý byt nebo dům</option>
+                <option>Jen vizualizace</option>
+              </select>
+            </label>
+            <label class="inquiry__field">
+              <span>Zpráva</span>
+              <textarea name="message" rows="5" required maxlength="4000" placeholder="Např. kuchyň 3,5 × 4 m, plánujeme realizaci na jaře…"></textarea>
+            </label>
+            <div class="flex flex-wrap items-center gap-4">
+              <Button as="button" type="submit" variant="primary" size="lg">Připravit e-mail</Button>
+              <p class="text-sm text-muted" role="status" aria-live="polite" data-inquiry-status></p>
+            </div>
+          </form>
         </section>
 
-        <section
-          class="rounded-2xl border border-border bg-surface p-7"
-          aria-labelledby="contact-email-label"
-        >
-          <p id="contact-email-label" class="text-sm font-medium uppercase tracking-eyebrow text-primary">E-mail</p>
-          <ul class="mt-3 grid list-none gap-2">
-            {site.company.emails.map((email) => (
-              <li>
-                <a
-                  href={`mailto:${email}`}
-                  class="text-lg text-foreground hover:text-primary"
-                  aria-label={`Napsat e-mail na ${email}`}
-                >
-                  {email}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <div class="overflow-hidden rounded-3xl border border-border bg-surface shadow-card">
+          <iframe
+            src={site.company.mapEmbed}
+            class="h-[420px] w-full"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title={`Mapa — vzorkovna ${site.name}, ${site.company.address}`}
+          ></iframe>
+        </div>
 
         <div class="flex flex-wrap gap-3">
-          <Button as="a" href={`mailto:${site.company.emails[0]}`} variant="primary" size="lg" rel={undefined}>
+          <Button as="a" href={`mailto:${primary.email}`} variant="outline" size="lg" rel={undefined}>
             Napsat e-mail
           </Button>
-          <Button as="a" href={`tel:${site.company.phones[0].replace(/\s+/g, "")}`} variant="outline" size="lg" rel={undefined}>
+          <Button as="a" href={telHref(primary.phone)} variant="outline" size="lg" rel={undefined}>
             Zavolat
           </Button>
         </div>
-      </address>
-
-      <div class="overflow-hidden rounded-3xl border border-border bg-surface shadow-card">
-        <iframe
-          src={site.company.mapEmbed}
-          class="h-[520px] w-full"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Mapa — sídlo Crystal Interiors, Dusíkova 900/3c, Brno-Lesná"
-        ></iframe>
       </div>
     </div>
   </main>
   <SiteFooter />
 </BaseLayout>
+
+<style>
+  .inquiry__field {
+    display: grid;
+    gap: calc(var(--spacing) * 2);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+  }
+
+  .inquiry__field small {
+    font-weight: 400;
+    color: var(--color-subtle);
+  }
+
+  .inquiry__field :is(input, select, textarea) {
+    width: 100%;
+    min-height: 3rem;
+    padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .inquiry__field textarea {
+    resize: vertical;
+  }
+
+  .inquiry__field :is(input, select, textarea):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    border-color: var(--color-primary);
+  }
+
+  .inquiry__field :is(input, textarea):user-invalid {
+    border-color: oklch(0.58 0.19 27);
+  }
+</style>
+
+<script>
+  // Builds a ready-to-send e-mail; without JS the native mailto form posts.
+  const form = document.querySelector<HTMLFormElement>("[data-inquiry]");
+  const status = document.querySelector<HTMLElement>("[data-inquiry-status]");
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const value = (key: string) => String(data.get(key) ?? "").trim();
+    const room = value("room");
+    const subject = `Poptávka z webu${room ? ` – ${room}` : ""}`;
+    const details = [
+      `Jméno: ${value("name")}`,
+      `E-mail: ${value("email")}`,
+      ...(value("phone") ? [`Telefon: ${value("phone")}`] : []),
+      ...(room ? [`Typ prostoru: ${room}`] : []),
+    ];
+    const body = [value("message"), "", ...details].join("\n");
+    window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    if (status) status.textContent = "Otevírám váš e-mailový program…";
+  });
+</script>

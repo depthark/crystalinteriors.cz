@@ -1,0 +1,154 @@
+---
+/**
+ * FAQ accordion on native <details name>: keyboard and screen-reader
+ * accessible with zero JS, one open item at a time. Content comes from the
+ * CMS (Úvodní stránka → Časté dotazy) and also feeds the FAQPage schema.
+ */
+import SectionIntro from "./SectionIntro.astro";
+
+interface Props {
+  items: Array<{ question: string; answer: string }>;
+  title?: string;
+}
+
+const { items, title = "Časté dotazy" } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section
+      id="faq"
+      class="border-t border-border bg-surface py-20 lg:py-28"
+      aria-labelledby="faq-title"
+    >
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+        <SectionIntro
+          eyebrow="FAQ"
+          title={title}
+          text="Nenašli jste odpověď? Zavolejte nebo napište, rády poradíme."
+          headingId="faq-title"
+        />
+        <div class="faq" data-reveal>
+          {items.map((item, index) => (
+            <details class="faq__item" name="faq" open={index === 0}>
+              <summary class="faq__question">
+                <span>{item.question}</span>
+                <span class="faq__icon" aria-hidden="true" />
+              </summary>
+              <div class="faq__answer">
+                <p>{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .faq {
+    display: grid;
+    gap: calc(var(--spacing) * 3);
+  }
+
+  .faq__item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-background);
+    transition:
+      border-color var(--duration-standard) var(--ease-standard),
+      box-shadow var(--duration-standard) var(--ease-standard);
+  }
+
+  .faq__item[open] {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-card);
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing) * 4);
+    min-height: 3.5rem;
+    padding: calc(var(--spacing) * 4) calc(var(--spacing) * 5);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-lg);
+  }
+
+  .faq__icon {
+    position: relative;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .faq__icon::before,
+  .faq__icon::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 2px;
+    margin-top: -1px;
+    border-radius: 2px;
+    background: var(--color-primary);
+    transition: transform var(--duration-standard) var(--ease-out-soft);
+  }
+
+  .faq__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .faq__item[open] .faq__icon::after {
+    transform: rotate(0deg);
+  }
+
+  .faq__answer {
+    padding: 0 calc(var(--spacing) * 5) calc(var(--spacing) * 5);
+    line-height: 1.75;
+    color: var(--color-muted);
+  }
+
+  /* Smooth open/close where supported (Chromium 131+). */
+  @supports selector(::details-content) {
+    .faq__item::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size var(--duration-standard) var(--ease-out-soft),
+        content-visibility var(--duration-standard) allow-discrete;
+    }
+
+    .faq__item[open]::details-content {
+      block-size: auto;
+    }
+
+    @supports (interpolate-size: allow-keywords) {
+      .faq {
+        interpolate-size: allow-keywords;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__item::details-content,
+    .faq__icon::before,
+    .faq__icon::after {
+      transition: none;
+    }
+  }
+</style>

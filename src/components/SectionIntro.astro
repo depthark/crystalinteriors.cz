@@ -5,9 +5,12 @@ export interface Props {
   text?: string;
   align?: "left" | "center";
   headingId?: string;
+  /** 1 for the page's main heading (one per page), 2 for sections. */
+  level?: 1 | 2;
 }
 
-const { eyebrow, title, text, align = "left", headingId } = Astro.props;
+const { eyebrow, title, text, align = "left", headingId, level = 2 } = Astro.props;
+const Heading = level === 1 ? "h1" : "h2";
 const centered = align === "center";
 ---
 
@@ -17,6 +20,6 @@ const centered = align === "center";
       {eyebrow}
     </p>
   )}
-  <h2 id={headingId} class="text-3xl leading-tight text-foreground md:text-5xl">{title}</h2>
+  <Heading id={headingId} class="text-balance text-3xl leading-tight text-foreground md:text-5xl">{title}</Heading>
   {text && <p class:list={["text-lg leading-8 text-muted", !centered && "max-w-3xl"]}>{text}</p>}
 </div>

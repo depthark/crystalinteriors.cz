@@ -6,11 +6,15 @@ import SectionIntro from "@/components/SectionIntro.astro";
 import Button from "@/components/ui/Button.astro";
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
+import { serviceNodes } from "@/lib/structured-data";
+
+const page = site.servicesPage;
 ---
 
 <BaseLayout
-  title="Služby a ceník"
-  description="Kompletní návrhy a realizace interiérů, 2D a 3D vizualizace, kuchyně a nábytek na míru."
+  title={page.seo.title}
+  description={page.seo.description}
+  schema={serviceNodes()}
   pathname="/sluzby/"
   breadcrumbs={[
     { name: "Úvod", href: "/" },
@@ -21,32 +25,36 @@ import { withBase } from "@/lib/navigation";
   <main id="main">
     <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
       <SectionIntro
+        level={1}
         eyebrow="Služby"
-        title="Návrh, vizualizace i realizace"
-        text="Poskytujeme kompletní designérské služby od první konzultace po hotový interiér. Navrhujeme kuchyně, interiéry a komerční prostory s důrazem na funkci, detail a rozumné rozhodování."
+        title={page.intro.title}
+        text={page.intro.text}
       />
 
       <div class="mt-12 grid gap-6 lg:grid-cols-2">
-        <article class="glass-hover rounded-2xl border border-border bg-surface p-8">
-          <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
-            Realizace interiérů a nábytku na míru
-          </p>
-          <h2 class="mt-4 text-3xl text-foreground">Od návrhu po montáž</h2>
-          <p class="mt-4 leading-8 text-muted">
-            Připravíme interiér jako celek. Řešíme dispozici, materiály, spotřebiče, nábytek, detaily i návaznost na výrobu a montáž.
-          </p>
-        </article>
-
-        <article class="glass-hover rounded-2xl border border-border bg-surface p-8">
-          <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
-            Návrhy interiérů 2D a 3D
-          </p>
-          <h2 class="mt-4 text-3xl text-foreground">Jistota před realizací</h2>
-          <p class="mt-4 leading-8 text-muted">
-            Vizualizace používáme jako pracovní nástroj. Pomáhají ověřit dispozici, proporce, materiály i atmosféru prostoru ještě před výrobou.
-          </p>
-        </article>
+        {
+          page.pillars.map((pillar) => (
+            <article class="glass-hover rounded-2xl border border-border bg-surface p-8" data-reveal>
+              <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
+                {pillar.eyebrow}
+              </p>
+              <h2 class="mt-4 text-3xl text-foreground">{pillar.title}</h2>
+              <p class="mt-4 leading-8 text-muted">{pillar.text}</p>
+            </article>
+          ))
+        }
       </div>
+
+      <ul class="mt-12 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Typy prostor, které navrhujeme">
+        {
+          site.services.map((service) => (
+            <li class="rounded-xl border border-border bg-background p-6" data-reveal>
+              <h3 class="text-xl text-foreground">{service.title}</h3>
+              <p class="mt-2 leading-7 text-muted">{service.text}</p>
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     <section class="border-y border-border bg-surface py-16 lg:py-24">
@@ -54,19 +62,19 @@ import { withBase } from "@/lib/navigation";
         <SectionIntro
           eyebrow="Ceník vizualizací"
           title="Orientační ceny"
-          text="Cena se odvíjí od rozsahu, složitosti a typu prostoru. Níže uvádíme základní orientaci pro první plánování projektu."
+          text={page.pricingIntro}
         />
 
-        <div class="mt-12 grid gap-4 md:grid-cols-2">
+        <dl class="mt-12 grid gap-4 md:grid-cols-2">
           {
             site.pricing.map((item) => (
               <div class="flex items-center justify-between gap-4 rounded-xl border border-border bg-background px-5 py-4">
-                <span class="leading-7 text-foreground">{item.title}</span>
-                <strong class="shrink-0 text-primary">{item.price}</strong>
+                <dt class="leading-7 text-foreground">{item.title}</dt>
+                <dd class="shrink-0 font-semibold text-primary">{item.price}</dd>
               </div>
             ))
           }
-        </div>
+        </dl>
 
         <div class="mt-10">
           <Button as="a" href={withBase("/kontakt/")} variant="primary" size="lg" rel={undefined}>

@@ -14,6 +14,7 @@ export interface Props {
     | "hero-outline";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
   class?: string;
 }
 
@@ -25,11 +26,12 @@ const {
   variant = "primary",
   size = "md",
   disabled = false,
+  type = "button",
   class: className = "",
 } = props;
 
 const button = tv({
-  base: "inline-flex items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none motion-safe:transition-all motion-reduce:transition-none duration-300 ease-standard",
+  base: "inline-flex items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-primary disabled:opacity-50 disabled:pointer-events-none motion-safe:transition-all motion-reduce:transition-none duration-300 ease-standard",
   variants: {
     variant: {
       primary:
@@ -66,7 +68,7 @@ const classes = button({ variant, size, class: className });
       <slot />
     </a>
   ) : (
-    <button class={classes} disabled={disabled}>
+    <button class={classes} type={type} disabled={disabled}>
       <slot />
     </button>
   )

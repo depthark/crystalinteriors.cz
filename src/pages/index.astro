@@ -4,23 +4,23 @@ import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import HeroSection from "@/components/HeroSection.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
+import FaqSection from "@/components/FaqSection.astro";
 import Button from "@/components/ui/Button.astro";
+import CloudImage from "@/components/ui/CloudImage.astro";
 import { site } from "@/data/site";
-import { cloudinaryImage } from "@/lib/cloudinary";
+import { heroPreload } from "@/lib/images";
+import { faqPage } from "@/lib/structured-data";
 import { withBase } from "@/lib/navigation";
-
-const heroPreload = cloudinaryImage(site.hero.image, {
-  width: 1800,
-  height: 1200,
-  fit: "fill",
-});
 ---
 
 <BaseLayout
-  title="Interiéry a nábytek na míru"
-  description="Moderní redesign Crystal Interiors pro návrhy a realizace interiérů, kuchyní a zakázkového nábytku v Brně."
+  title={site.home.seo.title}
+  description={site.home.seo.description}
   pathname="/"
-  preloadImage={heroPreload}
+  image={site.hero.image}
+  imageAlt={site.hero.imageAlt}
+  preload={heroPreload()}
+  schema={[faqPage()]}
 >
   <SiteHeader pathname={Astro.url.pathname} />
   <main id="main">
@@ -30,18 +30,18 @@ const heroPreload = cloudinaryImage(site.hero.image, {
       class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
       aria-labelledby="approach-title"
     >
-      <div class="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div class="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center" data-reveal>
         <SectionIntro
           eyebrow="Jak pracujeme"
           title={site.home.introTitle}
           text={site.home.introText}
           headingId="approach-title"
         />
-        <div class="rounded-3xl border border-border bg-surface p-8 shadow-card">
+        <blockquote class="rounded-3xl border border-border bg-surface p-8 shadow-card">
           <p class="text-2xl leading-10 text-foreground md:text-3xl">
             {site.home.businessSentence}
           </p>
-        </div>
+        </blockquote>
       </div>
     </section>
 
@@ -60,29 +60,31 @@ const heroPreload = cloudinaryImage(site.hero.image, {
 
         <ul class="mt-14 grid list-none gap-6 md:grid-cols-2 xl:grid-cols-3">
           {
-            site.services.map((service) => (
-              <li>
-                <article class="glass-hover h-full overflow-hidden rounded-xl border border-border bg-background shadow-card transition hover:-translate-y-1 hover:shadow-lifted">
-                  <img
-                    src={cloudinaryImage(service.image, {
-                      width: 900,
-                      height: 720,
-                      fit: "fill",
-                    })}
-                    alt={`Ukázka služby — ${service.title}`}
-                    width="900"
-                    height="720"
-                    class="aspect-[4/3] w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="space-y-3 p-6">
-                    <h3 class="text-2xl text-foreground">{service.title}</h3>
-                    <p class="leading-7 text-muted">{service.text}</p>
-                  </div>
-                </article>
-              </li>
-            ))
+            site.services.map((service, index) => {
+              const titleId = `service-${index + 1}-title`;
+              return (
+                <li data-reveal>
+                  <article
+                    class="glass-hover h-full overflow-hidden rounded-xl border border-border bg-background shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lifted"
+                    aria-labelledby={titleId}
+                  >
+                    <CloudImage
+                      src={service.image}
+                      alt={`${service.title} — ukázka návrhu Crystal Interiors`}
+                      width={900}
+                      height={675}
+                      widths={[400, 600, 900, 1200]}
+                      sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
+                      class="aspect-[4/3] w-full object-cover"
+                    />
+                    <div class="space-y-3 p-6">
+                      <h3 id={titleId} class="text-2xl text-foreground">{service.title}</h3>
+                      <p class="leading-7 text-muted">{service.text}</p>
+                    </div>
+                  </article>
+                </li>
+              );
+            })
           }
         </ul>
 
@@ -96,21 +98,30 @@ const heroPreload = cloudinaryImage(site.hero.image, {
 
     <section
       class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
-      aria-label="Náš přístup"
+      aria-labelledby="process-title"
     >
-      <ul class="grid list-none gap-8 lg:grid-cols-4">
+      <h2 id="process-title" class="sr-only">Proč s námi</h2>
+      <ol class="grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {
-          site.process.map((item) => (
-            <li class="rounded-xl border border-border bg-surface p-6">
-              <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
-                {item.title}
+          site.process.map((item, index) => (
+            <li
+              class="rounded-xl border border-border bg-surface p-6"
+              data-reveal
+            >
+              <p class="font-display text-3xl text-primary/70" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
               </p>
+              <h3 class="mt-3 text-sm font-medium uppercase tracking-eyebrow text-primary">
+                {item.title}
+              </h3>
               <p class="mt-4 leading-8 text-muted">{item.text}</p>
             </li>
           ))
         }
-      </ul>
+      </ol>
     </section>
+
+    <FaqSection items={site.faq} />
 
     <section
       class="overflow-hidden bg-ink py-20 text-white lg:py-24"
@@ -119,14 +130,14 @@ const heroPreload = cloudinaryImage(site.hero.image, {
       <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-4 sm:px-6 lg:flex-row lg:items-center lg:px-8">
         <div class="max-w-3xl space-y-4">
           <p class="text-sm font-medium uppercase tracking-eyebrow text-white/60">
-            Další krok
+            {site.home.cta.eyebrow}
           </p>
           <h2 id="cta-title" class="text-3xl leading-tight md:text-5xl">
-            Vytvoříme interiér přesně pro váš způsob bydlení nebo podnikání.
+            {site.home.cta.title}
           </h2>
         </div>
-        <Button as="a" href={withBase("/kontakt/")} variant="secondary" size="lg" rel={undefined}>
-          Domluvit schůzku
+        <Button as="a" href={withBase(site.home.cta.href)} variant="secondary" size="lg" rel={undefined}>
+          {site.home.cta.label}
         </Button>
       </div>
     </section>
