@@ -1,0 +1,33 @@
+{
+  "seo": {
+    "title": "Služby a ceník",
+    "description": "Návrhy a realizace interiérů, 2D a 3D vizualizace, kuchyně a nábytek na míru v Brně. Orientační ceník vizualizací."
+  },
+  "intro": {
+    "title": "Návrh, vizualizace i realizace",
+    "text": "Poskytujeme kompletní designérské služby od první konzultace po hotový interiér. Navrhujeme kuchyně, interiéry a komerční prostory s důrazem na funkci, detail a rozumné rozhodování."
+  },
+  "pillars": [
+    { "eyebrow": "Realizace interiérů a nábytku na míru", "title": "Od návrhu po montáž", "text": "Připravíme interiér jako celek. Řešíme dispozici, materiály, spotřebiče, nábytek, detaily i návaznost na výrobu a montáž." },
+    { "eyebrow": "Návrhy interiérů 2D a 3D", "title": "Jistota před realizací", "text": "Vizualizace používáme jako pracovní nástroj. Pomáhají ověřit dispozici, proporce, materiály i atmosféru prostoru ještě před výrobou." }
+  ],
+  "services": [
+    { "title": "Kuchyně na míru", "text": "Řešíme kuchyně od dispozice přes materiály a spotřebiče až po dodání na klíč.", "image": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000191-c6da0c6da3/vizu%20kuchyn%C4%9B%20_1.png" },
+    { "title": "Ložnice, šatny a úložné systémy", "text": "Navrhujeme klidné a praktické zázemí s úložnými prostory, které využijí každý centimetr.", "image": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000211-872898728c/138549013_1799853613529238_6851870505081232937_n%20%281%29.jpeg" },
+    { "title": "Koupelny a technické zázemí", "text": "Koupelny navrhujeme s důrazem na provoz, údržbu a čisté detailní řešení.", "image": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000086-75d8775d89/Koutn%C3%BD_spodn%C3%AD_koupelna-vzor_Watermarked.jpeg" },
+    { "title": "Obývací a dětské pokoje", "text": "Kombinujeme pohodlí, reprezentativní vzhled a chytré ukládání pro každodenní život.", "image": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000304-51b0a51b0c/vizu_d%C4%9Btsk%C3%BDpokoj%202_Watermarked-7.png" },
+    { "title": "Kanceláře a komerční interiéry", "text": "Tvoříme pracovní a obchodní prostory, které podporují výkon i dojem z vaší značky.", "image": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000286-f0fa5f0fa7/196461753_1905792292935369_8953993768414667784_n%20%281%29.jpeg" },
+    { "title": "Hotely, restaurace a kavárny", "text": "Navrhujeme prostory, ve kterých se hosté cítí přirozeně dobře a chtějí se vracet.", "image": "https://duyn491kcolsw.cloudfront.net/files/24/24t/24tltk.jpg" }
+  ],
+  "pricingIntro": "Cena se odvíjí od rozsahu, složitosti a typu prostoru. Níže uvádíme základní orientaci pro první plánování projektu.",
+  "pricing": [
+    { "title": "Vizualizace kuchyně", "price": "od 2 000 Kč", "amount": 2000 },
+    { "title": "Vizualizace obývacího pokoje nebo předsíně", "price": "od 1 500 Kč", "amount": 1500 },
+    { "title": "Vizualizace ložnice nebo šatny", "price": "od 2 000 Kč", "amount": 2000 },
+    { "title": "Vizualizace bytu", "price": "od 4 000 Kč", "amount": 4000 },
+    { "title": "Vizualizace rodinného domu", "price": "od 8 000 Kč", "amount": 8000 },
+    { "title": "Komerční a atypické prostory", "price": "na poptání" },
+    { "title": "Konzultace po Brně", "price": "zdarma", "amount": 0 },
+    { "title": "Konzultace mimo Brno", "price": "12 Kč / km" }
+  ]
+}

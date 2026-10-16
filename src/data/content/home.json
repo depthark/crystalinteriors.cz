@@ -1,0 +1,39 @@
+{
+  "seo": {
+    "title": "Interiérový design a nábytek na míru v Brně",
+    "description": "Crystal Interiors navrhuje a realizuje kuchyně, interiéry a nábytek na míru v Brně a okolí. Vizualizace od 1 500 Kč, konzultace po Brně zdarma."
+  },
+  "hero": {
+    "eyebrow": "Interiéry a nábytek na míru",
+    "title": "Interiér, který dobře funguje, dobře vypadá a vydrží každodenní provoz.",
+    "text": "Navrhujeme a realizujeme kuchyně, obytné i komerční prostory tak, aby se v nich dobře žilo, pracovalo i reprezentovalo.",
+    "image": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000193-22aec22aed/image-crop-200000191.png",
+    "imageAlt": "Vizualizace moderní kuchyně na míru od Crystal Interiors",
+    "primaryCta": { "href": "/kontakt/", "label": "Nezávazná konzultace" },
+    "secondaryCta": { "href": "/projekty/", "label": "Prohlédnout reference" }
+  },
+  "intro": {
+    "title": "Návrh, vizualizace a realizace v jednom procesu",
+    "text": "Od prvního dispozičního návrhu až po osazení posledního detailu držíme projekt pohromadě. Díky tomu hlídáme ergonomii, rozpočet i kvalitu provedení.",
+    "statement": "Pomáháme klientům rozhodovat se jistěji a investovat do interiéru, který dává smysl dlouhodobě."
+  },
+  "process": [
+    { "title": "Zkušenost", "text": "Spojujeme dlouholetou praxi v interiérech, materiálech a zakázkové výrobě nábytku." },
+    { "title": "Osobní spolupráce", "text": "Schůzku zvládneme u nás ve vzorkovně i přímo u vás, podle typu projektu a času klienta." },
+    { "title": "Spolupráce s profesionály", "text": "Navazujeme na truhláře, architekty i developery a držíme technické řešení pod kontrolou." },
+    { "title": "Termíny a realizace", "text": "Návrh nevnímáme izolovaně. Přemýšlíme o výrobě, montáži a reálném harmonogramu." }
+  ],
+  "cta": {
+    "eyebrow": "Další krok",
+    "title": "Vytvoříme interiér přesně pro váš způsob bydlení nebo podnikání.",
+    "label": "Domluvit schůzku",
+    "href": "/kontakt/"
+  },
+  "faq": [
+    { "question": "Kolik stojí vizualizace interiéru?", "answer": "Vizualizace obývacího pokoje nebo předsíně začíná na 1 500 Kč, kuchyně, ložnice nebo šatny na 2 000 Kč, celého bytu na 4 000 Kč a rodinného domu na 8 000 Kč. Přesnou cenu určí rozsah a složitost prostoru." },
+    { "question": "Je první konzultace zdarma?", "answer": "Ano, konzultace po Brně je zdarma. Mimo Brno účtujeme dopravu 12 Kč za kilometr." },
+    { "question": "Zajistíte i výrobu a montáž nábytku?", "answer": "Ano. Projekt vedeme od návrhu přes výběr materiálů a spotřebičů až po výrobu a montáž nábytku na míru ve spolupráci s ověřenými truhláři." },
+    { "question": "Kde se můžeme sejít?", "answer": "Ve vzorkovně na adrese Dusíkova 900/3c v Brně-Lesné, nebo přímo u vás. Termín domluvíme telefonicky nebo e-mailem." },
+    { "question": "Navrhujete i komerční prostory?", "answer": "Ano. Navrhujeme kanceláře, obchody, hotely, restaurace i kavárny. Cenu komerčních a atypických prostor připravíme na poptání." }
+  ]
+}

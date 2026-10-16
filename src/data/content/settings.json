@@ -1,0 +1,43 @@
+{
+  "name": "Crystal Interiors",
+  "tagline": "Interiéry a nábytek na míru",
+  "description": "Navrhujeme a realizujeme interiéry a nábytek na míru pro byty, domy i komerční prostory v Brně a okolí.",
+  "keywords": [
+    "interiérový design Brno",
+    "interiérová designérka Brno",
+    "nábytek na míru",
+    "návrh kuchyně",
+    "kuchyně na míru Brno",
+    "vizualizace interiéru",
+    "realizace interiéru",
+    "komerční interiéry",
+    "Crystal Interiors"
+  ],
+  "shareImage": "https://d9775ec23a.clvaw-cdnwnd.com/06dde8fa305f9cdafdc34740aa3f3c92/200000193-22aec22aed/image-crop-200000191.png",
+  "social": {
+    "facebook": "https://www.facebook.com/Crystalinteriors/",
+    "instagram": "https://www.instagram.com/crystal_interiors_cz/"
+  },
+  "company": {
+    "legalName": "Lucie Vodáková",
+    "ico": "21991707",
+    "showroomName": "Crystal Interiors",
+    "street": "Dusíkova 900/3c",
+    "postalCode": "638 00",
+    "city": "Brno",
+    "district": "Lesná",
+    "region": "Jihomoravský kraj",
+    "registeredAddress": "Koniklecová 467/4, 634 00 Brno",
+    "areaServed": "Brno a okolí",
+    "geo": { "latitude": 49.29762, "longitude": 16.62418 },
+    "openingHours": [
+      { "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "09:00", "closes": "17:00" }
+    ],
+    "openingNote": "Schůzky ve vzorkovně i u vás po předchozí domluvě.",
+    "contacts": [
+      { "name": "Lucie Vodáková", "role": "Interiérová designérka", "phone": "+420 774 446 988", "email": "vodakova@crystalinteriors.cz" },
+      { "name": "Hanka Neklapilová", "role": "Interiérová designérka", "phone": "+420 725 452 566", "email": "neklapilova@crystalinteriors.cz" }
+    ],
+    "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2601.8883735387655!2d16.624181377055472!3d49.29762077139047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4712946d08b1e2ed%3A0x5f8409e0eea3efcb!2zRHVzw61rb3ZhIDkwMC8zYywgNjM4IDAwIEJybm8tTGVzbsOh!5e0!3m2!1scs!2scz!4v1714500000000!5m2!1scs!2scz"
+  }
+}
