@@ -62,9 +62,7 @@ collections:
     slug: "{{fields.slug}}"
     identifier_field: title
     summary: "{{order}}. {{title}}"
-    sortable_fields:
-      fields: ["order", "title"]
-      default: { field: order, direction: Ascending }
+    sortable_fields: ["order", "title"]
     editor:
       preview: false
     fields:
@@ -137,6 +135,7 @@ collections:
               - { name: title, label: Nadpis, widget: string }
               - { name: text, label: Text, widget: text }
               - { name: statement, label: Zvýrazněná věta, widget: text }
+              - { name: parallaxImage, label: Fotka v pásech mezi sekcemi, widget: cloud-image }
           - name: process
             label: Proč s námi (4 karty)
             label_singular: kartu
@@ -205,6 +204,7 @@ collections:
               - { name: title, label: Název, widget: string }
               - { name: text, label: Popis, widget: text }
               - { name: image, label: Fotka, widget: cloud-image }
+              - { name: slug, label: Odkaz na galerii, widget: string, hint: "Adresa sekce v Referencích, na kterou karta vede – např. kuchyne." }
           - { name: pricingIntro, label: Text nad ceníkem, widget: text }
           - name: pricing
             label: Ceník
@@ -241,6 +241,7 @@ collections:
             label_singular: odstavec
             widget: list
             field: { name: paragraph, label: Odstavec, widget: text }
+            hint: "Tučně: <strong>text</strong>"
           - *seo
 
       - name: kontakt

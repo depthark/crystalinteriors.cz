@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
 import Button from "@/components/ui/Button.astro";
+import ArrowRightIcon from "@/components/icons/ArrowRightIcon.astro";
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
 import { serviceNodes } from "@/lib/structured-data";
@@ -23,7 +24,7 @@ const page = site.servicesPage;
 >
   <SiteHeader pathname={Astro.url.pathname} />
   <main id="main">
-    <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
       <SectionIntro
         level={1}
         eyebrow="Služby"
@@ -31,15 +32,15 @@ const page = site.servicesPage;
         text={page.intro.text}
       />
 
-      <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      <div class="mt-10 grid gap-6 sm:mt-12 lg:grid-cols-2">
         {
           page.pillars.map((pillar) => (
-            <article class="glass-hover rounded-2xl border border-border bg-surface p-8" data-reveal>
+            <article class="glass-hover rounded-2xl border border-border bg-surface p-6 sm:p-8" data-reveal>
               <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
                 {pillar.eyebrow}
               </p>
-              <h2 class="mt-4 text-3xl text-foreground">{pillar.title}</h2>
-              <p class="mt-4 leading-8 text-muted">{pillar.text}</p>
+              <h2 class="mt-4 text-2xl text-foreground sm:text-3xl">{pillar.title}</h2>
+              <p class="mt-4 leading-7 text-muted sm:leading-8">{pillar.text}</p>
             </article>
           ))
         }
@@ -57,7 +58,7 @@ const page = site.servicesPage;
       </ul>
     </section>
 
-    <section class="border-y border-border bg-surface py-16 lg:py-24">
+    <section class="border-y border-border bg-surface py-12 sm:py-16 lg:py-24">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionIntro
           eyebrow="Ceník vizualizací"
@@ -65,7 +66,7 @@ const page = site.servicesPage;
           text={page.pricingIntro}
         />
 
-        <dl class="mt-12 grid gap-4 md:grid-cols-2">
+        <dl class="mt-10 grid gap-4 sm:mt-12 md:grid-cols-2">
           {
             site.pricing.map((item) => (
               <div class="flex items-center justify-between gap-4 rounded-xl border border-border bg-background px-5 py-4">
@@ -77,8 +78,9 @@ const page = site.servicesPage;
         </dl>
 
         <div class="mt-10">
-          <Button as="a" href={withBase("/kontakt/")} variant="primary" size="lg" rel={undefined}>
+          <Button as="a" href={withBase("/kontakt/")} variant="primary" size="lg" fullWidth rel={undefined} class="sm:w-auto">
             Poptat projekt
+            <ArrowRightIcon class="h-5 w-5" />
           </Button>
         </div>
       </div>

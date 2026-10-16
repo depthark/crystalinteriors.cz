@@ -13,10 +13,9 @@ import CloudImage from "./ui/CloudImage.astro";
 
 export interface Props {
   category: ReferenceRoom;
-  index: number;
 }
 
-const { category, index } = Astro.props;
+const { category } = Astro.props;
 const galleryId = `references-${category.slug}`;
 const headingId = `${galleryId}-title`;
 const descriptionId = `${galleryId}-description`;
@@ -26,7 +25,7 @@ const isStatic = images.length > 0;
 
 <section
   id={category.slug}
-  class="grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
+  class="scroll-mt-28 grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
   data-references-section
   data-static={isStatic ? "true" : undefined}
   data-tag={category.tag}
@@ -36,10 +35,6 @@ const isStatic = images.length > 0;
   aria-describedby={descriptionId}
 >
   <div class="space-y-4 lg:sticky lg:top-28 lg:self-start">
-    <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
-      {String(index + 1).padStart(2, "0")}
-      {isStatic && <span class="text-muted"> · {images.length} {images.length === 1 ? "fotka" : images.length < 5 ? "fotky" : "fotek"}</span>}
-    </p>
     <h2 id={headingId} class="text-3xl leading-tight text-foreground">{category.title}</h2>
     <p id={descriptionId} class="text-base leading-8 text-muted">{category.text}</p>
   </div>

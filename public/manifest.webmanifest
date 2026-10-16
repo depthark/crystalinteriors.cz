@@ -1,28 +1,91 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "Crystal Interiors – interiéry a nábytek na míru",
   "short_name": "Crystal Interiors",
   "description": "Interiérové studio z Brna: návrhy a vizualizace interiérů, kuchyně a nábytek na míru, reference a kontakt.",
   "lang": "cs",
   "dir": "ltr",
-  "start_url": "/?source=pwa",
-  "scope": "/",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#f5f1ea",
   "theme_color": "#1d1b18",
-  "categories": ["lifestyle", "business", "design"],
+  "categories": [
+    "lifestyle",
+    "business",
+    "design"
+  ],
   "icons": [
-    { "src": "/images/favicons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "/images/favicons/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/images/favicons/web-app-manifest-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/images/favicons/maskable-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/images/favicons/maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "images/favicons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/favicons/maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "images/favicons/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Reference", "short_name": "Reference", "url": "/projekty/?source=pwa", "icons": [{ "src": "/images/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }] },
-    { "name": "Služby a ceník", "short_name": "Ceník", "url": "/sluzby/?source=pwa", "icons": [{ "src": "/images/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }] },
-    { "name": "Kontakt", "short_name": "Kontakt", "url": "/kontakt/?source=pwa", "icons": [{ "src": "/images/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }] }
+    {
+      "name": "Reference",
+      "short_name": "Reference",
+      "url": "projekty/?source=pwa",
+      "icons": [
+        {
+          "src": "images/favicons/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Služby a ceník",
+      "short_name": "Ceník",
+      "url": "sluzby/?source=pwa",
+      "icons": [
+        {
+          "src": "images/favicons/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Kontakt",
+      "short_name": "Kontakt",
+      "url": "kontakt/?source=pwa",
+      "icons": [
+        {
+          "src": "images/favicons/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

@@ -1,6 +1,7 @@
 ---
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
+import SocialLinks from "./SocialLinks.astro";
 
 export interface Props {
   pathname: string;
@@ -9,55 +10,115 @@ export interface Props {
 const { pathname } = Astro.props;
 const activePath =
   pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : `${pathname}/`;
-const primaryPhone = site.company.phones[0]?.replace(/\s+/g, "") ?? "";
 ---
 
-<div class="mobile-menu lg:hidden" data-mobile-menu data-state="closed">
+<div class="group/menu relative lg:hidden" data-mobile-menu data-state="closed">
   <button
     type="button"
-    class="mobile-menu__toggle glass"
+    class="relative z-[60] inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     data-mobile-menu-toggle
     aria-controls="mobile-menu-panel"
     aria-expanded="false"
     aria-label="Otevřít navigaci"
   >
-    <span class="mobile-menu__icon" aria-hidden="true">
-      <span class="mobile-menu__bar"></span>
-      <span class="mobile-menu__bar"></span>
-      <span class="mobile-menu__bar"></span>
+    <span class="relative block h-4 w-5" aria-hidden="true">
+      <span
+        class="mobile-menu__bar absolute inset-x-0 top-0 h-0.5 origin-center rounded-full bg-current"
+      ></span>
+      <span
+        class="mobile-menu__bar absolute inset-x-0 top-1/2 h-0.5 origin-center -translate-y-1/2 rounded-full bg-current"
+      ></span>
+      <span
+        class="mobile-menu__bar absolute inset-x-0 bottom-0 h-0.5 origin-center rounded-full bg-current"
+      ></span>
     </span>
     <span class="sr-only" data-mobile-menu-label>Otevřít navigaci</span>
   </button>
 
   <div
     id="mobile-menu-panel"
-    class="mobile-menu__panel"
+    class="pointer-events-none fixed inset-0 z-[var(--z-modal)] flex flex-col group-data-[state=open]/menu:pointer-events-auto [&[inert]]:invisible"
     role="dialog"
     aria-modal="true"
     aria-label="Hlavní navigace"
     tabindex="-1"
     inert
   >
-    <div class="mobile-menu__backdrop" aria-hidden="true"></div>
+    <div
+      class="mobile-menu__backdrop absolute inset-0 opacity-0 transition-opacity duration-standard ease-out-soft group-data-[state=open]/menu:opacity-100"
+      aria-hidden="true"
+    ></div>
 
-    <div class="mobile-menu__sheet glass-strong">
-      <nav class="mobile-menu__nav" aria-label="Hlavní navigace">
-        <ul class="mobile-menu__list">
+    <div
+      class="glass-strong relative m-auto flex h-full w-full -translate-y-full flex-col gap-6 overflow-y-auto px-4 pt-3 pb-8 opacity-0 transition-[transform,opacity] duration-slow ease-out-soft group-data-[state=open]/menu:translate-y-0 group-data-[state=open]/menu:opacity-100 sm:px-6 min-[480px]:gap-8 min-[480px]:pb-10 lg:px-8 motion-reduce:transition-none"
+    >
+      <div class="flex items-start justify-between gap-3">
+        <a
+          href={withBase("/")}
+          class="flex items-center gap-3 no-underline"
+          aria-label={`${site.name} — domovská stránka`}
+          data-mobile-menu-link
+        >
+          <img
+            src={withBase("/images/logos/crystalinteriors_logo-white.svg")}
+            alt=""
+            width="48"
+            height="48"
+            class="h-12 w-12 object-contain dark:[filter:none] [filter:invert(1)_brightness(0.2)]"
+            loading="eager"
+            decoding="async"
+          />
+          <span class="flex flex-col">
+            <span class="text-[0.7rem] font-semibold uppercase tracking-eyebrow text-primary sm:text-[0.8rem]">
+              {site.name}
+            </span>
+            <span class="text-xs leading-snug text-muted sm:text-sm">Interiéry a nábytek na míru</span>
+          </span>
+        </a>
+
+        <button
+          type="button"
+          class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          data-mobile-menu-close
+          aria-label="Zavřít navigaci"
+          title="Zavřít navigaci"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-5 w-5"
+            aria-hidden="true"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <nav class="flex w-full flex-1 items-center" aria-label="Hlavní navigace">
+        <ul class="flex w-full list-none flex-col gap-2 p-0 m-0">
           {
             site.nav.map((item, index) => {
               const isActive = activePath === item.href;
               return (
-                <li class="mobile-menu__item" style={`--i:${index};`}>
+                <li
+                  class="mobile-menu__item translate-y-3 opacity-0 transition-[opacity,transform] duration-standard ease-out-soft group-data-[state=open]/menu:translate-y-0 group-data-[state=open]/menu:opacity-100 motion-reduce:transition-none"
+                  style={`--i:${index};`}
+                >
                   <a
                     href={withBase(item.href)}
-                    class="mobile-menu__link"
+                    class:list={[
+                      "mobile-menu__link group flex cursor-pointer items-center border-b border-border py-3 font-display leading-[1.1] no-underline transition-colors duration-fast ease-standard",
+                      isActive ? "text-primary" : "text-foreground hover:text-primary focus-visible:text-primary",
+                    ]}
                     aria-current={isActive ? "page" : undefined}
                     data-mobile-menu-link
                   >
-                    <span class="mobile-menu__index">
-                      {String(index + 1).padStart(2, "0")}
+                    <span class="transition-colors duration-fast ease-standard group-hover:text-primary group-focus-visible:text-primary">
+                      {item.label}
                     </span>
-                    <span class="mobile-menu__label">{item.label}</span>
                   </a>
                 </li>
               );
@@ -66,10 +127,10 @@ const primaryPhone = site.company.phones[0]?.replace(/\s+/g, "") ?? "";
         </ul>
       </nav>
 
-      <div class="mobile-menu__footer">
+      <div class="flex flex-col gap-4">
         <a
           href={withBase("/kontakt/")}
-          class="mobile-menu__cta"
+          class="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 font-display text-base font-semibold text-white no-underline shadow-lifted transition-colors duration-fast ease-standard hover:bg-primary-hover focus-visible:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           data-mobile-menu-link
         >
           Kontaktujte nás
@@ -88,106 +149,30 @@ const primaryPhone = site.company.phones[0]?.replace(/\s+/g, "") ?? "";
           </svg>
         </a>
 
-        {
-          primaryPhone && (
-            <a
-              href={`tel:${primaryPhone}`}
-              class="mobile-menu__secondary"
-              data-mobile-menu-link
-              aria-label={`Zavolat na ${site.company.phones[0]}`}
-            >
-              {site.company.phones[0]}
-            </a>
-          )
-        }
-
-        <ul class="mobile-menu__social" aria-label="Sociální sítě">
-          <li>
-            <a
-              href={site.social.facebook}
-              target="_blank"
-              rel="noreferrer"
-              class="mobile-menu__social-link"
-              aria-label="Facebook (otevře se v novém okně)"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-                <path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5 3.66 9.14 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.8 8.43-4.94 8.43-9.94z" />
-              </svg>
-              <span>Facebook</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href={site.social.instagram}
-              target="_blank"
-              rel="noreferrer"
-              class="mobile-menu__social-link"
-              aria-label="Instagram (otevře se v novém okně)"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-              </svg>
-              <span>Instagram</span>
-            </a>
-          </li>
-        </ul>
+        <div class="flex justify-center border-t border-border pt-4">
+          <SocialLinks variant="card" align="center" />
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <style>
-  .mobile-menu {
-    position: relative;
+  /* Stagger delay via --i — Tailwind can't compose
+     calc() with a runtime CSS var in transition-delay. */
+  .mobile-menu__item {
+    transition-delay: calc(var(--i, 0) * 60ms + 120ms);
   }
 
-  .mobile-menu__toggle {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.75rem;
-    width: 2.75rem;
-    border-radius: var(--radius-full);
-    color: var(--color-foreground);
-    cursor: pointer;
-    z-index: 60;
-  }
-
-  .mobile-menu__icon {
-    position: relative;
-    display: block;
-    width: 1.25rem;
-    height: 1rem;
-  }
-
+  /* Hamburger bar transforms — :nth-child + compound transforms
+     are easier as scoped CSS than Tailwind variants. */
   .mobile-menu__bar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: currentColor;
-    border-radius: 999px;
     transition:
       transform var(--duration-standard) var(--ease-out-soft),
       opacity var(--duration-fast) var(--ease-standard),
-      top var(--duration-standard) var(--ease-out-soft);
-    transform-origin: center;
+      top var(--duration-standard) var(--ease-out-soft),
+      bottom var(--duration-standard) var(--ease-out-soft);
   }
-
-  .mobile-menu__bar:nth-child(1) {
-    top: 0;
-  }
-  .mobile-menu__bar:nth-child(2) {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .mobile-menu__bar:nth-child(3) {
-    bottom: 0;
-  }
-
   [data-state="open"] .mobile-menu__bar:nth-child(1) {
     top: 50%;
     transform: translateY(-50%) rotate(45deg);
@@ -201,201 +186,16 @@ const primaryPhone = site.company.phones[0]?.replace(/\s+/g, "") ?? "";
     transform: translateY(50%) rotate(-45deg);
   }
 
-  .mobile-menu__panel {
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-modal);
-    display: flex;
-    flex-direction: column;
-    pointer-events: none;
-  }
-
-  .mobile-menu__panel[inert] {
-    visibility: hidden;
-  }
-
-  [data-state="open"] .mobile-menu__panel {
-    pointer-events: auto;
-  }
-
+  /* Backdrop tint uses color-mix() which Tailwind v4 utilities
+     don't expose cleanly with ink-deep + alpha. */
   .mobile-menu__backdrop {
-    position: absolute;
-    inset: 0;
     background: color-mix(in oklch, var(--color-ink-deep) 70%, transparent);
-    opacity: 0;
-    transition: opacity var(--duration-standard) var(--ease-out-soft);
   }
 
-  [data-state="open"] .mobile-menu__backdrop {
-    opacity: 1;
-  }
-
-  .mobile-menu__sheet {
-    position: relative;
-    margin: auto;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: calc(var(--spacing) * 8);
-    padding: calc(var(--spacing) * 24) calc(var(--spacing) * 6)
-      calc(var(--spacing) * 10);
-    overflow-y: auto;
-    transform: translateY(-100%);
-    opacity: 0;
-    transition:
-      transform var(--duration-slow) var(--ease-out-soft),
-      opacity var(--duration-standard) var(--ease-standard);
-    border-radius: 0;
-  }
-
-  [data-state="open"] .mobile-menu__sheet {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  .mobile-menu__nav {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-
-  .mobile-menu__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--spacing) * 2);
-    width: 100%;
-  }
-
-  .mobile-menu__item {
-    opacity: 0;
-    transform: translateY(12px);
-    transition:
-      opacity var(--duration-standard) var(--ease-out-soft)
-        calc(var(--i, 0) * 60ms + 120ms),
-      transform var(--duration-standard) var(--ease-out-soft)
-        calc(var(--i, 0) * 60ms + 120ms);
-  }
-
-  [data-state="open"] .mobile-menu__item {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
+  /* Fluid type for nav links — clamp() with vw isn't expressible
+     in a single Tailwind utility. */
   .mobile-menu__link {
-    display: flex;
-    align-items: baseline;
-    gap: calc(var(--spacing) * 4);
-    padding: calc(var(--spacing) * 3) 0;
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 9vw, 3.5rem);
-    line-height: 1.05;
-    color: var(--color-foreground);
-    text-decoration: none;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .mobile-menu__link[aria-current="page"] {
-    color: var(--color-primary);
-  }
-
-  .mobile-menu__link:hover .mobile-menu__label,
-  .mobile-menu__link:focus-visible .mobile-menu__label {
-    color: var(--color-primary);
-  }
-
-  .mobile-menu__index {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-
-  .mobile-menu__label {
-    transition: color var(--duration-fast) var(--ease-standard);
-  }
-
-  .mobile-menu__footer {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--spacing) * 4);
-  }
-
-  .mobile-menu__cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: calc(var(--spacing) * 2);
-    padding: calc(var(--spacing) * 4) calc(var(--spacing) * 6);
-    background: var(--color-primary);
-    color: var(--color-white);
-    border-radius: var(--radius-full);
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: var(--shadow-lifted);
-  }
-
-  .mobile-menu__cta:hover,
-  .mobile-menu__cta:focus-visible {
-    background: var(--color-primary-hover);
-  }
-
-  .mobile-menu__secondary {
-    text-align: center;
-    color: var(--color-muted);
-    text-decoration: none;
-    font-size: 0.95rem;
-  }
-
-  .mobile-menu__secondary:hover,
-  .mobile-menu__secondary:focus-visible {
-    color: var(--color-foreground);
-  }
-
-  .mobile-menu__social {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    gap: calc(var(--spacing) * 4);
-    border-top: 1px solid var(--color-border);
-    padding-top: calc(var(--spacing) * 4);
-  }
-
-  .mobile-menu__social-link {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(var(--spacing) * 2);
-    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
-    border-radius: var(--radius-full);
-    border: 1px solid var(--color-border);
-    color: var(--color-foreground);
-    text-decoration: none;
-    font-size: 0.875rem;
-  }
-
-  .mobile-menu__social-link:hover,
-  .mobile-menu__social-link:focus-visible {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mobile-menu__sheet,
-    .mobile-menu__backdrop,
-    .mobile-menu__item,
-    .mobile-menu__bar {
-      transition: none;
-    }
+    font-size: clamp(1.375rem, 5.5vw, 2.25rem);
   }
 </style>
 
@@ -408,7 +208,10 @@ const primaryPhone = site.company.phones[0]?.replace(/\s+/g, "") ?? "";
     const toggle = root.querySelector<HTMLButtonElement>(
       "[data-mobile-menu-toggle]",
     );
-    const panel = root.querySelector<HTMLElement>(".mobile-menu__panel");
+    const closeBtn = root.querySelector<HTMLButtonElement>(
+      "[data-mobile-menu-close]",
+    );
+    const panel = root.querySelector<HTMLElement>("#mobile-menu-panel");
     const backdrop = root.querySelector<HTMLElement>(".mobile-menu__backdrop");
     const links = root.querySelectorAll<HTMLAnchorElement>(
       "[data-mobile-menu-link]",
@@ -441,6 +244,8 @@ const primaryPhone = site.company.phones[0]?.replace(/\s+/g, "") ?? "";
     toggle.addEventListener("click", () => {
       setState(root.dataset.state !== "open");
     });
+
+    closeBtn?.addEventListener("click", () => setState(false));
 
     backdrop?.addEventListener("click", () => setState(false));
 

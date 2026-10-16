@@ -20,6 +20,6 @@ const centered = align === "center";
       {eyebrow}
     </p>
   )}
-  <Heading id={headingId} class="text-balance text-3xl leading-tight text-foreground md:text-5xl">{title}</Heading>
-  {text && <p class:list={["text-lg leading-8 text-muted", !centered && "max-w-3xl"]}>{text}</p>}
+  <Heading id={headingId} class="text-balance text-2xl leading-tight text-foreground sm:text-3xl md:text-5xl">{title}</Heading>
+  {text && <p class:list={["text-base leading-7 text-muted sm:text-lg sm:leading-8", !centered && "max-w-3xl"]}>{text}</p>}
 </div>

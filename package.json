@@ -6,39 +6,42 @@
   "type": "module",
   "license": "UNLICENSED",
   "dependencies": {
-    "@fancyapps/ui": "^6.1.14",
+    "@fancyapps/ui": "^6.1.15",
     "@googlemaps/js-api-loader": "^2.0.2",
-    "cloudinary": "^2.8.0",
-    "tailwind-merge": "^3.4.0",
-    "tailwind-variants": "^3.1.1"
+    "cloudinary": "^2.10.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwind-variants": "^3.2.2"
   },
   "keywords": [],
   "author": "Lukas Chylik",
   "devDependencies": {
-    "@astrojs/check": "^0.9.5",
-    "@tailwindcss/cli": "^4.1.17",
+    "@astrojs/check": "^0.9.10",
+    "@tailwindcss/cli": "^4.3.3",
     "@toolwind/anchors": "^1.0.10",
-    "@types/google.maps": "^3.58.1",
-    "@types/node": "^25.0.10",
-    "astro": "^5.16.15",
+    "@types/google.maps": "^3.64.1",
+    "@types/node": "^24.10.0",
+    "astro": "^7.4.0",
+    "decap-server": "^3.11.5",
     "npm-run-all": "^4.1.5",
-    "tailwindcss": "^4.1.17",
-    "typescript": "^5.9.3",
-    "decap-server": "^3.11.5"
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "typescript-7": "npm:typescript@^7.0.2"
   },
   "scripts": {
     "dev": "run-p css:dev astro:dev",
     "start": "bun run dev",
-    "build": "bun run css:build && astro check && astro build",
+    "build": "bun run css:build && bun run typecheck && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "astro:dev": "astro dev",
     "css:dev": "tailwindcss -i public/styles/tailwind.source.css -o public/styles/tailwind.css --watch",
     "css:build": "tailwindcss -i public/styles/tailwind.source.css -o public/styles/tailwind.css --minify",
     "icons": "node scripts/generate-icons.mjs",
-    "cms:local": "decap-server"
+    "cms:local": "decap-server",
+    "typecheck": "astro check && node node_modules/typescript-7/bin/tsc --noEmit"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=22.22.0"
   }
 }

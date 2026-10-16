@@ -137,12 +137,26 @@
   }
 
   /* Glass surface — frosted-blur panel used on hover states,
-     headers, and overlays. Tokenized so themes inherit. */
+     headers, and overlays. Tokenized so themes inherit.
+     Backdrop-filter lives on ::before so the host element does not
+     create a containing block for fixed-position descendants
+     (Chrome treats elements with backdrop-filter as CB ancestors). */
   .glass {
+    position: relative;
+    isolation: isolate;
     background: color-mix(in oklch, var(--color-background) 70%, transparent);
+    border: 1px solid var(--color-border);
+  }
+
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
     backdrop-filter: blur(16px) saturate(160%);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
-    border: 1px solid var(--color-border);
+    pointer-events: none;
   }
 
   [data-theme="dark"] .glass {
@@ -150,10 +164,21 @@
   }
 
   .glass-strong {
+    position: relative;
+    isolation: isolate;
     background: color-mix(in oklch, var(--color-background) 86%, transparent);
+    border: 1px solid var(--color-border-strong);
+  }
+
+  .glass-strong::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--color-border-strong);
+    pointer-events: none;
   }
 
   [data-theme="dark"] .glass-strong {

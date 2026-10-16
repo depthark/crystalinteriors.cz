@@ -4,13 +4,21 @@ import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import HeroSection from "@/components/HeroSection.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
-import FaqSection from "@/components/FaqSection.astro";
 import Button from "@/components/ui/Button.astro";
+import ArrowRightIcon from "@/components/icons/ArrowRightIcon.astro";
+import SparklesIcon from "@/components/icons/SparklesIcon.astro";
+import UserGroupIcon from "@/components/icons/UserGroupIcon.astro";
+import WrenchScrewdriverIcon from "@/components/icons/WrenchScrewdriverIcon.astro";
+import ClockIcon from "@/components/icons/ClockIcon.astro";
+import ParallaxStrip from "@/components/ParallaxStrip.astro";
+import FaqSection from "@/components/FaqSection.astro";
 import CloudImage from "@/components/ui/CloudImage.astro";
 import { site } from "@/data/site";
 import { heroPreload } from "@/lib/images";
 import { faqPage } from "@/lib/structured-data";
 import { withBase } from "@/lib/navigation";
+
+const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockIcon];
 ---
 
 <BaseLayout
@@ -27,26 +35,43 @@ import { withBase } from "@/lib/navigation";
     <HeroSection />
 
     <section
-      class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
+      class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8 lg:py-28"
       aria-labelledby="approach-title"
     >
-      <div class="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center" data-reveal>
+      <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-14">
         <SectionIntro
           eyebrow="Jak pracujeme"
           title={site.home.introTitle}
           text={site.home.introText}
           headingId="approach-title"
         />
-        <blockquote class="rounded-3xl border border-border bg-surface p-8 shadow-card">
-          <p class="text-2xl leading-10 text-foreground md:text-3xl">
-            {site.home.businessSentence}
-          </p>
-        </blockquote>
+        <figure class="rounded-3xl border border-border bg-surface p-7 shadow-card sm:p-9 md:p-10">
+          <blockquote>
+            <p class="text-lg leading-7 text-foreground sm:text-xl sm:leading-8 md:text-2xl md:leading-[1.45]">
+              {site.home.businessSentence}
+            </p>
+          </blockquote>
+          <figcaption class="mt-6 flex items-center gap-3 sm:mt-7">
+            <span class="h-px w-10 bg-primary"></span>
+            <span class="text-xs font-medium uppercase tracking-eyebrow text-primary sm:text-sm">
+              Pro klienta
+            </span>
+          </figcaption>
+        </figure>
       </div>
     </section>
 
+    <ParallaxStrip
+      image={site.home.parallaxImage}
+      eyebrow="Čím se zabýváme"
+      title="Interiéry, kuchyně a nábytek na míru"
+      text="Návrh, vizualizace a realizace v jedné lince — od dispozice po finální detail."
+      tone="dark"
+      height="md"
+    />
+
     <section
-      class="border-y border-border bg-surface py-20 lg:py-28"
+      class="border-y border-border bg-surface py-14 sm:py-20 lg:py-28"
       aria-labelledby="services-title"
     >
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -58,30 +83,47 @@ import { withBase } from "@/lib/navigation";
           headingId="services-title"
         />
 
-        <ul class="mt-14 grid list-none gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <ul class="mt-10 grid list-none gap-6 sm:mt-14 md:grid-cols-2 lg:grid-cols-3">
           {
-            site.services.map((service, index) => {
-              const titleId = `service-${index + 1}-title`;
+            site.services.map((service) => {
+              const src = service.image.startsWith("/") ? withBase(service.image) : service.image;
+              const href = withBase(`/projekty/#${service.slug}`);
               return (
-                <li data-reveal>
-                  <article
-                    class="glass-hover h-full overflow-hidden rounded-xl border border-border bg-background shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lifted"
-                    aria-labelledby={titleId}
+                <li>
+                  <a
+                    href={href}
+                    class="group block h-full overflow-hidden rounded-xl border border-border bg-background shadow-card no-underline transition duration-300 ease-standard hover:-translate-y-1 hover:border-primary/40 hover:shadow-lifted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    aria-label={`Zobrazit galerii — ${service.title}`}
                   >
-                    <CloudImage
-                      src={service.image}
-                      alt={`${service.title} — ukázka návrhu Crystal Interiors`}
-                      width={900}
-                      height={675}
-                      widths={[400, 600, 900, 1200]}
-                      sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
-                      class="aspect-[4/3] w-full object-cover"
-                    />
-                    <div class="space-y-3 p-6">
-                      <h3 id={titleId} class="text-2xl text-foreground">{service.title}</h3>
-                      <p class="leading-7 text-muted">{service.text}</p>
-                    </div>
-                  </article>
+                    <article class="flex h-full flex-col">
+                      <div class="relative overflow-hidden">
+                        <CloudImage
+                          src={src}
+                          alt={`${service.title} — ukázka návrhu Crystal Interiors`}
+                          width={900}
+                          height={675}
+                          widths={[400, 600, 900, 1200]}
+                          sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
+                          class="aspect-[4/3] w-full transform object-cover transition-transform duration-500 ease-out-soft group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                        />
+                        <div
+                          class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 ease-standard group-hover:opacity-100"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div class="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+                        <h3 class="text-xl text-foreground sm:text-2xl">{service.title}</h3>
+                        <p class="leading-7 text-muted">{service.text}</p>
+                        <span
+                          class="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-medium uppercase tracking-eyebrow text-primary transition-transform duration-300 ease-standard group-hover:translate-x-1"
+                          aria-hidden="true"
+                        >
+                          Zobrazit galerii
+                          <ArrowRightIcon class="h-4 w-4" />
+                        </span>
+                      </div>
+                    </article>
+                  </a>
                 </li>
               );
             })
@@ -89,55 +131,72 @@ import { withBase } from "@/lib/navigation";
         </ul>
 
         <div class="mt-10 flex justify-center">
-          <Button as="a" href={withBase("/sluzby/")} variant="outline" size="lg" rel={undefined}>
+          <Button as="a" href={withBase("/sluzby/")} variant="outline" size="lg" fullWidth rel={undefined}>
             Zobrazit služby a ceník
+            <ArrowRightIcon class="h-5 w-5" />
           </Button>
         </div>
       </div>
     </section>
 
+    <ParallaxStrip
+      image={site.home.parallaxImage}
+      eyebrow="Náš přístup"
+      title="Návrh, materiál i realizace v jedné ruce"
+      tone="dark"
+      height="sm"
+    />
+
     <section
-      class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
-      aria-labelledby="process-title"
+      class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8 lg:py-28"
+      aria-label="Náš přístup"
     >
-      <h2 id="process-title" class="sr-only">Proč s námi</h2>
-      <ol class="grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <ul class="grid list-none gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4">
         {
-          site.process.map((item, index) => (
-            <li
-              class="rounded-xl border border-border bg-surface p-6"
-              data-reveal
-            >
-              <p class="font-display text-3xl text-primary/70" aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
-              </p>
-              <h3 class="mt-3 text-sm font-medium uppercase tracking-eyebrow text-primary">
-                {item.title}
-              </h3>
-              <p class="mt-4 leading-8 text-muted">{item.text}</p>
-            </li>
-          ))
+          site.process.map((item, index) => {
+            const Icon = processIcons[index] ?? SparklesIcon;
+            return (
+              <li class="flex h-full flex-col rounded-xl border border-border bg-surface p-6">
+                <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Icon class="h-5 w-5" />
+                </span>
+                <p class="mt-5 text-sm font-medium uppercase tracking-eyebrow text-primary">
+                  {item.title}
+                </p>
+                <p class="mt-3 leading-7 text-muted sm:leading-8">{item.text}</p>
+              </li>
+            );
+          })
         }
-      </ol>
+      </ul>
     </section>
 
     <FaqSection items={site.faq} />
 
     <section
-      class="overflow-hidden bg-ink py-20 text-white lg:py-24"
+      class="overflow-hidden border-y border-border bg-surface-elevated py-14 text-foreground sm:py-20 lg:py-24"
       aria-labelledby="cta-title"
     >
       <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-4 sm:px-6 lg:flex-row lg:items-center lg:px-8">
         <div class="max-w-3xl space-y-4">
-          <p class="text-sm font-medium uppercase tracking-eyebrow text-white/60">
+          <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
             {site.home.cta.eyebrow}
           </p>
-          <h2 id="cta-title" class="text-3xl leading-tight md:text-5xl">
+          <h2 id="cta-title" class="text-2xl leading-tight sm:text-3xl md:text-5xl">
             {site.home.cta.title}
           </h2>
         </div>
-        <Button as="a" href={withBase(site.home.cta.href)} variant="secondary" size="lg" rel={undefined}>
+        <Button
+          as="a"
+          href={withBase(site.home.cta.href)}
+          variant="primary"
+          size="lg"
+          fullWidth
+          rel={undefined}
+          class="lg:w-auto"
+        >
           {site.home.cta.label}
+          <ArrowRightIcon class="h-5 w-5" />
         </Button>
       </div>
     </section>

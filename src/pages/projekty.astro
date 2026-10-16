@@ -22,7 +22,7 @@ const page = site.referencesPage;
   ]}
 >
   <SiteHeader pathname={Astro.url.pathname} />
-  <main id="main" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+  <main id="main" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
     <SectionIntro
       level={1}
       eyebrow="Reference"
@@ -47,12 +47,8 @@ const page = site.referencesPage;
       </ul>
     </nav>
 
-    <div class="mt-12">
-      {
-        site.references.map((category, index) => (
-          <ReferencesGallery category={category} index={index} />
-        ))
-      }
+    <div class="mt-10 sm:mt-12">
+      {site.references.map((category) => <ReferencesGallery category={category} />)}
     </div>
   </main>
   <SiteFooter />

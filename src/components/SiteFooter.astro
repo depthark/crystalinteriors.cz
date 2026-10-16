@@ -1,26 +1,27 @@
 ---
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
+import SocialLinks from "./SocialLinks.astro";
 ---
 
 <footer
-  class="border-t border-border bg-surface/60 py-12"
+  class="border-t border-white/10 bg-footer-bg py-10 text-footer-text sm:py-12"
   aria-labelledby="site-footer-heading"
 >
   <h2 id="site-footer-heading" class="sr-only">Patička stránky</h2>
-  <div class="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr] md:items-start lg:px-8">
-    <div class="space-y-2">
+  <div class="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr] md:items-start lg:px-8">
+    <div class="space-y-2 sm:col-span-2 md:col-span-1">
       <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
         {site.name}
       </p>
-      <p class="text-sm leading-6 text-muted">
+      <p class="text-sm leading-6">
         Interiéry a nábytek na míru pro byty, domy i komerční prostory.
       </p>
     </div>
 
     <div class="space-y-1">
-      <p class="text-xs uppercase tracking-eyebrow text-muted">Ateliér</p>
-      <p class="text-sm leading-6 text-foreground">{site.company.address}</p>
+      <p class="text-xs uppercase tracking-eyebrow text-footer-text/70">Ateliér</p>
+      <p class="text-sm leading-6 text-white">{site.company.address}</p>
       <a
         href={withBase("/kontakt/")}
         class="inline-block text-sm text-primary hover:underline"
@@ -30,36 +31,24 @@ import { withBase } from "@/lib/navigation";
       </a>
     </div>
 
-    <nav class="space-y-1 md:text-right" aria-label="Sociální sítě">
-      <p class="text-xs uppercase tracking-eyebrow text-muted">Sledujte nás</p>
-      <ul class="flex list-none gap-4 md:justify-end">
-        <li>
-          <a
-            href={site.social.facebook}
-            target="_blank"
-            rel="noreferrer"
-            class="text-sm text-foreground hover:text-primary"
-            aria-label={`${site.name} na Facebooku (otevře se v novém okně)`}
-          >
-            Facebook
-          </a>
-        </li>
-        <li>
-          <a
-            href={site.social.instagram}
-            target="_blank"
-            rel="noreferrer"
-            class="text-sm text-foreground hover:text-primary"
-            aria-label={`${site.name} na Instagramu (otevře se v novém okně)`}
-          >
-            Instagram
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <div class="space-y-3 md:text-right">
+      <p class="text-xs uppercase tracking-eyebrow text-footer-text/70">Sledujte nás</p>
+      <SocialLinks
+        variant="card"
+        align="left"
+        class="md:justify-end [&_a]:border-white/20 [&_a]:text-white [&_a:hover]:border-primary [&_a:focus-visible]:border-primary"
+      />
+    </div>
   </div>
 
-  <div class="mx-auto mt-10 max-w-7xl border-t border-border px-4 pt-6 text-xs text-muted sm:px-6 lg:px-8">
-    <p>© {new Date().getFullYear()} {site.name}. Všechna práva vyhrazena.</p>
+  <div class="mx-auto mt-8 grid max-w-7xl gap-3 border-t border-white/10 px-4 pt-6 text-xs sm:mt-10 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6 sm:px-6 lg:px-8">
+    <p class="leading-6">
+      <span class="block sm:inline">Provozovatel: <span class="text-white">{site.company.legalName}</span></span>
+      <span class="hidden sm:inline"> · </span>
+      <span class="block sm:inline">IČO: <span class="text-white">{site.company.ico}</span></span>
+      <span class="hidden sm:inline"> · </span>
+      <span class="block sm:inline">Sídlo: <span class="text-white">{site.company.registeredAddress}</span></span>
+    </p>
+    <p class="leading-6 sm:text-right">© {new Date().getFullYear()} {site.name}. Všechna práva vyhrazena.</p>
   </div>
 </footer>

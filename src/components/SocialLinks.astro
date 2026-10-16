@@ -1,0 +1,67 @@
+---
+import { site } from "@/data/site";
+import FacebookIcon from "./icons/FacebookIcon.astro";
+import InstagramIcon from "./icons/InstagramIcon.astro";
+
+export interface Props {
+  variant?: "inline" | "card";
+  align?: "left" | "right" | "center";
+  class?: string;
+}
+
+const { variant = "inline", align = "left", class: className = "" } = Astro.props;
+
+const items = [
+  {
+    label: "Facebook",
+    href: site.social.facebook,
+    Icon: FacebookIcon,
+    hint: `${site.name} na Facebooku`,
+  },
+  {
+    label: "Instagram",
+    href: site.social.instagram,
+    Icon: InstagramIcon,
+    hint: `${site.name} na Instagramu`,
+  },
+];
+
+const alignClass =
+  align === "right"
+    ? "justify-end"
+    : align === "center"
+      ? "justify-center"
+      : "justify-start";
+---
+
+<ul
+  class:list={[
+    "flex list-none items-center gap-3",
+    alignClass,
+    className,
+  ]}
+  aria-label="Sociální sítě"
+>
+  {
+    items.map(({ label, href, Icon, hint }) => (
+      <li>
+        <a
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          title={hint}
+          aria-label={`${hint} (otevře se v novém okně)`}
+          class:list={[
+            "group inline-flex items-center justify-center rounded-full text-foreground transition-colors duration-fast ease-standard hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            variant === "card"
+              ? "h-11 w-11 border border-border hover:border-primary"
+              : "h-9 w-9",
+          ]}
+        >
+          <Icon class="h-5 w-5" />
+          <span class="sr-only">{label}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

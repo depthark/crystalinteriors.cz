@@ -6,16 +6,19 @@
  *  - Images (site + res.cloudinary.com): stale-while-revalidate, capped.
  *  - Never touches /admin/, /api/, /build.json, POSTs or other origins' data.
  *
+ * Paths are relative to the registration scope, so the worker also runs
+ * under a base path (GitHub Pages: /crystalinteriors.cz/).
  * Bump VERSION to drop every old cache on the next visit.
  */
 const VERSION = "v2";
+const BASE = new URL(self.registration.scope).pathname; // e.g. "/" or "/crystalinteriors.cz/"
 const PAGES = `pages-${VERSION}`;
 const ASSETS = `assets-${VERSION}`;
 const IMAGES = `images-${VERSION}`;
-const OFFLINE = "/offline/";
-const PRECACHE = ["/", OFFLINE, "/manifest.webmanifest", "/images/favicons/favicon.svg"];
+const OFFLINE = `${BASE}offline/`;
+const PRECACHE = [BASE, OFFLINE, `${BASE}manifest.webmanifest`, `${BASE}images/favicons/favicon.svg`];
 const MAX_IMAGES = 150;
-const SKIP = /^\/(admin|api|mcp|cdn-cgi|build\.json)/;
+const SKIP = /^(admin|api|mcp|cdn-cgi|build\.json)/;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -72,7 +75,9 @@ self.addEventListener("fetch", (event) => {
     staleWhileRevalidate(event, IMAGES, MAX_IMAGES);
     return;
   }
-  if (url.origin !== self.location.origin || SKIP.test(url.pathname)) return;
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
+  const path = url.pathname.slice(BASE.length);
+  if (SKIP.test(path)) return;
 
   if (request.mode === "navigate") {
     event.respondWith(
@@ -92,7 +97,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (url.pathname.startsWith("/_astro/") || url.pathname.startsWith("/styles/")) {
+  if (path.startsWith("_astro/") || path.startsWith("styles/")) {
     staleWhileRevalidate(event, ASSETS);
     return;
   }

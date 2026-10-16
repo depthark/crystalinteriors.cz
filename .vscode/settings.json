@@ -1,0 +1,24 @@
+{
+  "// _comment": "Editor settings tuned for Astro + Tailwind v4. The generated public/styles/tailwind.css is huge minified CSS — exclude it from variable parsers/linters.",
+  "cssVariables.lookupFiles": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "!public/styles/tailwind.css",
+    "!node_modules/**"
+  ],
+  "files.exclude": {
+    "public/styles/tailwind.css": true
+  },
+  "files.associations": {
+    "*.astro": "astro"
+  },
+  "css.validate": false,
+  "tailwindCSS.includeLanguages": {
+    "astro": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["class:list=\\{([^}]*)\\}", "['\"`]([^'\"`]*)['\"`]"]
+  ]
+}
