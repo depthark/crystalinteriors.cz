@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
+# AI agents: a concise brief lives at /llms.txt, structured data at /agent/site.json
 Sitemap: https://www.crystalinteriors.cz/sitemap.xml

@@ -1,145 +1,95 @@
 ---
 import { site } from "@/data/site";
-import { cloudinaryImage } from "@/lib/cloudinary";
+import {
+  baseGraph,
+  breadcrumbList,
+  shareImage,
+  webPage,
+} from "@/lib/structured-data";
+import WebMcp from "@/components/agent/WebMcp.astro";
 
 export interface Props {
   title: string;
   description: string;
   keywords?: string[];
   image?: string;
+  imageAlt?: string;
   pathname?: string;
-  preloadImage?: string;
+  /** LCP image: preloaded with the same srcset the <img> uses. */
+  preload?: { src: string; srcset?: string; sizes?: string };
   breadcrumbs?: Array<{ name: string; href: string }>;
+  /** Extra schema.org nodes for this page (FAQPage, Service, …). */
+  schema?: Record<string, unknown>[];
+  pageType?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description,
   keywords = site.keywords,
-  image = site.hero.image,
+  image = site.shareImage,
+  imageAlt,
   pathname = Astro.url.pathname,
-  preloadImage,
+  preload,
   breadcrumbs,
+  schema = [],
+  pageType = "WebPage",
+  noindex = false,
 } = Astro.props;
 
 const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME as
   | string
   | undefined;
+const base = import.meta.env.BASE_URL;
+const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
 
 const canonicalPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
 const canonical = `${site.siteUrl}${canonicalPath}`;
-const pageTitle = `${title} | ${site.name}`;
-const ogImage = cloudinaryImage(image, { width: 1200, height: 630, fit: "fill" });
+const pageTitle = canonicalPath === "/" ? `${site.name} | ${title}` : `${title} | ${site.name}`;
+const ogImage = shareImage(image);
+const ogImageAlt = imageAlt ?? `${site.name} — ${title}`;
 
-const localBusiness = {
-  "@type": "LocalBusiness",
-  "@id": `${site.siteUrl}/#business`,
-  name: site.name,
-  image: ogImage,
-  logo: `${site.siteUrl}/images/favicons/favicon.svg`,
-  description: site.description,
-  url: site.siteUrl,
-  telephone: site.company.phones,
-  email: site.company.emails,
-  priceRange: "$$",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "Dusíkova 900/3c",
-    postalCode: "638 00",
-    addressLocality: "Brno",
-    addressRegion: "Jihomoravský kraj",
-    addressCountry: "CZ",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: 49.29762,
-    longitude: 16.62418,
-  },
-  areaServed: { "@type": "Place", name: "Brno a okolí" },
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "17:00",
-    },
-  ],
-  sameAs: [site.social.facebook, site.social.instagram],
-};
-
-const professionalService = {
-  "@type": "ProfessionalService",
-  "@id": `${site.siteUrl}/#service`,
-  name: `${site.name} - interiéry a nábytek na míru`,
-  provider: { "@id": `${site.siteUrl}/#business` },
-  areaServed: "Brno a okolí",
-  serviceType: [
-    "Interiérový design",
-    "Návrh kuchyní",
-    "Nábytek na míru",
-    "Vizualizace interiérů",
-    "Realizace interiérů",
-  ],
-};
-
-const website = {
-  "@type": "WebSite",
-  "@id": `${site.siteUrl}/#website`,
-  url: site.siteUrl,
-  name: site.name,
-  description: site.description,
-  inLanguage: "cs",
-  publisher: { "@id": `${site.siteUrl}/#business` },
-};
-
-const breadcrumbsGraph = breadcrumbs?.length
-  ? [
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${canonical}#breadcrumbs`,
-        itemListElement: breadcrumbs.map((crumb, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: crumb.name,
-          item: `${site.siteUrl}${crumb.href}`,
-        })),
-      },
-    ]
-  : [];
-
-const schema = {
-  "@context": "https://schema.org",
-  "@graph": [website, localBusiness, professionalService, ...breadcrumbsGraph],
-};
+const graph = [
+  ...baseGraph(),
+  webPage(canonical, pageTitle, description, pageType),
+  ...(breadcrumbs?.length ? [breadcrumbList(canonical, breadcrumbs)] : []),
+  ...schema,
+];
+const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(
+  /</g,
+  "\\u003c",
+);
 ---
 
 <!doctype html>
-<html lang="cs">
+<html lang="cs" dir="ltr">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords.join(", ")} />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
-    <meta name="format-detection" content="telephone=no" />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex, follow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
+    />
     <meta name="author" content={site.name} />
-    <meta name="generator" content="Astro" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="color-scheme" content="light dark" />
-    <meta
-      name="theme-color"
-      content="#f5f1ea"
-      media="(prefers-color-scheme: light)"
-    />
-    <meta
-      name="theme-color"
-      content="#16140f"
-      media="(prefers-color-scheme: dark)"
-    />
+    <meta name="theme-color" content="#f5f1ea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)" />
+    <meta name="geo.region" content="CZ-64" />
+    <meta name="geo.placename" content="Brno" />
+    <meta name="geo.position" content={`${site.company.geo.latitude};${site.company.geo.longitude}`} />
+    <meta name="ICBM" content={`${site.company.geo.latitude}, ${site.company.geo.longitude}`} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="cs" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <link rel="sitemap" type="application/xml" href={asset("sitemap.xml")} />
+    <link rel="alternate" type="text/markdown" title="llms.txt" href={asset("llms.txt")} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="cs_CZ" />
@@ -148,45 +98,51 @@ const schema = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${site.name} — ${title}`} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="business:contact_data:street_address" content={site.company.street} />
+    <meta property="business:contact_data:locality" content={site.company.city} />
+    <meta property="business:contact_data:postal_code" content={site.company.postalCode} />
+    <meta property="business:contact_data:country_name" content="Česká republika" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content={`${site.name} — ${title}`} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
-    <link
-      rel="icon"
-      type="image/png"
-      href={import.meta.env.BASE_URL + "images/favicons/favicon-96x96.png"}
-      sizes="96x96"
-    />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href={import.meta.env.BASE_URL + "images/favicons/favicon.svg"}
-    />
-    <link
-      rel="shortcut icon"
-      href={import.meta.env.BASE_URL + "images/favicons/favicon.ico"}
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href={import.meta.env.BASE_URL + "images/favicons/apple-touch-icon.png"}
-    />
+    <!-- Icons & PWA -->
+    <link rel="icon" href={asset("images/favicons/favicon.ico")} sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href={asset("images/favicons/favicon.svg")} />
+    <link rel="icon" type="image/png" sizes="96x96" href={asset("images/favicons/favicon-96x96.png")} />
+    <link rel="apple-touch-icon" sizes="180x180" href={asset("images/favicons/apple-touch-icon.png")} />
+    <link rel="manifest" href={asset("manifest.webmanifest")} />
+    <meta name="application-name" content={site.name} />
+    <meta name="apple-mobile-web-app-title" content={site.name} />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
+    <!-- Connections: open early, they are on the LCP path -->
+    {
+      cloudName && (
+        <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+      )
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     {
-      cloudName && (
-        <>
-          <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
-          <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-        </>
+      preload && (
+        <link
+          rel="preload"
+          as="image"
+          href={preload.src}
+          imagesrcset={preload.srcset}
+          imagesizes={preload.sizes}
+          fetchpriority="high"
+        />
       )
     }
     <link
@@ -194,19 +150,8 @@ const schema = {
       rel="stylesheet"
     />
 
-    {
-      preloadImage && (
-        <link
-          rel="preload"
-          as="image"
-          href={preloadImage}
-          fetchpriority="high"
-        />
-      )
-    }
-
-    <link rel="stylesheet" href={import.meta.env.BASE_URL + "styles/tailwind.css"} />
-    <link rel="stylesheet" href={import.meta.env.BASE_URL + "styles/global.css"} />
+    <link rel="stylesheet" href={asset("styles/tailwind.css")} />
+    <link rel="stylesheet" href={asset("styles/global.css")} />
 
     <script is:inline>
       (() => {
@@ -223,7 +168,7 @@ const schema = {
       })();
     </script>
 
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script is:inline type="application/ld+json" set:html={jsonLd} />
   </head>
   <body class="bg-background text-foreground antialiased">
     <a
@@ -233,5 +178,17 @@ const schema = {
       Přeskočit na obsah
     </a>
     <slot />
+    <WebMcp />
+    {
+      import.meta.env.PROD && (
+        <script is:inline define:vars={{ swUrl: asset("sw.js"), scope: base }}>
+          if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+              navigator.serviceWorker.register(swUrl, { scope }).catch(() => {});
+            });
+          }
+        </script>
+      )
+    }
   </body>
 </html>
