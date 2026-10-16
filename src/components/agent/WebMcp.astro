@@ -1,0 +1,164 @@
+---
+/**
+ * WebMCP – exposes the site to in-browser AI agents as tools
+ * (https://webmachinelearning.github.io/webmcp/).
+ *
+ * The API is a draft: the spec puts it on `document.modelContext`, Chrome's
+ * early implementation on `navigator.modelContext`. Without either nothing
+ * runs, and the script is tiny. Data tools are read-only; UI tools only
+ * change what is on screen – an inquiry is always sent by the visitor.
+ */
+---
+
+<script>
+  import type { SiteFacts } from "@/lib/site-data";
+
+  type ToolResult = { content: { type: "text"; text: string }[] };
+  interface Tool {
+    name: string;
+    title?: string;
+    description: string;
+    inputSchema?: Record<string, unknown>;
+    annotations?: { readOnlyHint?: boolean };
+    execute: (input: Record<string, unknown>) => Promise<ToolResult>;
+  }
+  interface ModelContext {
+    registerTool: (tool: Tool, options?: { signal?: AbortSignal }) => unknown;
+  }
+
+  const modelContext =
+    (document as Document & { modelContext?: ModelContext }).modelContext ??
+    (navigator as Navigator & { modelContext?: ModelContext }).modelContext;
+
+  if (modelContext && window.isSecureContext) {
+    const base = import.meta.env.BASE_URL;
+    let facts: Promise<SiteFacts> | undefined;
+    const data = () =>
+      (facts ??= fetch(`${base}agent/site.json`).then((r) => r.json() as Promise<SiteFacts>));
+    const result = (value: unknown): ToolResult => ({
+      content: [{ type: "text", text: typeof value === "string" ? value : JSON.stringify(value, null, 2) }],
+    });
+    const readOnly = { readOnlyHint: true };
+    const empty = { type: "object", properties: {} };
+
+    const PAGES: Record<string, string> = {
+      home: "",
+      references: "projekty/",
+      services: "sluzby/",
+      about: "o-nas/",
+      contact: "kontakt/",
+    };
+
+    const tools: Tool[] = [
+      {
+        name: "get_services",
+        title: "Služby",
+        description: "Interior design services Crystal Interiors (Brno) offers: kitchens, bedrooms, bathrooms, living and kids' rooms, offices, hospitality.",
+        inputSchema: empty,
+        annotations: readOnly,
+        execute: async () => result((await data()).services),
+      },
+      {
+        name: "get_pricing",
+        title: "Ceník",
+        description: "Indicative prices in CZK for interior visualisations and consultations (e.g. kitchen visualisation from 2 000 CZK, consultation in Brno free).",
+        inputSchema: empty,
+        annotations: readOnly,
+        execute: async () => result((await data()).pricing),
+      },
+      {
+        name: "list_references",
+        title: "Reference",
+        description: "Portfolio galleries by room type with links to each gallery section.",
+        inputSchema: empty,
+        annotations: readOnly,
+        execute: async () => result((await data()).references),
+      },
+      {
+        name: "search_faq",
+        title: "Časté dotazy",
+        description: "Answers to common questions (prices, free consultation, furniture production and installation, meeting place, commercial projects). Optional query filters them.",
+        inputSchema: { type: "object", properties: { query: { type: "string" } } },
+        annotations: readOnly,
+        execute: async ({ query }) => {
+          const faq = (await data()).faq;
+          const needle = typeof query === "string" ? query.toLowerCase().trim() : "";
+          const hits = needle
+            ? faq.filter((item) => `${item.question} ${item.answer}`.toLowerCase().includes(needle))
+            : faq;
+          return result(hits.length ? hits : faq);
+        },
+      },
+      {
+        name: "get_contact",
+        title: "Kontakt",
+        description: "Showroom address, designers' phones and e-mails, company ID and social profiles.",
+        inputSchema: empty,
+        annotations: readOnly,
+        execute: async () => result((await data()).contact),
+      },
+      {
+        name: "open_page",
+        title: "Otevřít stránku",
+        description: "Navigates the visitor to a page of the site.",
+        inputSchema: {
+          type: "object",
+          properties: { page: { type: "string", enum: Object.keys(PAGES) } },
+          required: ["page"],
+        },
+        execute: async ({ page }) => {
+          const target = `${base}${PAGES[String(page)] ?? ""}`;
+          window.location.assign(target);
+          return result(`Opening ${target}`);
+        },
+      },
+    ];
+
+    const form = document.querySelector<HTMLFormElement>("[data-inquiry]");
+    if (form) {
+      tools.push({
+        name: "prefill_inquiry",
+        title: "Předvyplnit poptávku",
+        description:
+          "Fills the inquiry form (name, e-mail, phone, room type, message) and scrolls to it. It does NOT send anything – the visitor reviews it and presses the button.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            email: { type: "string", format: "email" },
+            phone: { type: "string" },
+            room: { type: "string" },
+            message: { type: "string", maxLength: 4000 },
+          },
+          required: ["message"],
+        },
+        execute: async (input) => {
+          for (const key of ["name", "email", "phone", "room", "message"]) {
+            const field = form.elements.namedItem(key) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+            const value = input[key];
+            if (!field || typeof value !== "string") continue;
+            if (field instanceof HTMLSelectElement) {
+              const option = [...field.options].find((o) => o.text.toLowerCase().includes(value.toLowerCase()));
+              if (option) field.value = option.value || option.text;
+            } else {
+              field.value = value.slice(0, 4000);
+            }
+          }
+          form.scrollIntoView({ behavior: "smooth", block: "center" });
+          form.querySelector<HTMLButtonElement>("[type=submit]")?.focus({ preventScroll: true });
+          return result("The inquiry form is filled in. Ask the visitor to review it and press „Připravit e-mail“.");
+        },
+      });
+    }
+
+    const controller = new AbortController();
+    for (const tool of tools) {
+      try {
+        modelContext.registerTool(tool, { signal: controller.signal });
+      } catch (error) {
+        console.warn(`[WebMCP] ${tool.name} not registered`, error);
+      }
+    }
+    window.addEventListener("pagehide", () => controller.abort(), { once: true });
+  }
+</script>
