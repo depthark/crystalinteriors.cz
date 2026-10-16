@@ -29,10 +29,10 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Maps | Google Maps embed (iframe) | — | `settings.json → company.mapEmbed` |
 | Analytics | Google Tag Manager `GTM-542MMSL` | — | `src/layouts/BaseLayout.astro` |
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
-| Icons | `sharp` (favicon / maskable PNG generator) | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
+| Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
 | SEO | Per-page meta/OG/Twitter, schema.org JSON-LD graph, generated `sitemap.xml` (+ images), `robots.txt` | — | `src/lib/structured-data.ts`, `src/pages/sitemap.xml.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
-| Fonts | Google Fonts – Inter, Manrope | — | `BaseLayout.astro` |
+| Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
 
 Hosting: GitHub Pages today (`.github/workflows/static.yml`, base path `/crystalinteriors.cz/`); Cloudflare Pages at `www.crystalinteriors.cz` is the target and is required for the CMS login, Cloudinary uploads and `/mcp` – see [DEPLOY.md](DEPLOY.md).

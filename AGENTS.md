@@ -37,10 +37,10 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | Maps | Google Maps embed (iframe) | — | `settings.json → company.mapEmbed` |
 | Analytics | Google Tag Manager `GTM-542MMSL` | — | `src/layouts/BaseLayout.astro` |
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
-| Icons | `sharp` (favicon / maskable PNG generator) | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
+| Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
 | SEO | Per-page meta/OG/Twitter, schema.org JSON-LD graph, generated `sitemap.xml` (+ images), `robots.txt` | — | `src/lib/structured-data.ts`, `src/pages/sitemap.xml.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
-| Fonts | Google Fonts – Inter, Manrope | — | `BaseLayout.astro` |
+| Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
 
 All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
@@ -53,7 +53,8 @@ Hosting today: **GitHub Pages** (`.github/workflows/static.yml`, on push to `mai
 
 All design tokens live in `public/styles/tailwind.source.css` under `@theme`. Components reference them via Tailwind utilities (`bg-primary`, `text-muted`, `rounded-2xl`, `duration-fast`, etc.). Notable buckets:
 
-- **Color**: `primary`, `primary-hover`, `accent`, `secondary`, surface/background, ink (dark sections), border, foreground/muted/subtle. Dark theme override under `[data-theme="dark"]`.
+- **Color**: `action` / `action-hover` / `on-action` (filled buttons & CTAs – near-black in light, warm off-white in dark), `primary` (bronze – **accents only**: eyebrows, links, thin lines, icon tints, focus), `accent`, `secondary`, surface/background, ink (dark sections), border, foreground/muted/subtle. Dark theme override under `[data-theme="dark"]`. Never fill large areas or buttons with bronze.
+- **Typography**: `--font-serif` Playfair Display for h1–h3 (set in `global.css`), `--font-display` Manrope for UI/buttons/small headings, `--font-sans` Inter for body. Chosen with the ui-ux-pro-max skill ("Classic Elegant" pairing) to match the script logo.
 - **Spacing**: `--spacing: 0.25rem` (Tailwind derives `p-1, p-2, …` plus arbitrary `h-18`, `w-21`).
 - **Radii**: `--radius-xs`...`--radius-3xl`, `--radius-full`.
 - **Shadows**: `--shadow-card`, `--shadow-lifted`, `--shadow-soft`.
@@ -83,7 +84,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/agent/WebMcp.astro` — WebMCP tools for in-browser AI agents.
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
 - `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image taken from old site CDN (`duyn491kcolsw.cloudfront.net/files/1u/1um/1umned.jpg`).
-- `src/components/HeroSection.astro` — full-bleed hero with Cloudinary image, gradient overlay, eyebrow + title + CTAs.
+- `src/components/HeroSection.astro` — full-bleed hero with Cloudinary image (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`), eyebrow + serif title + CTAs (white `hero-primary`), staggered motion-safe entrance and a 3× scroll cue.
 - `src/components/ReferencesGallery.astro` — room section from `getRoomMedia()` (build-time Cloudinary scan merged with CMS → else CMS list → else runtime tag list); photos + videos, Fancybox lightbox.
 
 ### Icons
@@ -184,7 +185,7 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 - `bun run dev` — concurrent Tailwind watcher + Astro dev server
 - `bun run cms:local` — local Decap backend (edit at `http://localhost:4321/admin/`, writes files directly)
 - `bun run build` — minify CSS → Cloudinary gallery scan (`gallery:build`) → `astro check` → TypeScript 7 `tsc --noEmit` → `astro build`
-- `bun run icons` — regenerate favicon/PWA icons (`scripts/generate-icons.mjs`)
+- `bun run icons` — regenerate favicon/PWA icons from the official logo (`scripts/generate-icons.mjs`: full logo for app/maskable/apple icons, crystal crop for small favicons), then `convert favicon-48x48.png -define icon:auto-resize=48,32,16 favicon.ico`
 - `bun run preview` — preview production build
 - `/dist` is gitignored. `public/styles/tailwind.css` is generated (by `bun run dev`/`build`) but committed – regenerate it, never edit by hand.
 - After editing `public/admin/*.js`, bump `?v=` in `public/admin/index.html`.

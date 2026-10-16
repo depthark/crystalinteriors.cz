@@ -1,12 +1,19 @@
 ---
+/**
+ * Hero: full-bleed photo (LCP, preloaded) under an ink overlay, the official
+ * Crystal Interiors logo as the brand moment, serif headline and two CTAs.
+ * Content enters with a short staggered rise (motion-safe only) and a scroll
+ * cue leads into the first section.
+ */
 import { site } from "@/data/site";
 import { hero } from "@/lib/images";
 import { withBase } from "@/lib/navigation";
 import Button from "./ui/Button.astro";
 import CloudImage from "./ui/CloudImage.astro";
+import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
 ---
 
-<section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
+<section class="relative isolate overflow-hidden bg-ink-deep" aria-labelledby="hero-title">
   <div class="absolute inset-0" aria-hidden="true">
     <CloudImage
       src={site.hero.image}
@@ -22,23 +29,47 @@ import CloudImage from "./ui/CloudImage.astro";
     <div class="hero__overlay absolute inset-0"></div>
   </div>
 
-  <div class="relative mx-auto flex min-h-[78svh] max-w-4xl flex-col items-center justify-center px-4 py-20 text-center sm:min-h-[86svh] sm:px-6 sm:py-28 md:min-h-[92svh] lg:px-8">
-    <div class="space-y-6 text-white sm:space-y-8">
-      <p class="inline-flex items-center gap-3 text-xs font-medium uppercase tracking-overline text-white/72">
-        <span class="h-px w-8 bg-white/40 sm:w-10"></span>
+  <div class="relative mx-auto flex min-h-[88svh] max-w-4xl flex-col items-center justify-center px-4 pb-24 pt-16 text-center sm:min-h-[92svh] sm:px-6 lg:px-8">
+    <div class="flex flex-col items-center gap-6 text-white sm:gap-7">
+      <img
+        src={withBase("/images/logos/crystalinteriors_logo-white.svg")}
+        alt={`${site.name} – vizualizace, design, realizace`}
+        width="1024"
+        height="1023"
+        loading="eager"
+        decoding="async"
+        class="hero__rise h-auto w-36 drop-shadow-[0_6px_24px_rgb(0_0_0/0.35)] sm:w-44 md:w-52"
+        style="--i: 0"
+      />
+
+      <p
+        class="hero__rise inline-flex items-center gap-3 whitespace-nowrap text-[0.7rem] font-medium uppercase tracking-eyebrow text-white/80 sm:text-xs sm:tracking-overline"
+        style="--i: 1"
+      >
+        <span class="hidden h-px w-10 bg-accent/80 sm:block" aria-hidden="true"></span>
         {site.hero.eyebrow}
-        <span class="h-px w-8 bg-white/40 sm:w-10"></span>
+        <span class="hidden h-px w-10 bg-accent/80 sm:block" aria-hidden="true"></span>
       </p>
+
       <h1
         id="hero-title"
-        class="mx-auto max-w-4xl text-balance text-3xl leading-[1.08] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl"
+        class="hero__rise mx-auto max-w-3xl text-balance text-3xl leading-[1.12] sm:text-4xl md:text-5xl lg:text-6xl"
+        style="--i: 2"
       >
         {site.hero.title}
       </h1>
-      <p class="mx-auto max-w-2xl text-balance text-base leading-7 text-white/82 sm:text-lg sm:leading-8 md:text-xl">
+
+      <p
+        class="hero__rise mx-auto max-w-2xl text-balance text-base leading-7 text-white/85 sm:text-lg sm:leading-8"
+        style="--i: 3"
+      >
         {site.hero.text}
       </p>
-      <div class="flex w-full flex-col items-stretch justify-center gap-3 pt-4 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+
+      <div
+        class="hero__rise flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center"
+        style="--i: 4"
+      >
         <Button
           as="a"
           href={withBase(site.hero.primaryCta.href)}
@@ -63,29 +94,62 @@ import CloudImage from "./ui/CloudImage.astro";
         </Button>
       </div>
     </div>
+
+    <a
+      href="#approach-title"
+      class="hero__cue absolute bottom-6 left-1/2 inline-flex min-h-11 min-w-11 -translate-x-1/2 flex-col items-center justify-center gap-1 rounded-full text-[0.7rem] uppercase tracking-overline text-white/70 no-underline transition-colors duration-fast hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+    >
+      <span>Více<span class="sr-only"> – jak pracujeme</span></span>
+      <span aria-hidden="true"><ChevronDownIcon class="h-5 w-5" /></span>
+    </a>
   </div>
 </section>
 
 <style>
-  /* Multi-stop radial gradient overlay using ink + accent tokens.
-     Tailwind can't express layered color-mix() radials inline. */
+  /* Multi-stop radial gradient overlay using ink tokens (bronze kept to a
+     faint warmth). Tailwind can't express layered color-mix() radials. */
   .hero__overlay {
     background:
       radial-gradient(
         ellipse at center,
-        color-mix(in oklch, var(--color-ink-deep) 55%, transparent) 0%,
-        color-mix(in oklch, var(--color-ink-deep) 78%, transparent) 55%,
-        color-mix(in oklch, var(--color-ink-deep) 92%, transparent) 100%
+        color-mix(in oklch, var(--color-ink-deep) 58%, transparent) 0%,
+        color-mix(in oklch, var(--color-ink-deep) 76%, transparent) 55%,
+        color-mix(in oklch, var(--color-ink-deep) 90%, transparent) 100%
       ),
       radial-gradient(
         circle at top,
-        color-mix(in oklch, var(--color-accent) 22%, transparent),
+        color-mix(in oklch, var(--color-accent) 10%, transparent),
         transparent 45%
-      ),
-      radial-gradient(
-        circle at bottom,
-        color-mix(in oklch, var(--color-white) 6%, transparent),
-        transparent 42%
       );
+  }
+
+  /* Staggered entrance; final state is the default, so content is always
+     readable without motion or JS. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__rise {
+      animation: hero-rise 900ms var(--ease-out-soft) both;
+      animation-delay: calc(var(--i, 0) * 110ms + 120ms);
+    }
+
+    .hero__cue {
+      animation: hero-cue 2.4s var(--ease-standard) 1.8s 3;
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+  }
+
+  @keyframes hero-cue {
+    0%,
+    100% {
+      transform: translate(-50%, 0);
+    }
+    50% {
+      transform: translate(-50%, 0.35rem);
+    }
   }
 </style>

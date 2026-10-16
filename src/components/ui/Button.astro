@@ -38,17 +38,17 @@ const button = tv({
   variants: {
     variant: {
       primary:
-        "bg-primary text-white hover:bg-primary-hover shadow-card hover:shadow-lifted",
+        "bg-action text-on-action hover:bg-action-hover shadow-card hover:shadow-lifted",
       secondary:
         "bg-secondary text-foreground hover:bg-secondary-hover shadow-card hover:shadow-lifted",
       outline:
-        "bg-transparent border border-primary text-foreground hover:bg-primary hover:text-white",
+        "bg-transparent border border-action text-foreground hover:bg-action hover:text-on-action",
       "outline-on-dark":
         "bg-transparent border border-white/40 text-white hover:border-white hover:bg-white/10 focus-visible:ring-white focus-visible:ring-offset-transparent",
       ghost:
         "bg-transparent text-foreground hover:bg-black/5 dark:hover:bg-white/10",
       "hero-primary":
-        "border border-primary bg-primary text-white shadow-lifted text-base md:text-lg uppercase tracking-button hover:bg-primary-hover focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+        "border border-white bg-white text-ink shadow-lifted text-base md:text-lg uppercase tracking-button hover:bg-white/88 focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
       "hero-outline":
         "bg-transparent border border-white/34 text-white backdrop-blur-sm text-base md:text-lg uppercase tracking-button hover:border-white hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
     },

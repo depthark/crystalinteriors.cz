@@ -23,7 +23,12 @@
   --color-border: oklch(0.2 0.008 80 / 0.08);
   --color-border-strong: oklch(0.2 0.008 80 / 0.16);
 
-  /* Brand ----------------------------------------------------- */
+  /* Action — filled buttons / CTAs. Neutral ink so bronze stays an accent. */
+  --color-action: oklch(0.22 0.008 75);
+  --color-action-hover: oklch(0.32 0.01 75);
+  --color-on-action: oklch(0.99 0.003 85);
+
+  /* Brand (bronze) — accents only: eyebrows, links, thin lines, icons */
   --color-primary: oklch(0.42 0.055 65);
   --color-primary-hover: oklch(0.36 0.05 65);
   --color-primary-soft: oklch(0.92 0.018 65);
@@ -48,6 +53,7 @@
   /* Typography ------------------------------------------------ */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Manrope", var(--font-sans);
+  --font-serif: "Playfair Display", ui-serif, Georgia, "Times New Roman", serif;
 
   --tracking-tight: -0.02em;
   --tracking-normal: 0em;
@@ -103,6 +109,10 @@
 }
 
 [data-theme="dark"] {
+  --color-action: oklch(0.93 0.012 85);
+  --color-action-hover: oklch(0.86 0.015 85);
+  --color-on-action: oklch(0.17 0.006 80);
+
   --color-background: oklch(0.16 0.006 85);
   --color-surface: oklch(0.22 0.008 85);
   --color-surface-elevated: oklch(0.25 0.008 85);

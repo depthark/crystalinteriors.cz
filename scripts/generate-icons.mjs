@@ -1,47 +1,55 @@
 #!/usr/bin/env node
 /**
- * Generates the favicon / PWA icon set from the Crystal Interiors gem mark.
- * Run after changing the mark: `bun run icons`. Outputs are committed.
+ * Generates the favicon / PWA icon set from the official Crystal Interiors
+ * logo (public/images/logos/crystalinteriors_logo-white.svg) – white art on
+ * the brand ink, never redrawn or recoloured.
+ *
+ *  - Large icons (app, maskable, apple-touch): the full round logo.
+ *  - Small icons (favicon.svg / .ico / 96 px): the crystal mark only, cropped
+ *    from the same artwork, because the wordmark is unreadable at 16–48 px.
+ *
+ * Run after the logo changes: `bun run icons`. Outputs are committed.
  */
 import sharp from "sharp";
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 const OUT = "public/images/favicons";
+const LOGO = "public/images/logos/crystalinteriors_logo-white.svg";
 const INK = "#1d1b18";
 
-const FACETS = [
-  ["176,140 216,216 106,216", "#b8925a"],
-  ["176,140 256,140 216,216", "#dcc08b"],
-  ["216,216 256,140 296,216", "#c9a46b"],
-  ["256,140 336,140 296,216", "#ead5a8"],
-  ["336,140 406,216 296,216", "#a9844f"],
-  ["106,216 216,216 256,372", "#8f6d40"],
-  ["216,216 296,216 256,372", "#b8925a"],
-  ["296,216 406,216 256,372", "#75582f"],
-];
+// Square around the crystal cluster, in the logo's own viewBox units.
+const CRYSTAL_VIEWBOX = "698 158 520 520";
 
-/** scale < 1 shrinks the gem around the centre (maskable safe zone). */
-const svg = ({ scale = 1, radius = 112 } = {}) => {
-  const offset = (512 * (1 - scale)) / 2;
-  const facets = FACETS.map(([points, fill]) => `<polygon points="${points}" fill="${fill}"/>`).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><title>Crystal Interiors</title><rect width="512" height="512" rx="${radius}" fill="${INK}"/><g transform="translate(${offset} ${offset}) scale(${scale})">${facets}</g></svg>`;
-};
+const source = await readFile(LOGO, "utf8");
+const inner = source.replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
+const [vx, vy, vw, vh] = (/viewBox="([^"]+)"/.exec(source)?.[1] ?? "0 0 1024 1024").split(/\s+/).map(Number);
 
-const png = (source, size, file) =>
-  sharp(Buffer.from(source), { density: 384 }).resize(size, size).png({ compressionLevel: 9 }).toFile(`${OUT}/${file}`);
+/** Logo art centred on an ink square; `scale` < 1 adds a safe-zone margin. */
+function iconSvg({ viewBox, scale = 1, radius = 0 }) {
+  const [x, y, w, h] = viewBox.split(/\s+/).map(Number);
+  const size = Math.max(w, h) / scale;
+  const ox = x - (size - w) / 2;
+  const oy = y - (size - h) / 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${ox} ${oy} ${size} ${size}"><title>Crystal Interiors</title><rect x="${ox}" y="${oy}" width="${size}" height="${size}" rx="${(radius * size) / 512}" fill="${INK}"/>${inner}</svg>`;
+}
 
-const rounded = svg();
-const maskable = svg({ scale: 0.72, radius: 0 });
-const apple = svg({ scale: 0.86, radius: 0 });
+const fullLogo = `${vx} ${vy} ${vw} ${vh}`;
+const favicon = iconSvg({ viewBox: CRYSTAL_VIEWBOX, scale: 0.8, radius: 112 });
+const appIcon = iconSvg({ viewBox: fullLogo, scale: 0.94, radius: 112 });
+const maskable = iconSvg({ viewBox: fullLogo, scale: 0.78 }); // logo inside the 80% safe zone
+const apple = iconSvg({ viewBox: fullLogo, scale: 0.88 });
 
-await writeFile(`${OUT}/favicon.svg`, `${rounded}\n`);
+const png = (svg, size, file) =>
+  sharp(Buffer.from(svg), { density: 300 }).resize(size, size).png({ compressionLevel: 9 }).toFile(`${OUT}/${file}`);
+
+await writeFile(`${OUT}/favicon.svg`, `${favicon}\n`);
 await Promise.all([
-  png(rounded, 512, "web-app-manifest-512x512.png"),
-  png(rounded, 192, "web-app-manifest-192x192.png"),
-  png(rounded, 96, "favicon-96x96.png"),
-  png(rounded, 48, "favicon-48x48.png"),
-  png(apple, 180, "apple-touch-icon.png"),
+  png(appIcon, 512, "web-app-manifest-512x512.png"),
+  png(appIcon, 192, "web-app-manifest-192x192.png"),
   png(maskable, 512, "maskable-512x512.png"),
   png(maskable, 192, "maskable-192x192.png"),
+  png(apple, 180, "apple-touch-icon.png"),
+  png(favicon, 96, "favicon-96x96.png"),
+  png(favicon, 48, "favicon-48x48.png"),
 ]);
-console.log("icons written to", OUT);
+console.log("icons written to", OUT, "– now run: convert favicon-48x48.png → favicon.ico (see README)");

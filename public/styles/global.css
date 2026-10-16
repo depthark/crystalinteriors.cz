@@ -37,9 +37,16 @@
     overflow: hidden;
   }
 
+  /* Editorial serif for page and section headings (pairs with the script
+     logo); Manrope stays the UI face for small headings and buttons. */
   h1,
   h2,
-  h3,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
   h4,
   h5,
   h6,
