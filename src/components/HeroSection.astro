@@ -1,21 +1,23 @@
 ---
 import { site } from "@/data/site";
-import { cloudinaryImage } from "@/lib/cloudinary";
+import { hero } from "@/lib/images";
 import { withBase } from "@/lib/navigation";
 import Button from "./ui/Button.astro";
+import CloudImage from "./ui/CloudImage.astro";
 ---
 
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero__media" aria-hidden="true">
-    <img
-      src={cloudinaryImage(site.hero.image, { width: 1800, height: 1200, fit: "fill" })}
+    <CloudImage
+      src={site.hero.image}
       alt=""
-      width="1800"
-      height="1200"
+      width={hero.width}
+      height={hero.height}
+      widths={hero.widths}
+      sizes={hero.sizes}
+      fit="limit"
+      priority
       class="hero__image"
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
     />
     <div class="hero__overlay"></div>
   </div>
