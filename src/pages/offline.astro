@@ -1,0 +1,35 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteHeader from "@/components/SiteHeader.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import Button from "@/components/ui/Button.astro";
+import { site, telHref } from "@/data/site";
+---
+
+<BaseLayout
+  title="Jste offline"
+  description="Stránka není dostupná bez připojení k internetu."
+  pathname="/offline/"
+  noindex
+>
+  <SiteHeader pathname={Astro.url.pathname} />
+  <main id="main" class="mx-auto flex min-h-[60svh] max-w-3xl flex-col items-center justify-center gap-6 px-4 py-24 text-center">
+    <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">Bez připojení</p>
+    <h1 class="text-4xl text-foreground md:text-5xl">Teď jste offline</h1>
+    <p class="text-lg leading-8 text-muted">
+      Tuto stránku zatím nemáme uloženou. Jakmile se připojení obnoví, načte se znovu.
+      Mezitím nám můžete zavolat.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <Button as="a" href={telHref(site.company.phones[0])} variant="primary" size="lg" rel={undefined}>
+        Zavolat {site.company.phones[0]}
+      </Button>
+      <Button as="button" variant="outline" size="lg" class="js-retry">Zkusit znovu</Button>
+    </div>
+  </main>
+  <SiteFooter />
+</BaseLayout>
+
+<script>
+  document.querySelector(".js-retry")?.addEventListener("click", () => location.reload());
+</script>
