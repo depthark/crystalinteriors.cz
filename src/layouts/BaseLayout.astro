@@ -6,6 +6,7 @@ import {
   shareImage,
   webPage,
 } from "@/lib/structured-data";
+import { ogImageFor } from "@/lib/og-image";
 import WebMcp from "@/components/agent/WebMcp.astro";
 
 export interface Props {
@@ -28,7 +29,7 @@ const {
   title,
   description,
   keywords = site.keywords,
-  image = site.shareImage,
+  image,
   imageAlt,
   pathname = Astro.url.pathname,
   preload,
@@ -47,12 +48,13 @@ const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
 const canonicalPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
 const canonical = `${site.siteUrl}${canonicalPath}`;
 const pageTitle = canonicalPath === "/" ? `${site.name} | ${title}` : `${title} | ${site.name}`;
-const ogImage = shareImage(image);
+// Branded per-page share image (logo + title), unless a page passes its own.
+const ogImage = image ? shareImage(image) : ogImageFor(canonicalPath);
 const ogImageAlt = imageAlt ?? `${site.name} — ${title}`;
 
 const graph = [
   ...baseGraph(),
-  webPage(canonical, pageTitle, description, pageType),
+  webPage(canonical, pageTitle, description, pageType, ogImage),
   ...(breadcrumbs?.length ? [breadcrumbList(canonical, breadcrumbs)] : []),
   ...schema,
 ];
@@ -99,6 +101,7 @@ const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": grap
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content={image ? undefined : "image/jpeg"} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImageAlt} />

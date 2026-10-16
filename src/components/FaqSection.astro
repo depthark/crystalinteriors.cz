@@ -61,9 +61,17 @@ const { items, title = "Časté dotazy" } = Astro.props;
       box-shadow var(--duration-standard) var(--ease-standard);
   }
 
+  /* Open item: royal marker drawn as an inset shadow (no layout shift). */
   .faq__item[open] {
     border-color: var(--color-border-strong);
-    box-shadow: var(--shadow-card);
+    box-shadow:
+      inset 3px 0 0 var(--color-royal),
+      var(--shadow-card);
+  }
+
+  .faq__item[open] .faq__icon::before,
+  .faq__item[open] .faq__icon::after {
+    background: var(--color-royal);
   }
 
   .faq__question {

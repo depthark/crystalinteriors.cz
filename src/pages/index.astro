@@ -25,7 +25,6 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
   title={site.home.seo.title}
   description={site.home.seo.description}
   pathname="/"
-  image={site.hero.image}
   imageAlt={site.hero.imageAlt}
   preload={heroPreload()}
   schema={[faqPage()]}
@@ -174,7 +173,7 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
     <FaqSection items={site.faq} />
 
     <section
-      class="overflow-hidden border-y border-border bg-surface-elevated py-14 text-foreground sm:py-20 lg:py-24"
+      class="cta-glow relative isolate overflow-hidden border-y border-border bg-surface-elevated py-14 text-foreground sm:py-20 lg:py-24"
       aria-labelledby="cta-title"
     >
       <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-4 sm:px-6 lg:flex-row lg:items-center lg:px-8">
@@ -203,3 +202,25 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
   </main>
   <SiteFooter />
 </BaseLayout>
+
+<style>
+  /* Final CTA: soft royal + bronze light behind the copy (accents only). */
+  .cta-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(
+        ellipse 55% 90% at 0% 100%,
+        color-mix(in oklch, var(--color-royal) 14%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 45% 80% at 100% 0%,
+        color-mix(in oklch, var(--color-accent) 12%, transparent),
+        transparent 70%
+      );
+    pointer-events: none;
+  }
+</style>

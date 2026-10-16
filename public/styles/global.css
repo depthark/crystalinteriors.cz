@@ -67,7 +67,7 @@
   }
 
   ::selection {
-    background: color-mix(in oklch, var(--color-primary) 32%, transparent);
+    background: color-mix(in oklch, var(--color-royal) 26%, transparent);
   }
 
   iframe {

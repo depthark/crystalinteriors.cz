@@ -271,7 +271,6 @@ collections:
             widget: list
             allow_add: true
             field: { name: keyword, label: Slovo, widget: string }
-          - { name: shareImage, label: Obrázek pro sdílení (Facebook…), widget: cloud-image, hint: "Ořízne se na 1200 × 630 px." }
           - name: social
             label: Sociální sítě
             widget: object

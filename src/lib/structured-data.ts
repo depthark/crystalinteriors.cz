@@ -8,6 +8,7 @@
  */
 import { site, type ReferenceRoom } from "@/data/site";
 import { cloudinaryImage } from "@/lib/cloudinary";
+import { ogImageFor } from "@/lib/og-image";
 import { galleryGeneratedAt, getRoomMedia } from "@/lib/cloudinary-gallery";
 
 type Node = Record<string, unknown>;
@@ -21,7 +22,7 @@ export const ids = {
 
 const absolute = (path: string) => (/^https?:/i.test(path) ? path : `${site.siteUrl}${path}`);
 
-export const shareImage = (source = site.shareImage) =>
+export const shareImage = (source: string) =>
   cloudinaryImage(source, { width: 1200, height: 630, fit: "fill" });
 
 const people = (): Node[] =>
@@ -68,7 +69,7 @@ const business = (): Node => {
     slogan: site.tagline,
     description: site.description,
     url: `${site.siteUrl}/`,
-    image: shareImage(),
+    image: ogImageFor("/"),
     logo: `${site.siteUrl}/images/favicons/web-app-manifest-512x512.png`,
     telephone: company.phones[0],
     email: company.emails[0],
@@ -138,6 +139,7 @@ export const webPage = (
   title: string,
   description: string,
   type = "WebPage",
+  image = ogImageFor("/"),
 ): Node => ({
   "@type": type,
   "@id": `${canonical}#webpage`,
@@ -147,7 +149,7 @@ export const webPage = (
   inLanguage: "cs-CZ",
   isPartOf: { "@id": ids.website },
   about: { "@id": ids.business },
-  primaryImageOfPage: shareImage(),
+  primaryImageOfPage: image,
 });
 
 export const breadcrumbList = (canonical: string, crumbs: Array<{ name: string; href: string }>): Node => ({

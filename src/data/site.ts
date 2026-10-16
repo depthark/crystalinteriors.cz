@@ -46,7 +46,6 @@ export const site = {
     "https://www.crystalinteriors.cz",
   description: settings.description,
   keywords: settings.keywords,
-  shareImage: settings.shareImage,
   nav: [
     { href: "/", label: "Úvod" },
     { href: "/projekty/", label: "Projekty" },

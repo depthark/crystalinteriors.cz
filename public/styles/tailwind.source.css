@@ -28,6 +28,11 @@
   --color-action-hover: oklch(0.32 0.01 75);
   --color-on-action: oklch(0.99 0.003 85);
 
+  /* Royal purple (from the original Crystal Interiors identity) — a second,
+     sparing accent: glows, active markers, selection. #5B2C83 */
+  --color-royal: oklch(0.401 0.142 305.8);
+  --color-royal-soft: oklch(0.94 0.025 306);
+
   /* Brand (bronze) — accents only: eyebrows, links, thin lines, icons */
   --color-primary: oklch(0.42 0.055 65);
   --color-primary-hover: oklch(0.36 0.05 65);
@@ -109,6 +114,8 @@
 }
 
 [data-theme="dark"] {
+  --color-royal: oklch(0.733 0.09 306.3); /* #B79AD6, 7.7:1 on background */
+  --color-royal-soft: oklch(0.28 0.06 306);
   --color-action: oklch(0.93 0.012 85);
   --color-action-hover: oklch(0.86 0.015 85);
   --color-on-action: oklch(0.17 0.006 80);

@@ -39,6 +39,7 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
 | Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
 | SEO | Per-page meta/OG/Twitter, schema.org JSON-LD graph, generated `sitemap.xml` (+ images), `robots.txt` | — | `src/lib/structured-data.ts`, `src/pages/sitemap.xml.ts` |
+| Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/bronze light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
 | Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
@@ -54,6 +55,7 @@ Hosting today: **GitHub Pages** (`.github/workflows/static.yml`, on push to `mai
 All design tokens live in `public/styles/tailwind.source.css` under `@theme`. Components reference them via Tailwind utilities (`bg-primary`, `text-muted`, `rounded-2xl`, `duration-fast`, etc.). Notable buckets:
 
 - **Color**: `action` / `action-hover` / `on-action` (filled buttons & CTAs – near-black in light, warm off-white in dark), `primary` (bronze – **accents only**: eyebrows, links, thin lines, icon tints, focus), `accent`, `secondary`, surface/background, ink (dark sections), border, foreground/muted/subtle. Dark theme override under `[data-theme="dark"]`. Never fill large areas or buttons with bronze.
+- **Royal purple** `royal` / `royal-soft` (#5B2C83, from the original identity; dark mode tint #B79AD6): a second, sparing accent – hero and CTA glows, active nav underline, open FAQ marker, text selection, share images. Never for large fills or body text blocks.
 - **Typography**: `--font-serif` Playfair Display for h1–h3 (set in `global.css`), `--font-display` Manrope for UI/buttons/small headings, `--font-sans` Inter for body. Chosen with the ui-ux-pro-max skill ("Classic Elegant" pairing) to match the script logo.
 - **Spacing**: `--spacing: 0.25rem` (Tailwind derives `p-1, p-2, …` plus arbitrary `h-18`, `w-21`).
 - **Radii**: `--radius-xs`...`--radius-3xl`, `--radius-full`.
@@ -139,6 +141,7 @@ Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + emai
 - Per-page `title`, `description` (from CMS `seo`), keywords, canonical, hreflang, Open Graph, Twitter, geo meta in `BaseLayout`.
 - JSON-LD `@graph` (`src/lib/structured-data.ts`): `WebSite`, `ProfessionalService`+`HomeAndConstructionBusiness`, `Person` ×2, `OfferCatalog`, per-page `WebPage`/`AboutPage`/`ContactPage`/`CollectionPage`, `BreadcrumbList`, `FAQPage` (home), `Service` (služby), `ImageGallery` (projekty, CMS images).
 - Generated `sitemap.xml` (with image entries) and `llms.txt`; `robots.txt` in `/public`.
+- Share images: `/og/<page>.jpg` (1200×630) rendered at build by `src/lib/og-image.ts` + `src/pages/og/[slug].jpg.ts` with sharp – official logo, page title in Playfair (font files in `src/assets/fonts/`, OFL), royal + bronze light over a local project photo. `BaseLayout` uses them for og/twitter and `primaryImageOfPage` unless a page passes `image`.
 - One `<h1>` per page (`SectionIntro level={1}` on subpages).
 
 ## Tracking
