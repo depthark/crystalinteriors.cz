@@ -1,0 +1,334 @@
+# Decap CMS – https://decapcms.org/docs/configuration-options/
+#
+# Content lives in src/data/content/*.json and is committed to GitHub.
+# Login runs through the Cloudflare Pages Functions in /functions/api (GitHub
+# OAuth app, see DEPLOY.md). Local editing: `bun run cms:local` next to
+# `bun run dev`, then open http://localhost:4321/admin/.
+
+backend:
+  name: github
+  repo: Luko248/crystalinteriors.cz
+  branch: main
+  base_url: https://www.crystalinteriors.cz
+  auth_endpoint: api/auth
+  squash_merges: true
+  commit_messages:
+    create: "content({{collection}}): create {{slug}}"
+    update: "content({{collection}}): update {{slug}}"
+    delete: "content({{collection}}): delete {{slug}}"
+    uploadMedia: "content(media): upload {{path}}"
+    deleteMedia: "content(media): delete {{path}}"
+    openAuthoring: "content: {{message}}"
+
+# Draft → review → ready → publish. Every draft is a pull request, so
+# Cloudflare builds a preview before anything goes live.
+publish_mode: editorial_workflow
+local_backend: true
+
+locale: cs
+site_url: https://www.crystalinteriors.cz
+display_url: https://www.crystalinteriors.cz
+logo_url: /images/favicons/web-app-manifest-192x192.png
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+# Photos go straight to Cloudinary through our own upload dialog
+# (public/admin/cloudinary-upload.js + functions/api/cloudinary.ts).
+# Editors only need their CMS login – no Cloudinary account.
+media_library:
+  name: crystal-cloudinary
+
+# Required by Decap even with an external media library (fallback only).
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  # ------------------------------------------------------------ Reference
+  - name: reference
+    label: Reference
+    label_singular: Galerie místnosti
+    description: >-
+      Stránka Projekty (crystalinteriors.cz/projekty). Každá položka je jedna sekce
+      s galerií – kuchyně, obývací pokoje, ložnice… Fotky nahrajete přímo v
+      editoru, pořadí určujete šipkami. První fotka je v galerii velká.
+    folder: src/data/content/references
+    extension: json
+    format: json
+    create: true
+    delete: true
+    slug: "{{fields.slug}}"
+    identifier_field: title
+    summary: "{{order}}. {{title}}"
+    sortable_fields:
+      fields: ["order", "title"]
+      default: { field: order, direction: Ascending }
+    editor:
+      preview: false
+    fields:
+      - { name: title, label: Název sekce, widget: string, hint: "Např. Kuchyně – zobrazí se jako nadpis sekce." }
+      - name: text
+        label: Krátký popis
+        widget: text
+        hint: 1–2 věty pod nadpisem. Pomáhají i vyhledávačům.
+      - name: images
+        label: Fotky
+        widget: room-gallery
+        default: []
+      - name: order
+        label: Pořadí na stránce
+        widget: number
+        value_type: int
+        min: 1
+        default: 10
+        hint: Menší číslo = výš na stránce.
+      - name: slug
+        label: Adresa sekce
+        widget: string
+        pattern: ["^[a-z0-9-]+$", "Jen malá písmena bez diakritiky, čísla a pomlčky, např. kuchyne"]
+        hint: Část odkazu – crystalinteriors.cz/projekty/#kuchyne. Po vytvoření už neměňte.
+      - name: tag
+        label: Cloudinary tag (náhradní zdroj)
+        widget: string
+        required: false
+        hint: Pokročilé – když sekce nemá žádné fotky, web zkusí načíst fotky s tímto tagem z Cloudinary.
+
+  # -------------------------------------------------------------- Stránky
+  - name: stranky
+    label: Stránky
+    description: Texty jednotlivých stránek webu.
+    editor:
+      preview: false
+    files:
+      - name: uvod
+        label: Úvodní stránka
+        file: src/data/content/home.json
+        fields:
+          - name: hero
+            label: Úvodní fotka a hlavní text
+            widget: object
+            fields:
+              - { name: eyebrow, label: Drobný text nad nadpisem, widget: string }
+              - { name: title, label: Hlavní nadpis, widget: text, hint: "Krátce a výstižně – je to první, co návštěvník uvidí." }
+              - { name: text, label: Podnadpis, widget: text }
+              - { name: image, label: Fotka na pozadí, widget: cloud-image, hint: "Ideálně na šířku, alespoň 2000 px. Zobrazuje se ztmavená." }
+              - { name: imageAlt, label: Popis fotky, widget: string, hint: "Pro nevidomé a vyhledávače, např. Kuchyně na míru v bílém dekoru." }
+              - name: primaryCta
+                label: Hlavní tlačítko
+                widget: object
+                collapsed: true
+                fields:
+                  - { name: label, label: Text, widget: string }
+                  - { name: href, label: Odkaz, widget: string, hint: "Např. /kontakt/" }
+              - name: secondaryCta
+                label: Druhé tlačítko
+                widget: object
+                collapsed: true
+                fields:
+                  - { name: label, label: Text, widget: string }
+                  - { name: href, label: Odkaz, widget: string }
+          - name: intro
+            label: Sekce „Jak pracujeme“
+            widget: object
+            collapsed: true
+            fields:
+              - { name: title, label: Nadpis, widget: string }
+              - { name: text, label: Text, widget: text }
+              - { name: statement, label: Zvýrazněná věta, widget: text }
+          - name: process
+            label: Proč s námi (4 karty)
+            label_singular: kartu
+            widget: list
+            collapsed: true
+            summary: "{{fields.title}}"
+            fields:
+              - { name: title, label: Nadpis, widget: string }
+              - { name: text, label: Text, widget: text }
+          - name: faq
+            label: Časté dotazy
+            label_singular: otázku
+            widget: list
+            collapsed: true
+            summary: "{{fields.question}}"
+            hint: Zobrazí se na úvodní stránce a Google je může ukázat přímo ve výsledcích hledání.
+            fields:
+              - { name: question, label: Otázka, widget: string }
+              - { name: answer, label: Odpověď, widget: text }
+          - name: cta
+            label: Výzva na konci stránky
+            widget: object
+            collapsed: true
+            fields:
+              - { name: eyebrow, label: Drobný text, widget: string }
+              - { name: title, label: Nadpis, widget: text }
+              - { name: label, label: Text tlačítka, widget: string }
+              - { name: href, label: Odkaz tlačítka, widget: string }
+          - &seo
+            name: seo
+            label: Vyhledávače (SEO)
+            widget: object
+            collapsed: true
+            fields:
+              - { name: title, label: Titulek stránky, widget: string, hint: "Do 60 znaků. Zobrazí se v Googlu a na záložce prohlížeče." }
+              - { name: description, label: Popis stránky, widget: text, hint: "120–160 znaků. Text pod odkazem v Googlu." }
+
+      - name: sluzby
+        label: Služby a ceník
+        file: src/data/content/services.json
+        fields:
+          - name: intro
+            label: Úvod stránky
+            widget: object
+            fields:
+              - { name: title, label: Nadpis, widget: string }
+              - { name: text, label: Text, widget: text }
+          - name: pillars
+            label: Hlavní pilíře (2 karty)
+            label_singular: kartu
+            widget: list
+            collapsed: true
+            summary: "{{fields.title}}"
+            fields:
+              - { name: eyebrow, label: Drobný text, widget: string }
+              - { name: title, label: Nadpis, widget: string }
+              - { name: text, label: Text, widget: text }
+          - name: services
+            label: Služby (karty s fotkou)
+            label_singular: službu
+            widget: list
+            collapsed: true
+            summary: "{{fields.title}}"
+            hint: Zobrazí se na úvodní stránce i na stránce Služby.
+            fields:
+              - { name: title, label: Název, widget: string }
+              - { name: text, label: Popis, widget: text }
+              - { name: image, label: Fotka, widget: cloud-image }
+          - { name: pricingIntro, label: Text nad ceníkem, widget: text }
+          - name: pricing
+            label: Ceník
+            label_singular: položku ceníku
+            widget: list
+            collapsed: true
+            summary: "{{fields.title}} – {{fields.price}}"
+            fields:
+              - { name: title, label: Položka, widget: string }
+              - { name: price, label: Cena (jak se zobrazí), widget: string, hint: "Např. od 2 000 Kč, zdarma, na poptání" }
+              - { name: amount, label: Cena od (číslo v Kč), widget: number, value_type: int, required: false, hint: "Jen číslo, např. 2000. Pro vyhledávače; u položek „na poptání“ nechte prázdné." }
+          - *seo
+
+      - name: reference-stranka
+        label: Projekty – úvod stránky
+        file: src/data/content/references.json
+        fields:
+          - name: intro
+            label: Úvod stránky
+            widget: object
+            fields:
+              - { name: title, label: Nadpis, widget: string }
+              - { name: text, label: Text, widget: text }
+          - *seo
+
+      - name: o-nas
+        label: O nás
+        file: src/data/content/about.json
+        fields:
+          - { name: title, label: Nadpis, widget: string }
+          - { name: lead, label: Úvodní věta, widget: text }
+          - name: paragraphs
+            label: Odstavce
+            label_singular: odstavec
+            widget: list
+            field: { name: paragraph, label: Odstavec, widget: text }
+          - *seo
+
+      - name: kontakt
+        label: Kontakt
+        file: src/data/content/contact.json
+        fields:
+          - { name: title, label: Nadpis, widget: string }
+          - { name: text, label: Text, widget: text }
+          - *seo
+
+  # ------------------------------------------------------------ Nastavení
+  - name: nastaveni
+    label: Nastavení
+    description: Kontakty, adresa, sociální sítě a údaje pro vyhledávače – platí pro celý web.
+    editor:
+      preview: false
+    files:
+      - name: firma
+        label: Firma a kontakty
+        file: src/data/content/settings.json
+        fields:
+          - { name: name, label: Název studia, widget: string }
+          - { name: tagline, label: Podtitul, widget: string }
+          - { name: description, label: Popis studia (vyhledávače), widget: text }
+          - name: keywords
+            label: Klíčová slova
+            widget: list
+            allow_add: true
+            field: { name: keyword, label: Slovo, widget: string }
+          - { name: shareImage, label: Obrázek pro sdílení (Facebook…), widget: cloud-image, hint: "Ořízne se na 1200 × 630 px." }
+          - name: social
+            label: Sociální sítě
+            widget: object
+            collapsed: true
+            fields:
+              - { name: facebook, label: Facebook, widget: string }
+              - { name: instagram, label: Instagram, widget: string }
+          - name: company
+            label: Firma a vzorkovna
+            widget: object
+            fields:
+              - name: contacts
+                label: Designérky (kontakty)
+                label_singular: kontakt
+                widget: list
+                summary: "{{fields.name}}"
+                fields:
+                  - { name: name, label: Jméno, widget: string }
+                  - { name: role, label: Pozice, widget: string }
+                  - { name: phone, label: Telefon, widget: string, hint: "Ve tvaru +420 774 446 988" }
+                  - { name: email, label: E-mail, widget: string }
+              - { name: street, label: Ulice a číslo, widget: string }
+              - { name: postalCode, label: PSČ, widget: string }
+              - { name: city, label: Město, widget: string }
+              - { name: district, label: Městská část, widget: string }
+              - { name: region, label: Kraj, widget: string }
+              - { name: openingNote, label: Poznámka k návštěvě, widget: string }
+              - name: openingHours
+                label: Otevírací doba
+                label_singular: řádek
+                widget: list
+                collapsed: true
+                summary: "{{fields.opens}}–{{fields.closes}}"
+                fields:
+                  - name: days
+                    label: Dny
+                    widget: select
+                    multiple: true
+                    options:
+                      - { label: Pondělí, value: Monday }
+                      - { label: Úterý, value: Tuesday }
+                      - { label: Středa, value: Wednesday }
+                      - { label: Čtvrtek, value: Thursday }
+                      - { label: Pátek, value: Friday }
+                      - { label: Sobota, value: Saturday }
+                      - { label: Neděle, value: Sunday }
+                  - { name: opens, label: Od, widget: string, pattern: ["^\\d{2}:\\d{2}$", "Ve tvaru 09:00"] }
+                  - { name: closes, label: Do, widget: string, pattern: ["^\\d{2}:\\d{2}$", "Ve tvaru 17:00"] }
+              - { name: legalName, label: Provozovatel, widget: string }
+              - { name: ico, label: IČO, widget: string }
+              - { name: registeredAddress, label: Sídlo, widget: string }
+              - { name: showroomName, label: Název vzorkovny, widget: string }
+              - { name: areaServed, label: Kde působíte, widget: string }
+              - name: geo
+                label: Poloha na mapě (GPS)
+                widget: object
+                collapsed: true
+                fields:
+                  - { name: latitude, label: Zeměpisná šířka, widget: number, value_type: float }
+                  - { name: longitude, label: Zeměpisná délka, widget: number, value_type: float }
+              - { name: mapEmbed, label: Odkaz na vloženou mapu Google, widget: text, hint: "Google Mapy → Sdílet → Vložit mapu → zkopírujte adresu ze src=\"…\"." }
