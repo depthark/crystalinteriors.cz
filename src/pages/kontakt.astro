@@ -130,7 +130,7 @@ const webMcpForm: Record<string, string> = {
       <section class="rounded-3xl border border-border bg-surface p-7 shadow-card md:p-9" aria-labelledby="inquiry-title">
         <h2 id="inquiry-title" class="text-2xl text-foreground md:text-3xl">Nezávazná poptávka</h2>
         <p id="inquiry-help" class="mt-2 leading-7 text-muted">
-          Vyplňte pár údajů a otevře se vám e-mail připravený k odeslání. Odpovídáme obvykle do dvou pracovních dnů.
+          Vyplňte pár údajů a poptávka nám přijde rovnou do e-mailu. Odpovídáme obvykle do dvou pracovních dnů.
         </p>
 
         <form
@@ -166,12 +166,15 @@ const webMcpForm: Record<string, string> = {
               <option>Jen vizualizace</option>
             </select>
           </label>
+          <label class="inquiry__trap" aria-hidden="true">
+            Nevyplňujte <input name="website" type="text" tabindex="-1" autocomplete="off" />
+          </label>
           <label class="inquiry__field">
             <span>Zpráva</span>
             <textarea name="message" rows="5" required maxlength="4000" placeholder="Např. kuchyň 3,5 × 4 m, plánujeme realizaci na jaře…"></textarea>
           </label>
           <div class="flex flex-wrap items-center gap-4">
-            <Button as="button" type="submit" variant="primary" size="lg">Připravit e-mail</Button>
+            <Button as="button" type="submit" variant="primary" size="lg">Odeslat poptávku</Button>
             <p class="text-sm text-muted" role="status" aria-live="polite" data-inquiry-status></p>
           </div>
         </form>
@@ -209,6 +212,14 @@ const webMcpForm: Record<string, string> = {
     transition: border-color var(--duration-fast) var(--ease-standard);
   }
 
+  .inquiry__trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
   .inquiry__field textarea {
     resize: vertical;
   }
@@ -225,14 +236,20 @@ const webMcpForm: Record<string, string> = {
 </style>
 
 <script>
-  // Builds a ready-to-send e-mail; without JS the native mailto form posts.
+  // Sends the inquiry through /api/inquiry (Resend). If the endpoint is not
+  // available (GitHub Pages, missing config, outage) it falls back to a
+  // prepared mailto: e-mail; without JS the native mailto form posts.
   const form = document.querySelector<HTMLFormElement>("[data-inquiry]");
   const status = document.querySelector<HTMLElement>("[data-inquiry-status]");
+  const submit = form?.querySelector<HTMLButtonElement>("button[type=submit]");
+  const startedAt = Date.now();
+  const endpoint = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/api/inquiry`;
 
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-    const data = new FormData(form);
+  const setStatus = (text: string) => {
+    if (status) status.textContent = text;
+  };
+
+  const openMailto = (data: FormData) => {
     const value = (key: string) => String(data.get(key) ?? "").trim();
     const room = value("room");
     const subject = `Poptávka z webu${room ? ` – ${room}` : ""}`;
@@ -243,7 +260,35 @@ const webMcpForm: Record<string, string> = {
       ...(room ? [`Typ prostoru: ${room}`] : []),
     ];
     const body = [value("message"), "", ...details].join("\n");
-    window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    if (status) status.textContent = "Otevírám váš e-mailový program…";
+    window.location.href = `mailto:${form?.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setStatus("Odeslání z webu teď nefunguje – otevírám váš e-mailový program.");
+  };
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    if (submit) submit.disabled = true;
+    setStatus("Odesílám…");
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...Object.fromEntries(data), startedAt }),
+      });
+      const result = (await response.json().catch(() => ({}))) as { error?: string };
+      if (response.ok) {
+        form.reset();
+        setStatus("Děkujeme, poptávka je odeslaná. Ozveme se vám do dvou pracovních dnů.");
+      } else if (response.status === 400 && result.error) {
+        setStatus(result.error);
+      } else {
+        openMailto(data);
+      }
+    } catch {
+      openMailto(data);
+    } finally {
+      if (submit) submit.disabled = false;
+    }
   });
 </script>

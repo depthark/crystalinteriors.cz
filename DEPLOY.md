@@ -7,6 +7,7 @@ na stejné doméně tři malé serverové funkce:
 | --- | --- | --- |
 | `/api/auth`, `/api/callback` | `functions/api/auth.ts`, `callback.ts` | Přihlášení do administrace přes GitHub (OAuth) |
 | `/api/cloudinary` | `functions/api/cloudinary.ts` | Podepisuje nahrávání fotek do Cloudinary – editorky nepotřebují účet v Cloudinary |
+| `/api/inquiry` | `functions/api/inquiry.ts` | Odešle poptávku z formuláře na `/kontakt/` e-mailem přes Resend |
 | `/mcp` | `functions/mcp.ts` | Read-only MCP server pro AI agenty |
 
 ## 1. Cloudflare Pages – jednorázově
@@ -26,6 +27,9 @@ na stejné doméně tři malé serverové funkce:
    | `GITHUB_CLIENT_ID` | z kroku 2 | text |
    | `GITHUB_CLIENT_SECRET` | z kroku 2 | **Secret** |
    | `DEPLOY_HOOK_URL` | volitelně – *Settings → Builds → Deploy hooks* | Secret |
+   | `RESEND_API_KEY` | Resend API klíč (jen *Sending access*) – viz krok 4 | **Secret** |
+   | `INQUIRY_FROM` | volitelně, výchozí `Crystal Interiors <web@crystalinteriors.cz>` | text |
+   | `INQUIRY_TO` | volitelně – příjemci oddělení čárkou (jinak kontakty z CMS) | text |
    | `BUN_VERSION` | `1.4.3` | text |
    | `NODE_VERSION` | `24` (také v `.node-version`) | text |
 
@@ -66,7 +70,28 @@ na stejné doméně tři malé serverové funkce:
 
 **GitHub Pages build** (dočasný hosting): v repozitáři *Settings → Secrets and variables → Actions* přidejte secret `CLOUDINARY_URL` a variable `PUBLIC_CLOUDINARY_CLOUD_NAME` – workflow je už předává do buildu.
 
-## 4. Jak editorky pracují (`/admin/`)
+## 4. E-mail – schránky na Webnode, formulář přes Resend
+
+- **Schránky `@crystalinteriors.cz` zůstávají na Webnode** (`imap.mail.webnode.com`).
+  Záznamy MX, SPF, DMARC, `autoconfig` a `_autodiscover._tcp` musí být v DNS
+  beze změny (viz `ROLLBACK.md`). Předplatné Webnode nerušte, dokud schránky
+  nejsou přesunuté jinam – jinak pošta přestane fungovat.
+- **Formulář na `/kontakt/`** posílá poptávku přes `/api/inquiry` a Resend oběma
+  designérkám (kontakty z *Nastavení* v CMS), `Reply-To` je adresa zákazníka.
+  Když funkce není dostupná (GitHub Pages, chybí klíč, výpadek), stránka otevře
+  připravený e-mail v programu návštěvníka (`mailto:`).
+
+Nastavení Resend (jednorázově):
+
+1. <https://resend.com> → **Domains → Add domain** → `crystalinteriors.cz`, region EU.
+2. Do Cloudflare DNS přidejte záznamy, které Resend ukáže (DKIM `resend._domainkey`
+   TXT a pro subdoménu `send` MX + SPF TXT). **Kořenový MX ani SPF neměňte** –
+   patří Webnode poště.
+3. Po ověření domény: **API Keys → Create** s oprávněním *Sending access* jen pro
+   tuto doménu → do Cloudflare jako `RESEND_API_KEY` (Secret). Redeploy.
+4. Test: odešlete formulář na `/kontakt/` – e-mail musí dorazit do obou schránek.
+
+## 5. Jak editorky pracují (`/admin/`)
 
 1. `https://www.crystalinteriors.cz/admin/` → **Přihlásit se přes GitHub**.
 2. Při prvním otevření každé obrazovky se spustí **průvodce** (driver.js); kdykoli znovu přes **Nápověda** vlevo dole.
@@ -77,7 +102,7 @@ na stejné doméně tři malé serverové funkce:
 
 Před každým odebráním se administrace zeptá. Odebraná fotka v Cloudinary zůstává.
 
-## 5. Lokální vývoj
+## 6. Lokální vývoj
 
 ```bash
 bun install
@@ -88,9 +113,10 @@ bun run gallery:build # jen načtení galerií z Cloudinary (potřebuje CLOUDINA
 bun run icons        # přegeneruje favicony / PWA ikony ze scripts/generate-icons.mjs
 ```
 
-## 6. Kontrola po nasazení
+## 7. Kontrola po nasazení
 
 - `/admin/` – přihlášení, úprava textu, publikování.
+- `/kontakt/` – testovací poptávka dorazí do obou schránek; pošta na `@crystalinteriors.cz` dál chodí.
 - [Rich Results Test](https://search.google.com/test/rich-results) – LocalBusiness, FAQPage, BreadcrumbList, Service.
 - Lighthouse (mobil) – výkon, přístupnost, SEO, PWA (instalace z prohlížeče).
 - `/llms.txt`, `/agent/site.json`, `/sitemap.xml`

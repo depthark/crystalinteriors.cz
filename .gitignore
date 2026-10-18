@@ -19,3 +19,6 @@ node_modules
 
 # Cloudinary gallery data (generated at build time by scripts/build-cloudinary-gallery.mjs)
 public/data/references-gallery.json
+
+# Wrangler local dev state
+.wrangler/
