@@ -37,8 +37,8 @@ interface Context {
 
 const DEFAULT_REPO = "depthark/crystalinteriors.cz";
 const CLOUDINARY_ROOT = "CrystalInteriors";
-// CrystalInteriors/Reference/<room-slug> or CrystalInteriors/Web
-const FOLDER = new RegExp(`^${CLOUDINARY_ROOT}/(Reference/[a-z0-9-]{1,40}|Web)$`);
+// CrystalInteriors/Projekty/<project-slug> or CrystalInteriors/Web
+const FOLDER = new RegExp(`^${CLOUDINARY_ROOT}/(Projekty/[a-z0-9-]{1,60}|Web)$`);
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), {

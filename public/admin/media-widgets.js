@@ -21,9 +21,9 @@
     .ciw-thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .ciw-actions{display:flex;gap:8px;flex-wrap:wrap}
     .ciw button{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid #ddd4c6;background:#fff;font:inherit;cursor:pointer}
-    .ciw button.primary{background:#7a5c33;border-color:#7a5c33;color:#fff;font-weight:600}
+    .ciw button.primary{background:#6B3E95;border-color:#6B3E95;color:#fff;font-weight:600}
     .ciw button.danger{color:#b42318}
-    .ciw button:focus-visible{outline:2px solid #7a5c33;outline-offset:2px}`;
+    .ciw button:focus-visible{outline:2px solid #6B3E95;outline-offset:2px}`;
 
   const CloudImage = createClass({
     async upload() {

@@ -23,7 +23,7 @@
   --color-border: oklch(0.2 0.008 80 / 0.08);
   --color-border-strong: oklch(0.2 0.008 80 / 0.16);
 
-  /* Action — filled buttons / CTAs. Neutral ink so bronze stays an accent. */
+  /* Action — filled buttons / CTAs. Neutral ink so purple stays an accent. */
   --color-action: oklch(0.22 0.008 75);
   --color-action-hover: oklch(0.32 0.01 75);
   --color-on-action: oklch(0.99 0.003 85);
@@ -33,11 +33,11 @@
   --color-royal: oklch(0.401 0.142 305.8);
   --color-royal-soft: oklch(0.94 0.025 306);
 
-  /* Brand (bronze) — accents only: eyebrows, links, thin lines, icons */
-  --color-primary: oklch(0.42 0.055 65);
-  --color-primary-hover: oklch(0.36 0.05 65);
-  --color-primary-soft: oklch(0.92 0.018 65);
-  --color-accent: oklch(0.68 0.07 73);
+  /* Brand purple — text accents only: eyebrows, links, thin lines, icons */
+  --color-primary: oklch(0.52 0.14 305); /* #7C50A8 – 5.5:1 on background, 4.9:1 on surface */
+  --color-primary-hover: oklch(0.44 0.14 305);
+  --color-primary-soft: oklch(0.93 0.03 305);
+  --color-accent: oklch(0.74 0.1 306); /* light lavender for lines and glows */
 
   --color-secondary: oklch(0.78 0.035 155);
   --color-secondary-hover: oklch(0.72 0.035 155);
@@ -131,14 +131,14 @@
   --color-border: oklch(1 0 0 / 0.08);
   --color-border-strong: oklch(1 0 0 / 0.16);
 
-  --color-primary: oklch(0.57 0.05 68);
-  --color-primary-hover: oklch(0.51 0.05 68);
-  --color-primary-soft: oklch(0.32 0.04 68);
+  --color-primary: oklch(0.74 0.1 306); /* #BA9ADD – 8.1:1 on background */
+  --color-primary-hover: oklch(0.8 0.09 306);
+  --color-primary-soft: oklch(0.3 0.06 306);
 
   --color-secondary: oklch(0.73 0.032 155);
   --color-secondary-hover: oklch(0.67 0.032 155);
 
-  --color-accent: oklch(0.7 0.08 73);
+  --color-accent: oklch(0.74 0.1 306);
 
   /* Even darker footer in dark theme — must be < background (0.16). */
   --color-footer-bg: oklch(0.1 0.003 80);

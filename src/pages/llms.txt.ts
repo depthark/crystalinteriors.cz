@@ -23,8 +23,10 @@ export const GET: APIRoute = () => {
     "",
     ...data.pricing.items.map((item) => `- ${item.title}: ${item.price}`),
     "",
-    "## Reference podle typu prostoru",
-    ...data.references.map((room) => `- [${room.title}](${room.url}): ${room.description}`),
+    "## Projekty",
+    ...(data.projects.length
+      ? data.projects.map((project) => `- [${project.title}](${project.url})${project.location ? ` (${project.location}${project.year ? `, ${project.year}` : ""})` : ""}: ${project.description.split("\n")[0]}`)
+      : ["- Ukázky projektů průběžně doplňujeme."]),
     "",
     "## Časté dotazy",
     ...data.faq.flatMap((item) => [`### ${item.question}`, item.answer, ""]),

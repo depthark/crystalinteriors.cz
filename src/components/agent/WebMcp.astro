@@ -43,7 +43,7 @@
 
     const PAGES: Record<string, string> = {
       home: "",
-      references: "projekty/",
+      projects: "projekty/",
       services: "sluzby/",
       about: "o-nas/",
       contact: "kontakt/",
@@ -67,12 +67,12 @@
         execute: async () => result((await data()).pricing),
       },
       {
-        name: "list_references",
-        title: "Reference",
-        description: "Portfolio galleries by room type with links to each gallery section.",
+        name: "list_projects",
+        title: "Projekty",
+        description: "Completed projects and visualisations: title, location, year, description and a link to each project.",
         inputSchema: empty,
         annotations: readOnly,
-        execute: async () => result((await data()).references),
+        execute: async () => result((await data()).projects),
       },
       {
         name: "search_faq",

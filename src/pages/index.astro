@@ -12,7 +12,6 @@ import WrenchScrewdriverIcon from "@/components/icons/WrenchScrewdriverIcon.astr
 import ClockIcon from "@/components/icons/ClockIcon.astro";
 import ParallaxStrip from "@/components/ParallaxStrip.astro";
 import FaqSection from "@/components/FaqSection.astro";
-import CloudImage from "@/components/ui/CloudImage.astro";
 import { site } from "@/data/site";
 import { heroPreload } from "@/lib/images";
 import { faqPage } from "@/lib/structured-data";
@@ -57,84 +56,6 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
             </span>
           </figcaption>
         </figure>
-      </div>
-    </section>
-
-    <ParallaxStrip
-      image={site.home.parallaxImage}
-      eyebrow="Čím se zabýváme"
-      title="Interiéry, kuchyně a nábytek na míru"
-      text="Návrh, vizualizace a realizace v jedné lince — od dispozice po finální detail."
-      tone="dark"
-      height="md"
-    />
-
-    <section
-      class="border-y border-border bg-surface py-14 sm:py-20 lg:py-28"
-      aria-labelledby="services-title"
-    >
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionIntro
-          eyebrow="Služby"
-          title="Od kuchyní po komerční interiéry"
-          text="Navrhujeme prostory podle toho, jak se skutečně používají. Estetiku držíme ve stejné disciplíně jako funkci, rozpočet a výrobu."
-          align="center"
-          headingId="services-title"
-        />
-
-        <ul class="mt-10 grid list-none gap-6 sm:mt-14 md:grid-cols-2 lg:grid-cols-3">
-          {
-            site.services.map((service) => {
-              const src = service.image.startsWith("/") ? withBase(service.image) : service.image;
-              const href = withBase(`/projekty/#${service.slug}`);
-              return (
-                <li>
-                  <a
-                    href={href}
-                    class="group block h-full overflow-hidden rounded-xl border border-border bg-background shadow-card no-underline transition duration-300 ease-standard hover:-translate-y-1 hover:border-primary/40 hover:shadow-lifted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label={`Zobrazit galerii — ${service.title}`}
-                  >
-                    <article class="flex h-full flex-col">
-                      <div class="relative overflow-hidden">
-                        <CloudImage
-                          src={src}
-                          alt={`${service.title} — ukázka návrhu Crystal Interiors`}
-                          width={900}
-                          height={675}
-                          widths={[400, 600, 900, 1200]}
-                          sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
-                          class="aspect-[4/3] w-full transform object-cover transition-transform duration-500 ease-out-soft group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                        />
-                        <div
-                          class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 ease-standard group-hover:opacity-100"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div class="flex flex-1 flex-col gap-3 p-5 sm:p-6">
-                        <h3 class="text-xl text-foreground sm:text-2xl">{service.title}</h3>
-                        <p class="leading-7 text-muted">{service.text}</p>
-                        <span
-                          class="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-medium uppercase tracking-eyebrow text-primary transition-transform duration-300 ease-standard group-hover:translate-x-1"
-                          aria-hidden="true"
-                        >
-                          Zobrazit galerii
-                          <ArrowRightIcon class="h-4 w-4" />
-                        </span>
-                      </div>
-                    </article>
-                  </a>
-                </li>
-              );
-            })
-          }
-        </ul>
-
-        <div class="mt-10 flex justify-center">
-          <Button as="a" href={withBase("/sluzby/")} variant="outline" size="lg" fullWidth rel={undefined}>
-            Zobrazit služby a ceník
-            <ArrowRightIcon class="h-5 w-5" />
-          </Button>
-        </div>
       </div>
     </section>
 
@@ -204,7 +125,7 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
 </BaseLayout>
 
 <style>
-  /* Final CTA: soft royal + bronze light behind the copy (accents only). */
+  /* Final CTA: soft royal + lavender light behind the copy (accents only). */
   .cta-glow::before {
     content: "";
     position: absolute;

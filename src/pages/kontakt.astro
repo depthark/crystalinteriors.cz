@@ -11,7 +11,7 @@ import { site } from "@/data/site";
 
 const page = site.contactPage;
 const primary = site.company.contacts[0];
-const roomOptions = site.references.map((room) => room.title);
+const roomOptions = site.services.map((service) => service.title);
 // Declarative WebMCP (draft spec) — not in Astro's attribute types yet.
 const webMcpForm: Record<string, string> = {
   toolname: "prefill_inquiry",

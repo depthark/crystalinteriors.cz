@@ -2,7 +2,7 @@
 import type { APIRoute } from "astro";
 import { site } from "@/data/site";
 import { cloudinaryImage } from "@/lib/cloudinary";
-import { getRoomMedia } from "@/lib/cloudinary-gallery";
+import { getProjectMedia } from "@/lib/cloudinary-gallery";
 
 const escape = (value: string) =>
   value.replace(/[<>&'"]/g, (char) => `&#${char.charCodeAt(0)};`);
@@ -14,8 +14,8 @@ export const GET: APIRoute = () => {
     if (href === "/sluzby/")
       return site.services.map((service) => ({ loc: cloudinaryImage(service.image, { width: 1600, fit: "limit" }), title: service.title }));
     if (href === "/projekty/")
-      return site.references.flatMap((room) =>
-        getRoomMedia(room)
+      return site.projects.flatMap((project) =>
+        getProjectMedia(project)
           .filter((item) => item.type === "image")
           .map((item) => ({ loc: item.full, title: item.alt })),
       );

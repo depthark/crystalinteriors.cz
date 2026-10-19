@@ -2,17 +2,17 @@
 /**
  * Build-time Cloudinary gallery fetch (same approach as anewstyle.cz).
  *
- * For every reference room (src/data/content/references/<slug>.json) this
- * lists all images and videos under `CrystalInteriors/Reference/<slug>` via
+ * For every project (src/data/content/projects/<slug>.json) this lists all
+ * images and videos under `CrystalInteriors/Projekty/<slug>` via
  * the authenticated Admin Search API, merges them with the CMS metadata
  * (order, alt text, hidden) and writes optimized delivery URLs to
- * `public/data/references-gallery.json`. Astro reads that file at build time
+ * `public/data/projects-gallery.json`. Astro reads that file at build time
  * (src/lib/cloudinary-gallery.ts).
  *
- * Source of truth per room:
+ * Source of truth per project:
  *   - CMS lists photos  → exactly those, in CMS order (hidden ones dropped).
  *                         Assets only in Cloudinary are reported, not shown.
- *   - CMS list is empty → everything in the room's Cloudinary folder.
+ *   - CMS list is empty → everything in the project's Cloudinary folder.
  *
  * Images use f_auto + q_auto (AVIF/WebP/JPEG per browser), g_auto crops.
  * Credentials: CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
@@ -24,11 +24,11 @@ import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT_FOLDER = process.env.CLOUDINARY_ROOT_FOLDER || "CrystalInteriors";
-const REFERENCE_FOLDER = `${ROOT_FOLDER}/Reference`;
-const ROOMS_DIR = path.join(process.cwd(), "src", "data", "content", "references");
-const OUT_FILE = path.join(process.cwd(), "public", "data", "references-gallery.json");
+const PROJECTS_FOLDER = `${ROOT_FOLDER}/Projekty`;
+const PROJECTS_DIR = path.join(process.cwd(), "src", "data", "content", "projects");
+const OUT_FILE = path.join(process.cwd(), "public", "data", "projects-gallery.json");
 
-// Grid tiles are 4:3 (ReferencesGallery.astro); the lightbox keeps the aspect.
+// Grid tiles are 4:3 (ProjectSection.astro); the lightbox keeps the aspect.
 const TILE_RATIO = 4 / 3;
 const TILE_WIDTHS = [360, 540, 800, 1080];
 const TILE_WIDTH = 800;
@@ -61,12 +61,12 @@ function parseCloudinaryUrl(url) {
   return match ? { resourceType: match[1], publicId: decodeURIComponent(match[2]) } : null;
 }
 
-async function loadRooms() {
-  const files = (await readdir(ROOMS_DIR)).filter((file) => file.endsWith(".json"));
-  const rooms = await Promise.all(
-    files.map(async (file) => JSON.parse(await readFile(path.join(ROOMS_DIR, file), "utf8"))),
+async function loadProjects() {
+  const files = (await readdir(PROJECTS_DIR).catch(() => [])).filter((file) => file.endsWith(".json"));
+  const projects = await Promise.all(
+    files.map(async (file) => JSON.parse(await readFile(path.join(PROJECTS_DIR, file), "utf8"))),
   );
-  return rooms.filter((room) => room?.slug);
+  return projects.filter((project) => project?.slug);
 }
 
 const subtree = (folder) =>
@@ -91,10 +91,10 @@ async function searchAll(expression) {
 }
 
 /** "kuchyne-bila_x7k2" → "Kuchyne bila" (fallback alt; editors refine it in the CMS). */
-function toAlt(publicId, roomTitle) {
+function toAlt(publicId, projectTitle) {
   const base = String(publicId).split("/").pop().replace(/_[a-z0-9]{6}$/i, "");
   const words = base.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
-  return words ? `${roomTitle} – ${words}` : roomTitle;
+  return words ? `${projectTitle} – ${words}` : projectTitle;
 }
 
 function buildItem(resource, { alt }) {
@@ -145,12 +145,12 @@ function buildItem(resource, { alt }) {
   };
 }
 
-async function buildRoom(room) {
-  const folder = `${REFERENCE_FOLDER}/${room.slug}`;
+async function buildProject(project) {
+  const folder = `${PROJECTS_FOLDER}/${project.slug}`;
   const resources = await searchAll(subtree(folder));
   const byId = new Map(resources.map((r) => [r.public_id, r]));
 
-  const cms = (Array.isArray(room.images) ? room.images : [])
+  const cms = (Array.isArray(project.images) ? project.images : [])
     .map((image) => ({ ...image, parsed: parseCloudinaryUrl(image.src) }))
     .filter((image) => image.parsed);
 
@@ -163,7 +163,7 @@ async function buildRoom(room) {
       });
       byId.set(resource.public_id, resource);
     } catch {
-      console.warn(`  ⚠ ${room.slug}: CMS photo not found in Cloudinary: ${image.parsed.publicId}`);
+      console.warn(`  ⚠ ${project.slug}: CMS photo not found in Cloudinary: ${image.parsed.publicId}`);
     }
   }
 
@@ -173,8 +173,8 @@ async function buildRoom(room) {
     const unlisted = resources.filter((r) => !listed.has(r.public_id));
     if (unlisted.length) {
       console.warn(
-        `  ℹ ${room.slug}: ${unlisted.length} asset(s) in ${folder} are not in the CMS and stay hidden ` +
-          `(add them in Reference → ${room.title} → „Přidat z Cloudinary“).`,
+        `  ℹ ${project.slug}: ${unlisted.length} asset(s) in ${folder} are not in the CMS and stay hidden ` +
+          `(add them in Projekty → ${project.title} → „Přidat z Cloudinary“).`,
       );
     }
     picked = cms
@@ -185,7 +185,7 @@ async function buildRoom(room) {
   }
 
   return picked.map(({ resource, alt }) =>
-    buildItem(resource, { alt: alt || toAlt(resource.public_id, room.title) }),
+    buildItem(resource, { alt: alt || toAlt(resource.public_id, project.title) }),
   );
 }
 
@@ -195,35 +195,35 @@ async function main() {
   if (!process.env.CLOUDINARY_URL) {
     const keep = await exists(OUT_FILE);
     console.warn(
-      `⚠ CLOUDINARY_URL not set – skipping Cloudinary gallery fetch.${keep ? " Keeping existing references-gallery.json." : ""}`,
+      `⚠ CLOUDINARY_URL not set – skipping Cloudinary gallery fetch.${keep ? " Keeping existing projects-gallery.json." : ""}`,
     );
-    if (!keep) await writeOut({ generatedAt: null, rooms: {} });
+    if (!keep) await writeOut({ generatedAt: null, projects: {} });
     return;
   }
 
   cloudinary.config(true); // re-read CLOUDINARY_URL (loadEnv may have just set it)
   cloudinary.config({ secure: true, analytics: false });
 
-  const rooms = await loadRooms();
+  const projects = await loadProjects();
   const out = {};
-  for (const room of rooms) out[room.slug] = await buildRoom(room);
+  for (const project of projects) out[project.slug] = await buildProject(project);
 
-  await writeOut({ generatedAt: new Date().toISOString(), rooms: out });
+  await writeOut({ generatedAt: new Date().toISOString(), projects: out });
 
   const total = Object.values(out).reduce((sum, items) => sum + items.length, 0);
   const summary = Object.entries(out).map(([slug, items]) => `${slug} ${items.length}`).join(", ");
   if (total === 0) {
     console.warn(
-      `⚠ Cloudinary gallery is EMPTY – credentials worked but nothing matched "${REFERENCE_FOLDER}/<room>". ` +
+      `⚠ Cloudinary gallery is EMPTY – credentials worked but nothing matched "${PROJECTS_FOLDER}/<project>". ` +
         "Check folder names and capitalisation in the media library.",
     );
   }
-  console.log(`✓ Cloudinary gallery: ${total} items (${summary}) → public/data/references-gallery.json`);
+  console.log(`✓ Cloudinary gallery: ${total} items (${summary}) → public/data/projects-gallery.json`);
 }
 
 // The gallery is an enhancement, never a build blocker.
 main().catch(async (error) => {
   console.warn("⚠ Cloudinary gallery fetch failed – deploying without fresh gallery data.");
   console.warn(`  ${error?.message ?? error}`);
-  if (!(await exists(OUT_FILE))) await writeOut({ generatedAt: null, rooms: {} });
+  if (!(await exists(OUT_FILE))) await writeOut({ generatedAt: null, projects: {} });
 });

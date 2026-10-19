@@ -20,19 +20,23 @@ export interface ReferenceImage {
   hidden?: boolean;
 }
 
-export interface ReferenceRoom {
+export interface Project {
   order?: number;
   slug: string;
-  /** Cloudinary tag used as a runtime fallback when `images` is empty. */
-  tag: string;
   title: string;
+  /** Optional facts shown under the title, e.g. "Brno-Líšeň" and "2024". */
+  location?: string;
+  year?: string;
+  /** Description; blank lines split paragraphs. */
   text: string;
   images: ReferenceImage[];
+  /** Optional Cloudinary tag, used at runtime when the project has no media yet. */
+  tag?: string;
 }
 
-// One file per room (CMS folder collection "Reference"), sorted by `order`.
-const rooms = Object.values(
-  import.meta.glob<ReferenceRoom>("./content/references/*.json", { eager: true, import: "default" }),
+// One file per project (CMS folder collection "Projekty"), sorted by `order`.
+const projects = Object.values(
+  import.meta.glob<Project>("./content/projects/*.json", { eager: true, import: "default" }),
 ).sort((a, b) => (a.order ?? 99) - (b.order ?? 99) || a.title.localeCompare(b.title, "cs"));
 
 const company = settings.company;
@@ -81,7 +85,7 @@ export const site = {
   pricing: services.pricing as Array<{ title: string; price: string; amount?: number }>,
   about,
   referencesPage: { seo: references.seo, intro: references.intro },
-  references: rooms.map((room) => ({ ...room, images: room.images ?? [] })),
+  projects: projects.map((project) => ({ ...project, images: project.images ?? [] })),
   contactPage: contact,
 };
 

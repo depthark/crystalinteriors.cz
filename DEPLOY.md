@@ -46,9 +46,9 @@ na stejné doméně tři malé serverové funkce:
 
 **Jak to funguje**
 
-1. Editorka v administraci nahraje fotky / videa (*Reference → sekce → Nahrát fotky / videa*). Soubory jdou přímo z prohlížeče do Cloudinary, do složky `CrystalInteriors/Reference/<sekce>` (např. `…/kuchyne`). Nahrání podepisuje `/api/cloudinary` – jen pro přihlášené s právem zápisu do repozitáře, editorky nepotřebují účet v Cloudinary.
-2. CMS uloží do `src/data/content/references/<sekce>.json` pořadí, popisky a skryté položky.
-3. Při každém buildu `scripts/build-cloudinary-gallery.mjs` načte (Admin Search API, `CLOUDINARY_URL`) všechny fotky a videa ze složek sekcí, spojí je s údaji z CMS a zapíše `public/data/references-gallery.json` (náhledy 4:3 se `srcset`, AVIF/WebP přes `f_auto`, videa MP4 + náhled). Stránka Projekty, schema.org, sitemap i `/agent/site.json` čtou tenhle soubor.
+1. Editorka v administraci nahraje fotky / videa (*Projekty → projekt → Nahrát fotky / videa*). Soubory jdou přímo z prohlížeče do Cloudinary, do složky `CrystalInteriors/Projekty/<projekt>` (např. `…/kuchyne-lesna`). Nahrání podepisuje `/api/cloudinary` – jen pro přihlášené s právem zápisu do repozitáře, editorky nepotřebují účet v Cloudinary.
+2. CMS uloží do `src/data/content/projects/<projekt>.json` pořadí, popisky a skryté položky.
+3. Při každém buildu `scripts/build-cloudinary-gallery.mjs` načte (Admin Search API, `CLOUDINARY_URL`) všechny fotky a videa ze složek sekcí, spojí je s údaji z CMS a zapíše `public/data/projects-gallery.json` (náhledy 4:3 se `srcset`, AVIF/WebP přes `f_auto`, videa MP4 + náhled). Stránka Projekty, schema.org, sitemap i `/agent/site.json` čtou tenhle soubor.
 
 **Co se zobrazí**
 
@@ -70,7 +70,7 @@ na stejné doméně tři malé serverové funkce:
 
 1. `https://www.crystalinteriors.cz/admin/` → **Přihlásit se přes GitHub**.
 2. Při prvním otevření každé obrazovky se spustí **průvodce** (driver.js); kdykoli znovu přes **Nápověda** vlevo dole.
-3. **Reference** – jedna položka = jedna sekce galerie. *Nahrát fotky / videa* (i víc najednou, přetažením), *Přidat z Cloudinary* (soubory už nahrané ve složce sekce), doplnit *Popis fotky*, hvězdičkou vybrat hlavní fotku, šipkami pořadí.
+3. **Projekty** – jedna položka = jeden projekt (název, místo, rok, popis, galerie). *Nahrát fotky / videa* (i víc najednou, přetažením), *Přidat z Cloudinary* (soubory už nahrané ve složce projektu), doplnit *Popis fotky*, hvězdičkou vybrat hlavní fotku, šipkami pořadí.
 4. **Stránky** – texty, služby, ceník, časté dotazy, SEO titulky a popisy.
 5. **Nastavení** – kontakty, adresa, otevírací doba, sociální sítě.
 6. **Uložit** → vznikne koncept (pull request, Cloudflare postaví náhled) → **Publikovat → Publikovat nyní**. Panel vpravo dole hlídá sestavení (`/build.json`) a ohlásí, až je změna na webu (2–3 min).

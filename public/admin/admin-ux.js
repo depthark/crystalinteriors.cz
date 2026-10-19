@@ -10,7 +10,7 @@
  *    one, so each explains exactly what is in front of the editor:
  *      intro    – the dashboard: sections, Schvalování, help button
  *      editor   – any edit screen: fields, Uložit, status, Publikovat
- *      gallery  – a room gallery (Reference → photos)
+ *      gallery  – a project gallery (Projekty → photos)
  *      workflow – the Schvalování board
  *      publish  – the publishing process step by step (also from the help menu)
  *    Each runs automatically the first time its screen is opened; finishing
@@ -28,7 +28,7 @@
     .ax-confirm .row{display:flex;justify-content:flex-end;gap:8px}
     .ax-confirm button{font:inherit;min-height:44px;padding:0 18px;border-radius:8px;border:1px solid #d0d7de;background:#fff;cursor:pointer}
     .ax-confirm button[value=ok]{background:#cf222e;border-color:#cf222e;color:#fff;font-weight:600}
-    .ax-confirm button:focus-visible{outline:2px solid #7a5c33;outline-offset:2px}`;
+    .ax-confirm button:focus-visible{outline:2px solid #6B3E95;outline-offset:2px}`;
 
   const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -128,9 +128,9 @@
   const TOURS = {
     intro: () => [
       step(null, "Vítejte v administraci Crystal Interiors",
-        "Tady upravujete obsah webu crystalinteriors.cz – reference, texty stránek, ceník, časté dotazy i kontakty. Provedu vás během minuty. Prohlídku můžete kdykoli zavřít a spustit znovu tlačítkem <b>Nápověda</b> vlevo dole."),
+        "Tady upravujete obsah webu crystalinteriors.cz – projekty, texty stránek, ceník, časté dotazy i kontakty. Provedu vás během minuty. Prohlídku můžete kdykoli zavřít a spustit znovu tlačítkem <b>Nápověda</b> vlevo dole."),
       step('[class*="SidebarContainer"]', "Sekce administrace",
-        "<b>Reference</b> – galerie fotek podle místností (kuchyně, ložnice…) na stránce Projekty<br><b>Stránky</b> – texty úvodní stránky, služeb a ceníku, O nás, Kontakt a časté dotazy<br><b>Nastavení</b> – kontakty, adresa, sociální sítě a údaje pro Google<br><br>Klikněte na sekci a otevře se její obsah.", "right"),
+        "<b>Projekty</b> – vaše realizace a vizualizace: název, popis a galerie fotek<br><b>Stránky</b> – texty úvodní stránky, služeb a ceníku, O nás, Kontakt a časté dotazy<br><b>Nastavení</b> – kontakty, adresa, sociální sítě a údaje pro Google<br><br>Klikněte na sekci a otevře se její obsah.", "right"),
       step('a[href="#/workflow"]', "Schvalování",
         "Tady jsou uložené změny, které ještě nejsou na webu (koncepty). Odtud je můžete publikovat."),
       step('[class*="AppHeaderSiteLink"]', "Odkaz na web", "Otevře živý web v nové záložce, ať si změny hned zkontrolujete."),
@@ -149,12 +149,12 @@
         "Tady upravujete texty. Šedé nápovědy pod poli říkají, kde se obsah na webu zobrazí. Seznamy (služby, ceník, dotazy) rozbalíte kliknutím, přidáte tlačítkem <b>Přidat</b> a odeberete křížkem – vždy se zeptám, jestli to myslíte vážně. Sekce <b>Vyhledávače (SEO)</b> určuje, jak stránku uvidí Google.", "top"),
     ],
     gallery: () => [
-      step(".rg-help", "Galerie místnosti",
-        "Tady jsou všechny fotky jedné sekce referencí. Co vidíte tady, je na webu – ve stejném pořadí."),
+      step(".rg-help", "Galerie projektu",
+        "Tady jsou všechny fotky a videa tohoto projektu. Co vidíte tady, je na webu – ve stejném pořadí."),
       step(".rg-primary", "Nahrát fotky a videa",
-        "Klikněte, nebo soubory rovnou přetáhněte do okna. Můžete vybrat víc najednou, velké fotky zmenšíme automaticky. Uloží se do složky této sekce v Cloudinary a přidají se na konec.", "left"),
+        "Klikněte, nebo soubory rovnou přetáhněte do okna. Můžete vybrat víc najednou, velké fotky zmenšíme automaticky. Uloží se do složky projektu v Cloudinary a přidají se na konec.", "left"),
       step(".rg-secondary", "Přidat z Cloudinary",
-        "Máte fotky nahrané přímo v Cloudinary (složka <b>CrystalInteriors/Reference/…</b>)? Tady je vyberete a přidáte do galerie. Dokud je galerie v administraci prázdná, web ukazuje automaticky vše ze složky.", "left"),
+        "Máte fotky nahrané přímo v Cloudinary (složka <b>CrystalInteriors/Projekty/…</b>)? Tady je vyberete a přidáte do galerie. Dokud je galerie v administraci prázdná, web ukazuje automaticky vše ze složky.", "left"),
       step(".rg-card", "Karta fotky",
         "<b>Popis fotky</b> – krátce, co je na fotce (čtou ho nevidomí a Google). <b>Hvězdička</b> udělá z fotky hlavní – na webu je velká. Šipky mění pořadí, <b>Dočasně skrýt</b> fotku schová a koš ji odebere (v Cloudinary zůstane).", "right"),
       step('[class*="SaveButton"]', "Nezapomeňte uložit a publikovat",
@@ -221,17 +221,17 @@
 
   // ------------------------------------------------------------ help button
   const helpCss = `
-    #ax-help{position:fixed;left:16px;bottom:16px;z-index:9000;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:#7a5c33;color:#fff;font:600 14px/1 system-ui,sans-serif;box-shadow:0 8px 24px rgb(0 0 0/.25);cursor:pointer}
-    #ax-help:hover{background:#654b29}
+    #ax-help{position:fixed;left:16px;bottom:16px;z-index:9000;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:#6B3E95;color:#fff;font:600 14px/1 system-ui,sans-serif;box-shadow:0 8px 24px rgb(0 0 0/.25);cursor:pointer}
+    #ax-help:hover{background:#5B2C83}
     #ax-help:focus-visible{outline:2px solid #1f2328;outline-offset:3px}
     #ax-help-menu{position:fixed;left:16px;bottom:68px;z-index:9000;display:flex;flex-direction:column;min-width:16rem;padding:6px;border-radius:10px;background:#fff;box-shadow:0 16px 40px rgb(0 0 0/.25);font:14px/1.4 system-ui,sans-serif}
     #ax-help-menu[hidden]{display:none}
     #ax-help-menu button{min-height:44px;padding:0 12px;border:0;border-radius:6px;background:none;text-align:left;font:inherit;color:#1f2328;cursor:pointer}
-    #ax-help-menu button:hover,#ax-help-menu button:focus-visible{background:#f6f0e6;outline:none}
+    #ax-help-menu button:hover,#ax-help-menu button:focus-visible{background:#F3EDF9;outline:none}
     .driver-popover.ax-tour{max-width:24rem;font-family:system-ui,sans-serif}
     .driver-popover.ax-tour .driver-popover-title{font-size:17px}
     .driver-popover.ax-tour .driver-popover-description{font-size:14px;line-height:1.55}
-    .driver-popover.ax-tour .driver-popover-next-btn{background:#7a5c33;color:#fff;text-shadow:none;border-color:#7a5c33}`;
+    .driver-popover.ax-tour .driver-popover-next-btn{background:#6B3E95;color:#fff;text-shadow:none;border-color:#6B3E95}`;
 
   function mountHelp() {
     if (document.getElementById("ax-help")) return;

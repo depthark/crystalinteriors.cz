@@ -3,7 +3,7 @@
  * Feeds /agent/site.json, /llms.txt, the WebMCP tools and the /mcp server.
  */
 import { site } from "@/data/site";
-import { getRoomMedia } from "@/lib/cloudinary-gallery";
+import { getProjectMedia } from "@/lib/cloudinary-gallery";
 
 const url = (path: string) => `${site.siteUrl}${path}`;
 
@@ -19,12 +19,14 @@ export function getSiteData() {
       note: site.servicesPage.pricingIntro,
       items: site.pricing.map(({ title, price, amount }) => ({ title, price, from: amount ?? null })),
     },
-    references: site.references.map((room) => ({
-      title: room.title,
-      description: room.text,
-      url: url(`/projekty/#${room.slug}`),
-      photos: getRoomMedia(room).filter((item) => item.type === "image").length,
-      videos: getRoomMedia(room).filter((item) => item.type === "video").length,
+    projects: site.projects.map((project) => ({
+      title: project.title,
+      location: project.location ?? null,
+      year: project.year ?? null,
+      description: project.text,
+      url: url(`/projekty/#${project.slug}`),
+      photos: getProjectMedia(project).filter((item) => item.type === "image").length,
+      videos: getProjectMedia(project).filter((item) => item.type === "video").length,
     })),
     faq: site.faq,
     process: site.process,

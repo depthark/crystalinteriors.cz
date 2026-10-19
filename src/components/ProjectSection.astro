@@ -1,43 +1,52 @@
 ---
 /**
- * One room-type gallery on /projekty/.
+ * One project on /projekty/: title, location/year, description and gallery.
  *
- * Media come from `getRoomMedia()`: the build-time Cloudinary scan merged
+ * Media come from `getProjectMedia()`: the build-time Cloudinary scan merged
  * with the CMS (anewstyle approach), or the CMS list alone. They render at
  * build time – crawlable, AVIF/WebP via Cloudinary, sized with srcset.
- * Videos open as HTML5 video in Fancybox. Rooms without any media fall back
- * to the Cloudinary tag list at runtime (src/pages/projekty.astro).
+ * Videos open as HTML5 video in Fancybox. Projects without any media fall back
+ * to their optional Cloudinary tag at runtime (src/pages/projekty.astro).
  */
-import type { ReferenceRoom } from "@/data/site";
-import { getRoomMedia } from "@/lib/cloudinary-gallery";
+import type { Project } from "@/data/site";
+import { getProjectMedia } from "@/lib/cloudinary-gallery";
 
 export interface Props {
-  category: ReferenceRoom;
+  project: Project;
 }
 
-const { category } = Astro.props;
-const galleryId = `references-${category.slug}`;
+const { project } = Astro.props;
+const galleryId = `project-${project.slug}`;
 const headingId = `${galleryId}-title`;
 const descriptionId = `${galleryId}-description`;
-const media = getRoomMedia(category);
+const media = getProjectMedia(project);
+const meta = [project.location, project.year].filter(Boolean);
+const paragraphs = project.text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 const isStatic = media.length > 0;
 const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
 ---
 
 <section
-  id={category.slug}
+  id={project.slug}
   class="scroll-mt-28 grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
   data-references-section
   data-static={isStatic ? "true" : undefined}
-  data-tag={category.tag}
+  data-tag={project.tag}
   data-gallery-id={galleryId}
-  data-title={category.title}
+  data-title={project.title}
   aria-labelledby={headingId}
   aria-describedby={descriptionId}
 >
   <div class="space-y-4 lg:sticky lg:top-28 lg:self-start">
-    <h2 id={headingId} class="text-3xl leading-tight text-foreground">{category.title}</h2>
-    <p id={descriptionId} class="text-base leading-8 text-muted">{category.text}</p>
+    {
+      meta.length > 0 && (
+        <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">{meta.join(" · ")}</p>
+      )
+    }
+    <h2 id={headingId} class="text-3xl leading-tight text-foreground">{project.title}</h2>
+    <div id={descriptionId} class="space-y-4 text-base leading-8 text-muted">
+      {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
   </div>
 
   <div class="py-4" aria-busy={isStatic ? "false" : "true"} aria-live="polite" data-references-live>
@@ -51,7 +60,7 @@ const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
     <ul
       class:list={["references-grid list-none", !isStatic && "hidden"]}
       data-references-grid
-      aria-label={`Galerie — ${category.title}`}
+      aria-label={`Galerie — ${project.title}`}
     >
       {
         media.map((item) => (

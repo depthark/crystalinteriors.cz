@@ -1,9 +1,9 @@
 /**
- * "room-gallery" widget – one room's photos on one screen.
+ * "project-gallery" widget – one project's photos and videos on one screen.
  *
  * Every card is one photo or video exactly as the website shows it:
  * thumbnail, alt text, hide, order, remove. New files are uploaded straight
- * to Cloudinary (folder CrystalInteriors/Reference/<slug>) and added to the
+ * to Cloudinary (folder CrystalInteriors/Projekty/<slug>) and added to the
  * end; "Přidat z Cloudinary" adds files already sitting in that folder (e.g.
  * uploaded in the Cloudinary console). The build script merges this list with
  * the folder (scripts/build-cloudinary-gallery.mjs).
@@ -23,7 +23,7 @@
   const slugify = (value) =>
     String(value || "")
       .normalize("NFD").replace(/[̀-ͯ]/g, "")
-      .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+      .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
 
   const ICONS = {
     up: "M6 15l6-6 6 6",
@@ -41,15 +41,15 @@
       h("path", { d: ICONS[name] }));
 
   const STYLE = `
-  .rg{--brand:#7a5c33;--brand-bg:#f6f0e6;--line:#ddd4c6;--muted:#6b6357;font:14px/1.5 system-ui,sans-serif;color:#1f1d1a}
+  .rg{--brand:#6B3E95;--brand-bg:#F3EDF9;--line:#ddd4c6;--muted:#6b6357;font:14px/1.5 system-ui,sans-serif;color:#1f1d1a}
   .rg button,.rg input{font:inherit}
   .rg :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-  .rg-help{margin:0 0 14px;padding:12px 16px;border-radius:10px;background:var(--brand-bg);color:#4a3d2a}
+  .rg-help{margin:0 0 14px;padding:12px 16px;border-radius:10px;background:var(--brand-bg);color:#3F2A57}
   .rg-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 0;margin-bottom:14px;background:#fff;border-bottom:1px solid var(--line)}
   .rg-count{color:var(--muted)}
   .rg-warn{display:inline-flex;align-items:center;gap:6px;color:#9a5b00}
   .rg-primary{margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
-  .rg-primary:hover{background:#654b29}
+  .rg-primary:hover{background:#5B2C83}
   .rg-secondary{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--brand);border-radius:10px;background:#fff;color:var(--brand);font-weight:600;cursor:pointer}
   .rg-secondary:hover{background:var(--brand-bg)}
   .rg-pick{border:0;padding:0;border-radius:14px;width:min(52rem,calc(100vw - 2rem));max-height:calc(100vh - 2rem);font:14px/1.5 system-ui,sans-serif;color:#1f1d1a;box-shadow:0 24px 64px rgb(0 0 0/.35)}
@@ -58,13 +58,13 @@
   .rg-pick h2{margin:0;font-size:19px}
   .rg-pick .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;overflow:auto;min-height:6rem}
   .rg-pick label{position:relative;display:block;border:2px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer}
-  .rg-pick label:has(:checked){border-color:#7a5c33}
-  .rg-pick label:has(:focus-visible){outline:2px solid #7a5c33;outline-offset:2px}
+  .rg-pick label:has(:checked){border-color:#6B3E95}
+  .rg-pick label:has(:focus-visible){outline:2px solid #6B3E95;outline-offset:2px}
   .rg-pick img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
-  .rg-pick input{position:absolute;top:8px;left:8px;width:20px;height:20px;accent-color:#7a5c33}
+  .rg-pick input{position:absolute;top:8px;left:8px;width:20px;height:20px;accent-color:#6B3E95}
   .rg-pick .row{display:flex;justify-content:flex-end;gap:8px}
   .rg-pick button{font:inherit;min-height:44px;padding:0 18px;border-radius:10px;border:1px solid #d6cdbf;background:#fff;cursor:pointer}
-  .rg-pick button[type=submit]{background:#7a5c33;border-color:#7a5c33;color:#fff;font-weight:600}
+  .rg-pick button[type=submit]{background:#6B3E95;border-color:#6B3E95;color:#fff;font-weight:600}
   .rg-pick .msg{margin:0;color:#6b6357}
   .rg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
   .rg-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;transition:box-shadow .2s}
@@ -127,7 +127,7 @@
     },
 
     folder() {
-      return `CrystalInteriors/Reference/${this.room().slug}`;
+      return `CrystalInteriors/Projekty/${this.room().slug}`;
     },
 
     /** Files already in the room's Cloudinary folder that the CMS does not list yet. */
@@ -180,7 +180,7 @@
         multiple: true,
         video: true,
         folder: this.folder(),
-        label: room.title ? `Reference → ${room.title}` : "",
+        label: room.title ? `Projekty → ${room.title}` : "",
       });
       if (!uploaded.length) return;
       this.commit([...this.items(), ...uploaded.map(({ url }) => ({ src: url, alt: "", hidden: false }))]);
@@ -231,12 +231,12 @@
         h("div", { className: "rg-bar", role: "toolbar", "aria-label": "Galerie" },
           h("span", { className: "rg-count" }, `${items.length} ${items.length === 1 ? "položka" : items.length >= 2 && items.length <= 4 ? "položky" : "položek"}${hidden ? ` · ${hidden} skryto` : ""}`),
           missing > 0 && h("span", { className: "rg-warn" }, icon("alert", 16), `${missing}× chybí popis`),
-          h("button", { type: "button", className: "rg-secondary", onClick: () => this.addFromCloudinary(), title: "Soubory, které už jsou ve složce této sekce v Cloudinary" }, icon("cloud"), "Přidat z Cloudinary"),
+          h("button", { type: "button", className: "rg-secondary", onClick: () => this.addFromCloudinary(), title: "Soubory, které už jsou ve složce tohoto projektu v Cloudinary" }, icon("cloud"), "Přidat z Cloudinary"),
           h("button", { type: "button", className: "rg-primary", onClick: () => this.add() }, icon("upload"), "Nahrát fotky / videa")),
         items.length
           ? h("div", { className: "rg-grid" }, ...items.map((item, index) => this.renderCard(item, index, items.length)))
           : h("div", { className: "rg-empty" },
-              "Galerie je zatím prázdná. Klikněte na „Nahrát fotky / videa“ (můžete vybrat víc souborů najednou), nebo „Přidat z Cloudinary“, pokud už fotky máte ve složce. Dokud je seznam prázdný, web ukazuje vše ze složky v Cloudinary."));
+              "Galerie je zatím prázdná. Klikněte na „Nahrát fotky / videa“ (můžete vybrat víc souborů najednou), nebo „Přidat z Cloudinary“, pokud už fotky máte ve složce. Dokud je seznam prázdný, web ukazuje vše ze složky projektu v Cloudinary."));
     },
   });
 
@@ -246,5 +246,5 @@
     },
   });
 
-  window.CMS.registerWidget("room-gallery", RoomGallery, RoomGalleryPreview);
+  window.CMS.registerWidget("project-gallery", RoomGallery, RoomGalleryPreview);
 })();

@@ -79,7 +79,7 @@
 
   // Where to send the editor once it is live.
   const urlFor = (collection) =>
-    ({ reference: "/projekty/", stranky: "/", nastaveni: "/kontakt/" })[collection] || "/";
+    ({ projekty: "/projekty/", stranky: "/", nastaveni: "/kontakt/" })[collection] || "/";
 
   window.CMS.registerEventListener({
     name: "postPublish",

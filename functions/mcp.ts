@@ -19,7 +19,7 @@ interface Context {
 type Facts = {
   services: unknown[];
   pricing: unknown;
-  references: unknown[];
+  projects: unknown[];
   faq: { question: string; answer: string }[];
   process: unknown[];
   contact: unknown;
@@ -59,9 +59,9 @@ const TOOLS = [
     annotations: readOnly,
   },
   {
-    name: "list_references",
-    title: "Reference",
-    description: "Portfolio galleries by room type with links.",
+    name: "list_projects",
+    title: "Projekty",
+    description: "Completed projects with location, year, description and link.",
     inputSchema: noArgs,
     annotations: readOnly,
   },
@@ -107,8 +107,8 @@ async function callTool(context: Context, name: string, args: Record<string, unk
     case "get_pricing":
       payload = data.pricing;
       break;
-    case "list_references":
-      payload = data.references;
+    case "list_projects":
+      payload = data.projects;
       break;
     case "search_faq": {
       const query = typeof args.query === "string" ? args.query.toLowerCase().trim() : "";

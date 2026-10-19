@@ -6,10 +6,10 @@
  * own nodes (FAQPage, Service, ImageGallery, BreadcrumbList) through
  * BaseLayout's `schema` prop.
  */
-import { site, type ReferenceRoom } from "@/data/site";
+import { site, type Project } from "@/data/site";
 import { cloudinaryImage } from "@/lib/cloudinary";
 import { ogImageFor } from "@/lib/og-image";
-import { galleryGeneratedAt, getRoomMedia } from "@/lib/cloudinary-gallery";
+import { galleryGeneratedAt, getProjectMedia } from "@/lib/cloudinary-gallery";
 
 type Node = Record<string, unknown>;
 
@@ -185,15 +185,17 @@ export const serviceNodes = (): Node[] =>
     areaServed: { "@type": "City", name: "Brno" },
   }));
 
-export const referenceGalleries = (rooms: ReferenceRoom[]): Node[] =>
-  rooms
-    .map((room) => ({ room, media: getRoomMedia(room) }))
+export const projectGalleries = (projects: Project[]): Node[] =>
+  projects
+    .map((project) => ({ project, media: getProjectMedia(project) }))
     .filter(({ media }) => media.length)
-    .map(({ room, media }) => ({
+    .map(({ project, media }) => ({
       "@type": "ImageGallery",
-      "@id": `${site.siteUrl}/projekty/#${room.slug}`,
-      name: `${room.title} – reference ${site.name}`,
-      description: room.text,
+      "@id": `${site.siteUrl}/projekty/#${project.slug}`,
+      name: project.title,
+      description: project.text,
+      ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
+      ...(project.year ? { dateCreated: project.year } : {}),
       creator: { "@id": ids.business },
       image: media
         .filter((item) => item.type === "image")
@@ -210,7 +212,7 @@ export const referenceGalleries = (rooms: ReferenceRoom[]): Node[] =>
         .map((item) => ({
           "@type": "VideoObject",
           name: item.alt,
-          description: `${room.title} – ${item.alt}`,
+          description: `${project.title} – ${item.alt}`,
           contentUrl: item.full,
           thumbnailUrl: item.poster ?? item.thumb,
           uploadDate: item.uploadedAt ?? galleryGeneratedAt() ?? undefined,

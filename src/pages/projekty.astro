@@ -3,9 +3,11 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
-import ReferencesGallery from "@/components/ReferencesGallery.astro";
+import ProjectSection from "@/components/ProjectSection.astro";
+import Button from "@/components/ui/Button.astro";
 import { site } from "@/data/site";
-import { referenceGalleries } from "@/lib/structured-data";
+import { projectGalleries } from "@/lib/structured-data";
+import { withBase } from "@/lib/navigation";
 
 const page = site.referencesPage;
 ---
@@ -14,42 +16,45 @@ const page = site.referencesPage;
   title={page.seo.title}
   description={page.seo.description}
   pageType="CollectionPage"
-  schema={referenceGalleries(site.references)}
+  schema={projectGalleries(site.projects)}
   pathname="/projekty/"
   breadcrumbs={[
     { name: "Úvod", href: "/" },
-    { name: "Reference", href: "/projekty/" },
+    { name: "Projekty", href: "/projekty/" },
   ]}
 >
   <SiteHeader pathname={Astro.url.pathname} />
   <main id="main" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
     <SectionIntro
       level={1}
-      eyebrow="Reference"
+      eyebrow="Projekty"
       title={page.intro.title}
       text={page.intro.text}
     />
 
-    <nav class="mt-10" aria-label="Typy prostor">
-      <ul class="flex list-none flex-wrap gap-2">
-        {
-          site.references.map((room) => (
-            <li>
-              <a
-                href={`#${room.slug}`}
-                class="inline-flex min-h-11 items-center rounded-full border border-border-strong px-4 text-sm text-foreground hover:border-primary hover:text-primary"
-              >
-                {room.title}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
 
-    <div class="mt-10 sm:mt-12">
-      {site.references.map((category) => <ReferencesGallery category={category} />)}
-    </div>
+    {
+      site.projects.length > 0 ? (
+        <div class="mt-10 sm:mt-12">
+          {site.projects.map((project) => <ProjectSection project={project} />)}
+        </div>
+      ) : (
+        <section
+          class="mt-12 rounded-3xl border border-dashed border-border-strong bg-surface px-6 py-14 text-center sm:px-10"
+          aria-labelledby="projects-empty-title"
+        >
+          <h2 id="projects-empty-title" class="text-2xl text-foreground sm:text-3xl">Projekty právě doplňujeme</h2>
+          <p class="mx-auto mt-3 max-w-xl leading-7 text-muted">
+            Ukázky našich realizací a vizualizací tu brzy najdete. Mezitím rády ukážeme projekty osobně.
+          </p>
+          <div class="mt-6 flex justify-center">
+            <Button as="a" href={withBase("/kontakt/")} variant="primary" size="md" rel={undefined}>
+              Domluvit konzultaci
+            </Button>
+          </div>
+        </section>
+      )
+    }
   </main>
   <SiteFooter />
 </BaseLayout>

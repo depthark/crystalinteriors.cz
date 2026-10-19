@@ -17,7 +17,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
 | Images / CDN | [Cloudinary](https://cloudinary.com) – upload + fetch delivery, `f_auto` (AVIF/WebP), `q_auto`, `g_auto`, `srcset` | — | `src/lib/cloudinary.ts`, `src/components/ui/CloudImage.astro` |
-| Gallery data | `cloudinary` Node SDK – build-time Admin Search API scan of `CrystalInteriors/Reference/<room>`, merged with CMS metadata (anewstyle approach), photos + videos | 2.11 | `scripts/build-cloudinary-gallery.mjs` → `public/data/references-gallery.json` → `src/lib/cloudinary-gallery.ts` |
+| Gallery data | `cloudinary` Node SDK – build-time Admin Search API scan of `CrystalInteriors/Projekty/<project>`, merged with CMS metadata (anewstyle approach), photos + videos | 2.11 | `scripts/build-cloudinary-gallery.mjs` → `public/data/projects-gallery.json` → `src/lib/cloudinary-gallery.ts` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
 | CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
@@ -31,7 +31,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
 | Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
 | SEO | Per-page meta/OG/Twitter, schema.org JSON-LD graph, generated `sitemap.xml` (+ images), `robots.txt` | — | `src/lib/structured-data.ts`, `src/pages/sitemap.xml.ts` |
-| Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/bronze light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
+| Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/lavender light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
 | Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
@@ -54,7 +54,7 @@ bun run build
 ```
 
 ## Content & CMS
-All copy lives in `src/data/content/*.json` (one file per reference room in `src/data/content/references/`) and is edited in **Decap CMS** at `/admin/` – Czech UI, guided tours, confirmations before removals, signed Cloudinary uploads, publish-status panel. `src/data/site.ts` composes the files into one typed object.
+All copy lives in `src/data/content/*.json` (one file per project in `src/data/content/projects/`) and is edited in **Decap CMS** at `/admin/` – Czech UI, guided tours, confirmations before removals, signed Cloudinary uploads, publish-status panel. `src/data/site.ts` composes the files into one typed object.
 
 Setup (Cloudflare Pages, GitHub OAuth, Cloudinary): see **[DEPLOY.md](DEPLOY.md)**.
 

@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
 import Button from "@/components/ui/Button.astro";
 import ArrowRightIcon from "@/components/icons/ArrowRightIcon.astro";
+import CloudImage from "@/components/ui/CloudImage.astro";
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
 import { serviceNodes } from "@/lib/structured-data";
@@ -46,12 +47,26 @@ const page = site.servicesPage;
         }
       </div>
 
-      <ul class="mt-12 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Typy prostor, které navrhujeme">
+      <h2 class="mt-16 text-2xl text-foreground sm:text-3xl" id="spaces-title">Co navrhujeme</h2>
+      <ul class="mt-8 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-labelledby="spaces-title">
         {
           site.services.map((service) => (
-            <li class="rounded-xl border border-border bg-background p-6" data-reveal>
-              <h3 class="text-xl text-foreground">{service.title}</h3>
-              <p class="mt-2 leading-7 text-muted">{service.text}</p>
+            <li data-reveal>
+              <article class="glass-hover h-full overflow-hidden rounded-xl border border-border bg-background shadow-card">
+                <CloudImage
+                  src={service.image.startsWith("/") ? withBase(service.image) : service.image}
+                  alt={`${service.title} — ukázka návrhu Crystal Interiors`}
+                  width={900}
+                  height={675}
+                  widths={[400, 600, 900, 1200]}
+                  sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                  class="aspect-[4/3] w-full object-cover"
+                />
+                <div class="space-y-2 p-5 sm:p-6">
+                  <h3 class="text-xl text-foreground">{service.title}</h3>
+                  <p class="leading-7 text-muted">{service.text}</p>
+                </div>
+              </article>
             </li>
           ))
         }

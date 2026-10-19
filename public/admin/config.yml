@@ -46,15 +46,15 @@ media_folder: public/images/uploads
 public_folder: /images/uploads
 
 collections:
-  # ------------------------------------------------------------ Reference
-  - name: reference
-    label: Reference
-    label_singular: Galerie místnosti
+  # ------------------------------------------------------------- Projekty
+  - name: projekty
+    label: Projekty
+    label_singular: Projekt
     description: >-
-      Stránka Projekty (crystalinteriors.cz/projekty). Každá položka je jedna sekce
-      s galerií – kuchyně, obývací pokoje, ložnice… Fotky nahrajete přímo v
-      editoru, pořadí určujete šipkami. První fotka je v galerii velká.
-    folder: src/data/content/references
+      Stránka Projekty (crystalinteriors.cz/projekty). Každá položka je jeden
+      projekt – název, místo, rok, popis a galerie fotek. Fotky nahrajete přímo
+      v editoru, pořadí určujete šipkami. První fotka je v galerii velká.
+    folder: src/data/content/projects
     extension: json
     format: json
     create: true
@@ -62,36 +62,33 @@ collections:
     slug: "{{fields.slug}}"
     identifier_field: title
     summary: "{{order}}. {{title}}"
-    sortable_fields: ["order", "title"]
+    sortable_fields: ["order", "title", "year"]
     editor:
       preview: false
     fields:
-      - { name: title, label: Název sekce, widget: string, hint: "Např. Kuchyně – zobrazí se jako nadpis sekce." }
+      - { name: title, label: Název projektu, widget: string, hint: "Např. Kuchyně v bytě na Lesné – zobrazí se jako nadpis." }
+      - { name: location, label: Místo, widget: string, required: false, hint: "Např. Brno-Lesná." }
+      - { name: year, label: Rok, widget: string, required: false, hint: "Např. 2025." }
       - name: text
-        label: Krátký popis
+        label: Popis projektu
         widget: text
-        hint: 1–2 věty pod nadpisem. Pomáhají i vyhledávačům.
+        hint: Co jste řešili a jak. Prázdný řádek začne nový odstavec.
       - name: images
-        label: Fotky
-        widget: room-gallery
+        label: Fotky a videa
+        widget: project-gallery
         default: []
       - name: order
         label: Pořadí na stránce
         widget: number
         value_type: int
         min: 1
-        default: 10
-        hint: Menší číslo = výš na stránce.
+        default: 1
+        hint: Menší číslo = výš na stránce (nejnovější projekt dejte na 1).
       - name: slug
-        label: Adresa sekce
+        label: Adresa projektu
         widget: string
-        pattern: ["^[a-z0-9-]+$", "Jen malá písmena bez diakritiky, čísla a pomlčky, např. kuchyne"]
-        hint: Část odkazu – crystalinteriors.cz/projekty/#kuchyne. Po vytvoření už neměňte.
-      - name: tag
-        label: Cloudinary tag (náhradní zdroj)
-        widget: string
-        required: false
-        hint: Pokročilé – když sekce nemá žádné fotky, web zkusí načíst fotky s tímto tagem z Cloudinary.
+        pattern: ["^[a-z0-9-]+$", "Jen malá písmena bez diakritiky, čísla a pomlčky, např. kuchyne-lesna"]
+        hint: Část odkazu – crystalinteriors.cz/projekty/#kuchyne-lesna. Po vytvoření už neměňte (podle ní se jmenuje složka fotek v Cloudinary).
 
   # -------------------------------------------------------------- Stránky
   - name: stranky
@@ -204,7 +201,6 @@ collections:
               - { name: title, label: Název, widget: string }
               - { name: text, label: Popis, widget: text }
               - { name: image, label: Fotka, widget: cloud-image }
-              - { name: slug, label: Odkaz na galerii, widget: string, hint: "Adresa sekce v Referencích, na kterou karta vede – např. kuchyne." }
           - { name: pricingIntro, label: Text nad ceníkem, widget: text }
           - name: pricing
             label: Ceník

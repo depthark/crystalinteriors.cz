@@ -1,6 +1,6 @@
 /**
  * Open Graph / Twitter share images (1200×630 JPEG), rendered at build time
- * with sharp: a darkened project photo, royal + bronze light, the official
+ * with sharp: a darkened project photo, royal + lavender light, the official
  * logo and the page title in Playfair Display. Titles come from the CMS, so
  * the images follow content changes on every build.
  */
@@ -55,16 +55,16 @@ export async function renderOgImage(page: OgPage): Promise<Buffer> {
     .modulate({ saturation: 0.85 })
     .toBuffer();
 
-  // Ink veil + royal glow (top left) + bronze glow (bottom right) + edge shade.
+  // Ink veil + royal glow (top left) + lavender glow (bottom right) + edge shade.
   const light = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${OG_WIDTH}" height="${OG_HEIGHT}">
     <defs>
       <radialGradient id="royal" cx="0.12" cy="0" r="0.75"><stop offset="0" stop-color="#5B2C83" stop-opacity="0.55"/><stop offset="1" stop-color="#5B2C83" stop-opacity="0"/></radialGradient>
-      <radialGradient id="bronze" cx="1" cy="1" r="0.7"><stop offset="0" stop-color="#A9844F" stop-opacity="0.32"/><stop offset="1" stop-color="#A9844F" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lavender" cx="1" cy="1" r="0.7"><stop offset="0" stop-color="#BA9ADD" stop-opacity="0.22"/><stop offset="1" stop-color="#BA9ADD" stop-opacity="0"/></radialGradient>
       <linearGradient id="veil" x1="0" x2="1"><stop offset="0" stop-color="#16140f" stop-opacity="0.78"/><stop offset="1" stop-color="#16140f" stop-opacity="0.9"/></linearGradient>
     </defs>
     <rect width="100%" height="100%" fill="url(#veil)"/>
     <rect width="100%" height="100%" fill="url(#royal)"/>
-    <rect width="100%" height="100%" fill="url(#bronze)"/>
+    <rect width="100%" height="100%" fill="url(#lavender)"/>
     <rect x="560" y="200" width="2" height="230" fill="#ffffff" fill-opacity="0.18"/>
   </svg>`);
 
@@ -73,7 +73,7 @@ export async function renderOgImage(page: OgPage): Promise<Buffer> {
   const columnX = 610;
   const columnWidth = OG_WIDTH - columnX - 70;
   const eyebrow = await text(
-    `<span foreground="#C9A46B" letter_spacing="5000">${escapeMarkup(site.name.toUpperCase())}</span>`,
+    `<span foreground="#BA9ADD" letter_spacing="5000">${escapeMarkup(site.name.toUpperCase())}</span>`,
     FONT_SANS, "Inter Medium", columnWidth, 110,
   );
   const title = await text(

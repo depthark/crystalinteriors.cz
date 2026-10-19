@@ -97,20 +97,20 @@
     .ccu form{display:flex;flex-direction:column;gap:18px;padding:26px}
     .ccu h2{margin:0;font-size:20px}
     .ccu .where{margin:0;color:#5c554b;font-size:14px}
-    .ccu .drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;border:2px dashed #b9ab95;border-radius:12px;background:#faf7f2;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
-    .ccu .drop.over,.ccu .drop:hover{border-color:#7a5c33;background:#f3ece1}
-    .ccu .drop:focus-within{outline:2px solid #7a5c33;outline-offset:2px}
+    .ccu .drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;border:2px dashed #B9A6CF;border-radius:12px;background:#FAF7FC;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+    .ccu .drop.over,.ccu .drop:hover{border-color:#6B3E95;background:#EEE5F7}
+    .ccu .drop:focus-within{outline:2px solid #6B3E95;outline-offset:2px}
     .ccu .drop strong{font-size:16px}
     .ccu .drop small{color:#6b6357}
     .ccu .drop input{position:absolute;width:1px;height:1px;opacity:0}
     .ccu .files{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:13px;color:#3b362f;max-height:9rem;overflow:auto}
-    .ccu progress{width:100%;height:8px;accent-color:#7a5c33}
+    .ccu progress{width:100%;height:8px;accent-color:#6B3E95}
     .ccu .msg{margin:0;min-height:1.5em;font-size:14px}
     .ccu .msg.err{color:#b42318}
     .ccu .row{display:flex;justify-content:flex-end;gap:8px}
     .ccu button{font:inherit;min-height:44px;padding:0 18px;border-radius:10px;border:1px solid #d6cdbf;background:#fff;cursor:pointer}
-    .ccu button[type=submit]{background:#7a5c33;border-color:#7a5c33;color:#fff;font-weight:600}
-    .ccu button:focus-visible{outline:2px solid #7a5c33;outline-offset:2px}
+    .ccu button[type=submit]{background:#6B3E95;border-color:#6B3E95;color:#fff;font-weight:600}
+    .ccu button:focus-visible{outline:2px solid #6B3E95;outline-offset:2px}
     .ccu button:disabled{opacity:.6;cursor:wait}`;
 
   const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
