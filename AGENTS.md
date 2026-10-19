@@ -33,7 +33,7 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth; Cloudinary upload signing + folder listing), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
-| Mail / contact | No mail library or server: `mailto:` inquiry form + `tel:`/`mailto:` links | — | `src/pages/kontakt.astro` |
+| Mail / contact | [Resend](https://resend.com) via Pages Function `/api/inquiry` (both designers, customer as Reply-To); falls back to a prepared `mailto:` e-mail; `tel:`/`mailto:` links | — | `functions/api/inquiry.ts`, `src/pages/kontakt.astro`, `ROLLBACK.md` |
 | Maps | Google Maps embed (iframe) | — | `settings.json → company.mapEmbed` |
 | Analytics | Google Tag Manager `GTM-542MMSL` | — | `src/layouts/BaseLayout.astro` |
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
@@ -132,7 +132,7 @@ Designer info block.
 
 ### `/kontakt/` (kontakt.astro)
 
-Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + email/phone pills (icon in primary/10 circle, hover → primary/white). Below: Atelier address card (MapPin icon, address, route link, legal info) + Google Maps iframe (`self-start`). Then the inquiry form: builds a `mailto:` e-mail (no mail server); plain `mailto` POST without JS; WebMCP `prefill_inquiry` can fill it.
+Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + email/phone pills (icon in primary/10 circle, hover → primary/white). Below: Atelier address card (MapPin icon, address, route link, legal info) + Google Maps iframe (`self-start`). Then the inquiry form: posts to `/api/inquiry` (Resend → both designers), falls back to a prepared `mailto:` e-mail when the function is unavailable; WebMCP `prefill_inquiry` can fill it but never sends.
 
 ## SEO / Metadata
 

@@ -25,7 +25,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth; Cloudinary upload signing + folder listing), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
-| Mail / contact | No mail library or server: `mailto:` inquiry form + `tel:`/`mailto:` links | — | `src/pages/kontakt.astro` |
+| Mail / contact | [Resend](https://resend.com) via Pages Function `/api/inquiry` (both designers, customer as Reply-To); falls back to a prepared `mailto:` e-mail; `tel:`/`mailto:` links | — | `functions/api/inquiry.ts`, `src/pages/kontakt.astro`, `ROLLBACK.md` |
 | Maps | Google Maps embed (iframe) | — | `settings.json → company.mapEmbed` |
 | Analytics | Google Tag Manager `GTM-542MMSL` | — | `src/layouts/BaseLayout.astro` |
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
