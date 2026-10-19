@@ -40,8 +40,8 @@ import { site, telHref } from "@/data/site";
               <p class="font-display text-xl text-foreground">{person.name}</p>
               <p class="mt-1 text-sm uppercase tracking-eyebrow text-primary">{person.role}</p>
               <ul class="mt-4 grid list-none gap-1 text-muted">
-                <li><a class="hover:text-primary" href={telHref(person.phone)}>{person.phone}</a></li>
-                <li><a class="hover:text-primary" href={`mailto:${person.email}`}>{person.email}</a></li>
+                <li><a class="inline-flex min-h-11 items-center hover:text-primary" href={telHref(person.phone)}>{person.phone}</a></li>
+                <li><a class="inline-flex min-h-11 items-center break-words hover:text-primary" href={`mailto:${person.email}`}>{person.email.split("@")[0]}@<wbr />{person.email.split("@")[1]}</a></li>
               </ul>
             </li>
           ))

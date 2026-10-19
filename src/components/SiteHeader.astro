@@ -14,10 +14,10 @@ const activePath =
 ---
 
 <header class="glass sticky top-0 z-[var(--z-header)] border-b border-border">
-  <div class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:gap-8 lg:px-8">
+  <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 min-[360px]:gap-4 sm:px-6 lg:gap-8 lg:px-8">
     <a
       href={withBase("/")}
-      class="flex shrink-0 items-center gap-3 pr-2 no-underline"
+      class="flex min-w-0 items-center gap-2 no-underline min-[360px]:gap-3 sm:pr-2 lg:shrink-0"
       aria-label={`${site.name} — domovská stránka`}
     >
       <img
@@ -25,15 +25,15 @@ const activePath =
         alt=""
         width="48"
         height="48"
-        class="h-12 w-12 object-contain dark:[filter:none] [filter:invert(1)_brightness(0.2)]"
+        class="h-10 w-10 shrink-0 object-contain min-[360px]:h-12 min-[360px]:w-12 dark:[filter:none] [filter:invert(1)_brightness(0.2)]"
         loading="eager"
         decoding="async"
       />
-      <span class="flex flex-col">
-        <span class="text-[0.7rem] font-semibold uppercase tracking-eyebrow text-primary sm:text-[0.8rem]">
+      <span class="flex min-w-0 flex-col">
+        <span class="text-[0.7rem] font-semibold uppercase leading-tight tracking-wide text-primary min-[400px]:tracking-eyebrow sm:text-[0.8rem]">
           {site.name}
         </span>
-        <span class="text-xs leading-snug text-muted sm:text-sm">
+        <span class="hidden text-xs leading-snug text-muted min-[360px]:block sm:text-sm">
           Interiéry a nábytek na míru
         </span>
       </span>
@@ -48,9 +48,9 @@ const activePath =
               href={withBase(item.href)}
               aria-current={isActive ? "page" : undefined}
               class:list={[
-                "cursor-pointer whitespace-nowrap text-sm no-underline transition-colors duration-fast ease-standard hover:text-foreground",
+                "inline-flex min-h-11 cursor-pointer items-center whitespace-nowrap text-sm no-underline transition-colors duration-fast ease-standard hover:text-foreground",
                 isActive
-                  ? "relative text-foreground after:absolute after:inset-x-0 after:-bottom-1.5 after:h-0.5 after:rounded-full after:bg-royal"
+                  ? "relative text-foreground after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-royal"
                   : "text-muted",
               ]}
             >
@@ -68,7 +68,7 @@ const activePath =
       </a>
     </nav>
 
-    <div class="ml-auto flex items-center gap-2 lg:hidden">
+    <div class="ml-auto flex shrink-0 items-center gap-2 lg:hidden">
       <ThemeToggle />
       <MobileMenu pathname={pathname} />
     </div>
