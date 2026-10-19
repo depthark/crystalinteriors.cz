@@ -95,7 +95,7 @@ Nastavení Resend (jednorázově):
 
 1. `https://www.crystalinteriors.cz/admin/` → **Přihlásit se přes GitHub**.
 2. Při prvním otevření každé obrazovky se spustí **průvodce** (driver.js); kdykoli znovu přes **Nápověda** vlevo dole.
-3. **Projekty** – jedna položka = jeden projekt (název, místo, rok, popis, galerie). *Nahrát fotky / videa* (i víc najednou, přetažením), *Přidat z Cloudinary* (soubory už nahrané ve složce projektu), doplnit *Popis fotky*, hvězdičkou vybrat hlavní fotku, šipkami pořadí.
+3. **Projekty** – jedna položka = jeden projekt: nadpis, podnadpis, popis (tučné písmo, odrážky, číslovaný seznam, odkazy) a galerie. *Nahrát fotky / videa* (i víc najednou, přetažením), *Přidat z Cloudinary* (soubory už nahrané ve složce projektu), doplnit *Popis fotky*, hvězdičkou vybrat hlavní fotku, šipkami pořadí.
 4. **Stránky** – texty, služby, ceník, časté dotazy, SEO titulky a popisy.
 5. **Nastavení** – kontakty, adresa, otevírací doba, sociální sítě.
 6. **Uložit** → vznikne koncept (pull request, Cloudflare postaví náhled) → **Publikovat → Publikovat nyní**. Panel vpravo dole hlídá sestavení (`/build.json`) a ohlásí, až je změna na webu (2–3 min).

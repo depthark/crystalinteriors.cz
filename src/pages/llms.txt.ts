@@ -25,7 +25,7 @@ export const GET: APIRoute = () => {
     "",
     "## Projekty",
     ...(data.projects.length
-      ? data.projects.map((project) => `- [${project.title}](${project.url})${project.location ? ` (${project.location}${project.year ? `, ${project.year}` : ""})` : ""}: ${project.description.split("\n")[0]}`)
+      ? data.projects.map((project) => `- [${project.title}](${project.url})${project.subtitle ? ` – ${project.subtitle}` : ""}: ${project.description.split("\n")[0]}`)
       : ["- Ukázky projektů průběžně doplňujeme."]),
     "",
     "## Časté dotazy",

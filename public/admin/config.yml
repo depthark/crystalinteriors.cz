@@ -52,7 +52,7 @@ collections:
     label_singular: Projekt
     description: >-
       Stránka Projekty (crystalinteriors.cz/projekty). Každá položka je jeden
-      projekt – název, místo, rok, popis a galerie fotek. Fotky nahrajete přímo
+      projekt – nadpis, podnadpis, popis a galerie fotek. Fotky nahrajete přímo
       v editoru, pořadí určujete šipkami. První fotka je v galerii velká.
     folder: src/data/content/projects
     extension: json
@@ -66,13 +66,16 @@ collections:
     editor:
       preview: false
     fields:
-      - { name: title, label: Název projektu, widget: string, hint: "Např. Kuchyně v bytě na Lesné – zobrazí se jako nadpis." }
-      - { name: location, label: Místo, widget: string, required: false, hint: "Např. Brno-Lesná." }
-      - { name: year, label: Rok, widget: string, required: false, hint: "Např. 2025." }
+      - { name: title, label: Nadpis, widget: string, hint: "Název projektu, např. Kuchyně v bytě na Lesné." }
+      - { name: subtitle, label: Podnadpis, widget: string, required: false, hint: "Krátký řádek pod nadpisem, např. Rodinný dům, Brno-Líšeň · 2025." }
       - name: text
-        label: Popis projektu
-        widget: text
-        hint: Co jste řešili a jak. Prázdný řádek začne nový odstavec.
+        label: Popis
+        widget: markdown
+        modes: [rich_text]
+        minimal: true
+        buttons: [bold, italic, bulleted-list, numbered-list, link]
+        editor_components: []
+        hint: "Co jste řešili a jak. Tučné písmo, odrážky i číslovaný seznam najdete na liště nad textem."
       - name: images
         label: Fotky a videa
         widget: project-gallery

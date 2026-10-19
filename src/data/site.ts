@@ -24,10 +24,9 @@ export interface Project {
   order?: number;
   slug: string;
   title: string;
-  /** Optional facts shown under the title, e.g. "Brno-Líšeň" and "2024". */
-  location?: string;
-  year?: string;
-  /** Description; blank lines split paragraphs. */
+  /** Short line under the title, e.g. "Rodinný dům, Brno-Líšeň · 2025". */
+  subtitle?: string;
+  /** Description in Markdown (bold, italics, lists, links) from the CMS editor. */
   text: string;
   images: ReferenceImage[];
   /** Optional Cloudinary tag, used at runtime when the project has no media yet. */

@@ -42,6 +42,7 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/lavender light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
 | Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
+| Rich text | `marked` – Markdown from the CMS editor → HTML (project descriptions) | 18 | `src/lib/markdown.ts` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
 
 All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
@@ -87,7 +88,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
 - `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image taken from old site CDN (`duyn491kcolsw.cloudfront.net/files/1u/1um/1umned.jpg`).
 - `src/components/HeroSection.astro` — full-bleed hero with Cloudinary image (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`), eyebrow + serif title + CTAs (white `hero-primary`), staggered motion-safe entrance and a 3× scroll cue.
-- `src/components/ProjectSection.astro` — one project (place · year, title, description paragraphs, gallery) from `getProjectMedia()` (build-time Cloudinary scan merged with CMS → else CMS list → else optional runtime tag); photos + videos, Fancybox lightbox.
+- `src/components/ProjectSection.astro` — one project (title, subtitle, rich-text description, gallery) from `getProjectMedia()` (build-time Cloudinary scan merged with CMS → else CMS list → else optional runtime tag); photos + videos, Fancybox lightbox.
 
 ### Icons
 
@@ -103,7 +104,7 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 - `home.json` – SEO, `hero`, `intro` (title, text, statement, `parallaxImage`), `process` (4 items, icons in index.astro), `faq`, `cta`
 - `services.json` – SEO, intro, pillars, `services` (9 cards with local thumbnail `image`, shown on /sluzby/), `pricing` (`price` text + optional numeric `amount` for schema)
 - `about.json` (paragraphs may contain `<strong>`), `contact.json`, `references.json` (page SEO + intro)
-- `projects/<slug>.json` – one file per project (CMS collection *Projekty*): `order`, `slug`, `title`, optional `location` + `year`, `text` (blank line = new paragraph), `images: [{ src, alt, hidden }]`, optional `tag`. Projects, not room types (client decision); the page shows an empty state until the first project is added.
+- `projects/<slug>.json` – one file per project (CMS collection *Projekty*): `order`, `slug`, `title` (Nadpis), optional `subtitle` (Podnadpis), `text` (Popis – Markdown from the CMS rich-text editor: bold, italics, bullet/numbered lists, links; rendered by `src/lib/markdown.ts` with `marked`), `images: [{ src, alt, hidden }]`, optional `tag`. Projects, not room types (client decision); the page shows an empty state until the first project is added.
 
 `site.nav` stays in code. Derived helpers: `site.company.address/phones/emails`, `telHref()`. Machine-readable facts for agents: `src/lib/site-data.ts`.
 

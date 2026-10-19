@@ -4,6 +4,7 @@
  */
 import { site } from "@/data/site";
 import { getProjectMedia } from "@/lib/cloudinary-gallery";
+import { markdownToText } from "@/lib/markdown";
 
 const url = (path: string) => `${site.siteUrl}${path}`;
 
@@ -21,9 +22,8 @@ export function getSiteData() {
     },
     projects: site.projects.map((project) => ({
       title: project.title,
-      location: project.location ?? null,
-      year: project.year ?? null,
-      description: project.text,
+      subtitle: project.subtitle ?? null,
+      description: markdownToText(project.text),
       url: url(`/projekty/#${project.slug}`),
       photos: getProjectMedia(project).filter((item) => item.type === "image").length,
       videos: getProjectMedia(project).filter((item) => item.type === "video").length,

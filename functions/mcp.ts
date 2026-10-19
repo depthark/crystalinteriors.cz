@@ -61,7 +61,7 @@ const TOOLS = [
   {
     name: "list_projects",
     title: "Projekty",
-    description: "Completed projects with location, year, description and link.",
+    description: "Completed projects with title, subtitle, description and link.",
     inputSchema: noArgs,
     annotations: readOnly,
   },

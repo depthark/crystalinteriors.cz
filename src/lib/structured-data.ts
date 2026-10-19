@@ -9,6 +9,7 @@
 import { site, type Project } from "@/data/site";
 import { cloudinaryImage } from "@/lib/cloudinary";
 import { ogImageFor } from "@/lib/og-image";
+import { markdownToText } from "@/lib/markdown";
 import { galleryGeneratedAt, getProjectMedia } from "@/lib/cloudinary-gallery";
 
 type Node = Record<string, unknown>;
@@ -193,9 +194,7 @@ export const projectGalleries = (projects: Project[]): Node[] =>
       "@type": "ImageGallery",
       "@id": `${site.siteUrl}/projekty/#${project.slug}`,
       name: project.title,
-      description: project.text,
-      ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
-      ...(project.year ? { dateCreated: project.year } : {}),
+      description: [project.subtitle, markdownToText(project.text)].filter(Boolean).join(" – "),
       creator: { "@id": ids.business },
       image: media
         .filter((item) => item.type === "image")

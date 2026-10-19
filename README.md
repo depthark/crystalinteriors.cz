@@ -34,6 +34,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/lavender light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
 | Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
+| Rich text | `marked` – Markdown from the CMS editor → HTML (project descriptions) | 18 | `src/lib/markdown.ts` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
 
 Hosting: GitHub Pages today (`.github/workflows/static.yml`, base path `/crystalinteriors.cz/`); Cloudflare Pages at `www.crystalinteriors.cz` is the target and is required for the CMS login, Cloudinary uploads and `/mcp` – see [DEPLOY.md](DEPLOY.md).
