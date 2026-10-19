@@ -18,7 +18,7 @@ const LOGO = "public/images/logos/crystalinteriors_logo-white.svg";
 const INK = "#1d1b18";
 
 // Square around the crystal cluster, in the logo's own viewBox units.
-const CRYSTAL_VIEWBOX = "698 158 520 520";
+const CRYSTAL_VIEWBOX = "68.3 31.1 103.3 103.3";
 
 const source = await readFile(LOGO, "utf8");
 const inner = source.replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
