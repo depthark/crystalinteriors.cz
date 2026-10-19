@@ -28,7 +28,7 @@ const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
 
 <section
   id={project.slug}
-  class="scroll-mt-28 grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
+  class="grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
   data-references-section
   data-static={isStatic ? "true" : undefined}
   data-tag={project.tag}
@@ -37,7 +37,7 @@ const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
   aria-labelledby={headingId}
   aria-describedby={descriptionId}
 >
-  <div class="space-y-4 lg:sticky lg:top-28 lg:self-start">
+  <div class="space-y-4 lg:sticky lg:top-28 lg:self-start" data-reveal>
     <h2 id={headingId} class="text-3xl leading-tight text-foreground">{project.title}</h2>
     {
       project.subtitle && (
@@ -61,8 +61,8 @@ const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
       aria-label={`Galerie — ${project.title}`}
     >
       {
-        media.map((item) => (
-          <li>
+        media.map((item, index) => (
+          <li data-reveal style={`--reveal-i: ${index % 4}`}>
             <a
               href={item.full}
               data-fancybox={galleryId}

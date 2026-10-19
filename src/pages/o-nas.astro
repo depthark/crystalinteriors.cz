@@ -35,8 +35,8 @@ import { site, telHref } from "@/data/site";
       <h2 id="team-title" class="text-2xl text-foreground md:text-3xl">Kdo vám bude navrhovat</h2>
       <ul class="mt-6 grid list-none gap-6 sm:grid-cols-2">
         {
-          site.company.contacts.map((person) => (
-            <li class="rounded-2xl border border-border bg-background p-7" data-reveal>
+          site.company.contacts.map((person, index) => (
+            <li class="rounded-2xl border border-border bg-background p-7" data-reveal style={`--reveal-i: ${index}`}>
               <p class="font-display text-xl text-foreground">{person.name}</p>
               <p class="mt-1 text-sm uppercase tracking-eyebrow text-primary">{person.role}</p>
               <ul class="mt-4 grid list-none gap-1 text-muted">

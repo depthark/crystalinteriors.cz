@@ -36,10 +36,10 @@ const webMcpForm: Record<string, string> = {
 
     <ul class="mt-10 grid list-none gap-6 sm:mt-12 md:grid-cols-2">
       {
-        site.company.contacts.map((contact) => {
+        site.company.contacts.map((contact, index) => {
           const telHref = `tel:${contact.phone.replace(/\s+/g, "")}`;
           return (
-            <li>
+            <li data-reveal style={`--reveal-i: ${index}`}>
               <article class="flex h-full flex-col rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
                 <header>
                   <p class="text-xs font-medium uppercase tracking-eyebrow text-primary sm:text-sm">
@@ -127,7 +127,7 @@ const webMcpForm: Record<string, string> = {
     </div>
 
     <div class="mx-auto mt-10 max-w-3xl sm:mt-12">
-      <section class="rounded-3xl border border-border bg-surface p-7 shadow-card md:p-9" aria-labelledby="inquiry-title">
+      <section class="rounded-3xl border border-border bg-surface p-7 shadow-card md:p-9" aria-labelledby="inquiry-title" data-reveal="fade">
         <h2 id="inquiry-title" class="text-2xl text-foreground md:text-3xl">Nezávazná poptávka</h2>
         <p id="inquiry-help" class="mt-2 leading-7 text-muted">
           Vyplňte pár údajů a poptávka nám přijde rovnou do e-mailu. Odpovídáme obvykle do dvou pracovních dnů.

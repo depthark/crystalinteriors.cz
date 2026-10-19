@@ -103,7 +103,7 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 
 - `settings.json` – name, tagline, description, keywords, social, `company` (legal info, address parts, geo, opening hours, designers with role/phone/email, map embed)
 - `home.json` – SEO, `hero`, `intro` (title, text, statement, `parallaxImage`), `process` (4 items, icons in index.astro), `faq`, `cta`
-- `services.json` – SEO, intro, pillars, `services` (9 cards with local thumbnail `image`, shown on /sluzby/), `pricing` (`price` text + optional numeric `amount` for schema)
+- `services.json` – SEO, intro, pillars, `services` (9 cards with local thumbnail `image`, shown on the home page in "Co navrhujeme"), `pricing` (`price` text + optional numeric `amount` for schema)
 - `about.json` (paragraphs may contain `<strong>`), `contact.json`, `references.json` (page SEO + intro)
 - `projects/<slug>.json` – one file per project (CMS collection *Projekty*): `order`, `slug`, `title` (Nadpis), optional `subtitle` (Podnadpis), `text` (Popis – Markdown from the CMS rich-text editor: bold, italics, bullet/numbered lists, links; rendered by `src/lib/markdown.ts` with `marked`), `images: [{ src, alt, hidden }]`, optional `tag`. Projects, not room types (client decision); the page shows an empty state until the first project is added.
 
@@ -115,10 +115,12 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 
 1. Hero (`HeroSection`) — full bleed with Cloudinary image, two CTAs (`hero-primary`, `hero-outline`).
 2. "Jak pracujeme" — two-column: `SectionIntro` + consumer-focused blockquote (large `&ldquo;` quote mark, "PRO KLIENTA" eyebrow).
-3. Parallax strip "Náš přístup" (small height). (The services grid was removed from the home page at the client's request; service cards live on /sluzby/.)
-4. Process boxes — 4 items with primary/10 icon circles.
-5. FAQ accordion (`FaqSection`).
-6. CTA section — "Domluvit schůzku" primary button (full-width mobile via `fullWidth lg:w-auto`).
+3. Parallax strip "Čím se zabýváme" (medium height).
+4. `#co-navrhujeme` — "Co navrhujeme" photo cards (9 services from `services.json`), 3×3; **not links** (client: no click-through to another page from this section).
+5. Parallax strip "Náš přístup" (small height).
+6. Process boxes — 4 items with primary/10 icon circles.
+7. FAQ accordion (`FaqSection`).
+8. CTA section — "Domluvit schůzku" primary button (full-width mobile via `fullWidth lg:w-auto`).
 
 ### `/projekty/` (projekty.astro)
 
@@ -126,7 +128,7 @@ Renders `ProjectSection` for each project (CMS *Projekty*), or an empty state wi
 
 ### `/sluzby/` (sluzby.astro)
 
-Two info cards + "Co navrhujeme" service cards with photos + pricing table + "Poptat projekt" CTA.
+Two info cards + pricing table + "Poptat projekt" CTA (service photo cards live on the home page).
 
 ### `/o-nas/` (o-nas.astro)
 
@@ -171,6 +173,8 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 - All interactive elements meet 44px tap-target minimum (`min-h-11` on buttons).
 - Focus rings via `focus-visible:ring-2 ring-primary ring-offset-2`.
 - Respect `prefers-reduced-motion` (parallax fallback, hover transitions, hero zoom).
+- Scroll reveals are CSS-first (`global.css`): `data-reveal` (rise) / `data-reveal="fade"`, scroll-driven `animation-timeline: view()` with range `entry 0%–40%` (always completes, even at page end); stagger siblings with `style="--reveal-i: n"`. No JS observers.
+- Anchors: `html { scroll-padding-block-start: calc(var(--header-height) + 1rem) }` keeps every `#id` jump clear of the sticky header – don't add per-element `scroll-margin`/`scroll-mt-*`.
 - Mobile-first responsive: full-width CTAs on `<sm`, side-by-side `≥sm`.
 
 ## Conventions

@@ -1,5 +1,13 @@
 @layer base {
+  :root {
+    /* Sticky header height (70–74px) – anchors and scroll-snap clear it. */
+    --header-height: 4.75rem;
+  }
+
   html {
+    /* Every in-page jump (#faq, #project, "Více") lands below the sticky
+       header with breathing room, eyebrow included – no per-element margins. */
+    scroll-padding-block-start: calc(var(--header-height) + 1rem);
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
@@ -89,12 +97,6 @@
     cursor: pointer;
   }
 
-  /* Keep anchored sections clear of the sticky header. */
-  :target,
-  [id] {
-    scroll-margin-top: 6rem;
-  }
-
   img {
     max-width: 100%;
     height: auto;
@@ -115,14 +117,28 @@
   }
 }
 
-/* Scroll reveal — CSS only (scroll-driven animations). Content is fully
-   visible where unsupported or when the visitor prefers reduced motion. */
+/* Scroll reveal – CSS-first, scroll-driven (no JS, no IntersectionObserver).
+   - The animation runs while the element *enters* the viewport and finishes
+     at 40 % of its entry, so content at the very end of a page always ends
+     fully visible (a `cover` range could leave it half-faded).
+   - `--reveal-i` staggers siblings in a grid: each item's range starts a bit
+     later (set inline: style="--reveal-i: 2").
+   - `data-reveal="fade"` = opacity only (for large blocks and images).
+   - Baseline: without support or with reduced motion everything is simply
+     visible; transforms use `transform`, so Tailwind hover `translate` still
+     works on revealed cards. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     [data-reveal] {
       animation: reveal-up linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 22%;
+      animation-range:
+        entry calc(var(--reveal-i, 0) * 6%)
+        entry calc(40% + var(--reveal-i, 0) * 6%);
+    }
+
+    [data-reveal="fade"] {
+      animation-name: reveal-fade;
     }
   }
 }
@@ -130,11 +146,20 @@
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(1.5rem);
+    transform: translateY(1.5rem) scale(0.985);
   }
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
