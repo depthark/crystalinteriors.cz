@@ -75,7 +75,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 
 - `src/layouts/BaseLayout.astro` — `<head>` boilerplate, meta tags, OG, schema.org JSON-LD, Google Tag Manager (`GTM-542MMSL`), skip link, theme-init inline script.
 - `src/components/SiteHeader.astro` — sticky `.glass` header. Logo (SVG, white art via filter inversion in light theme), brand text, nav (desktop ≥lg), mobile cluster with `ThemeToggle` + `MobileMenu`.
-- `src/components/MobileMenu.astro` — fullscreen overlay panel via `position: fixed inset-0`. State via `data-state="open"|"closed"` + Tailwind `group-data-[state=open]/menu:` variants. Hamburger transforms, social links, primary CTA.
+- `src/components/MobileMenu.astro` — disclosure nav (toggle `aria-expanded`/`aria-controls`), **not** a second header: the panel (fixed, `z-modal`) holds only links, CTA and social icons and slides out *under* the real header – SiteHeader's logo link, theme toggle and the hamburger (→ X) sit at `z-modal + 1`, so the header looks identical open or closed. While open: `main`/`footer` are `inert`, body scroll-locked, focus moves to the first link; Escape/X/link click close it. Never duplicate the logo or a close button inside the panel.
 - `src/components/SiteFooter.astro` — three-column footer with brand, atelier, social. Bottom row shows legal info (Provozovatel, IČO, sídlo) + copyright.
 
 ### Reusable

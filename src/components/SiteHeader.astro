@@ -17,7 +17,7 @@ const activePath =
   <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 min-[360px]:gap-4 sm:px-6 lg:gap-8 lg:px-8">
     <a
       href={withBase("/")}
-      class="flex min-w-0 items-center gap-2 no-underline min-[360px]:gap-3 sm:pr-2 lg:shrink-0"
+      class="relative z-[calc(var(--z-modal)+1)] flex min-w-0 items-center gap-2 no-underline min-[360px]:gap-3 sm:pr-2 lg:shrink-0"
       aria-label={`${site.name} — domovská stránka`}
     >
       <img
@@ -69,7 +69,8 @@ const activePath =
     </nav>
 
     <div class="ml-auto flex shrink-0 items-center gap-2 lg:hidden">
-      <ThemeToggle />
+      <!-- Header controls stay above the open mobile menu panel (z-modal). -->
+      <span class="relative z-[calc(var(--z-modal)+1)] inline-flex"><ThemeToggle /></span>
       <MobileMenu pathname={pathname} />
     </div>
   </div>

@@ -15,7 +15,7 @@ const activePath =
 <div class="group/menu relative lg:hidden" data-mobile-menu data-state="closed">
   <button
     type="button"
-    class="relative z-[60] inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    class="relative z-[calc(var(--z-modal)+1)] inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     data-mobile-menu-toggle
     aria-controls="mobile-menu-panel"
     aria-expanded="false"
@@ -35,13 +35,11 @@ const activePath =
     <span class="sr-only" data-mobile-menu-label>Otevřít navigaci</span>
   </button>
 
+  <!-- Panel only: the site header stays on top of it (SiteHeader lifts its
+       content above the panel), so logo, name and toggle never change. -->
   <div
     id="mobile-menu-panel"
     class="pointer-events-none fixed inset-0 z-[var(--z-modal)] flex flex-col group-data-[state=open]/menu:pointer-events-auto [&[inert]]:invisible"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Hlavní navigace"
-    tabindex="-1"
     inert
   >
     <div
@@ -50,53 +48,8 @@ const activePath =
     ></div>
 
     <div
-      class="glass-strong relative m-auto flex h-full w-full -translate-y-full flex-col gap-6 overflow-y-auto px-4 pt-3 pb-8 opacity-0 transition-[transform,opacity] duration-slow ease-out-soft group-data-[state=open]/menu:translate-y-0 group-data-[state=open]/menu:opacity-100 sm:px-6 min-[480px]:gap-8 min-[480px]:pb-10 lg:px-8 motion-reduce:transition-none"
+      class="glass-strong relative m-auto flex h-full w-full -translate-y-full flex-col gap-6 overflow-y-auto px-4 pt-[calc(var(--header-height)+1.5rem)] pb-8 opacity-0 transition-[transform,opacity] duration-slow ease-out-soft group-data-[state=open]/menu:translate-y-0 group-data-[state=open]/menu:opacity-100 sm:px-6 min-[480px]:gap-8 min-[480px]:pb-10 lg:px-8 motion-reduce:transition-none"
     >
-      <div class="flex items-start justify-between gap-3">
-        <a
-          href={withBase("/")}
-          class="flex items-center gap-3 no-underline"
-          aria-label={`${site.name} — domovská stránka`}
-          data-mobile-menu-link
-        >
-          <img
-            src={withBase("/images/logos/crystalinteriors_logo-white.svg")}
-            alt=""
-            width="48"
-            height="48"
-            class="h-12 w-12 object-contain dark:[filter:none] [filter:invert(1)_brightness(0.2)]"
-            loading="eager"
-            decoding="async"
-          />
-          <span class="flex flex-col">
-            <span class="text-[0.7rem] font-semibold uppercase tracking-eyebrow text-primary sm:text-[0.8rem]">
-              {site.name}
-            </span>
-            <span class="text-xs leading-snug text-muted sm:text-sm">Interiéry a nábytek na míru</span>
-          </span>
-        </a>
-
-        <button
-          type="button"
-          class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          data-mobile-menu-close
-          aria-label="Zavřít navigaci"
-          title="Zavřít navigaci"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="h-5 w-5"
-            aria-hidden="true"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
       <nav class="flex w-full flex-1 items-center" aria-label="Hlavní navigace">
         <ul class="flex w-full list-none flex-col gap-2 p-0 m-0">
           {
@@ -208,9 +161,6 @@ const activePath =
     const toggle = root.querySelector<HTMLButtonElement>(
       "[data-mobile-menu-toggle]",
     );
-    const closeBtn = root.querySelector<HTMLButtonElement>(
-      "[data-mobile-menu-close]",
-    );
     const panel = root.querySelector<HTMLElement>("#mobile-menu-panel");
     const backdrop = root.querySelector<HTMLElement>(".mobile-menu__backdrop");
     const links = root.querySelectorAll<HTMLAnchorElement>(
@@ -230,22 +180,23 @@ const activePath =
       if (label) {
         label.textContent = open ? "Zavřít navigaci" : "Otevřít navigaci";
       }
+      // Content behind the open menu is inert, so Tab stays in header + menu.
+      document
+        .querySelectorAll<HTMLElement>("body > :is(main, footer), main, footer")
+        .forEach((el) => el.toggleAttribute("inert", open));
       if (open) {
         panel.removeAttribute("inert");
         document.body.setAttribute("data-scroll-lock", "");
-        panel.focus({ preventScroll: true });
+        panel.querySelector<HTMLElement>("[data-mobile-menu-link]")?.focus({ preventScroll: true });
       } else {
         panel.setAttribute("inert", "");
         document.body.removeAttribute("data-scroll-lock");
-        toggle.focus({ preventScroll: true });
       }
     };
 
     toggle.addEventListener("click", () => {
       setState(root.dataset.state !== "open");
     });
-
-    closeBtn?.addEventListener("click", () => setState(false));
 
     backdrop?.addEventListener("click", () => setState(false));
 
@@ -256,6 +207,7 @@ const activePath =
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && root.dataset.state === "open") {
         setState(false);
+        toggle.focus({ preventScroll: true });
       }
     });
 
