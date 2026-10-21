@@ -336,9 +336,10 @@ const webMcpForm: Record<string, string> = {
   }
 
   /* Without JavaScript the form posts to /api/inquiry, which redirects back
-     to #odeslano – show the confirmation instead of the form. */
+     to #odeslano – show the confirmation instead of the form. (!important:
+     Tailwind's preflight hides [hidden] with !important.) */
   .inquiry__success[hidden]:target {
-    display: flex;
+    display: flex !important;
   }
 
   section:has(.inquiry__success:target) .inquiry {
