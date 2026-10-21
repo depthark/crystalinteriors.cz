@@ -8,6 +8,7 @@ import PhoneIcon from "@/components/icons/PhoneIcon.astro";
 import MapPinIcon from "@/components/icons/MapPinIcon.astro";
 import Button from "@/components/ui/Button.astro";
 import { site } from "@/data/site";
+import { withBase } from "@/lib/navigation";
 
 const page = site.contactPage;
 const primary = site.company.contacts[0];
@@ -128,7 +129,7 @@ const webMcpForm: Record<string, string> = {
     </div>
 
     <div class="mx-auto mt-10 max-w-3xl sm:mt-12">
-      <section class="rounded-3xl border border-border bg-surface p-7 shadow-card md:p-9" aria-labelledby="inquiry-title" data-reveal="fade">
+      <section id="poptavka" class="rounded-3xl border border-border bg-surface p-7 shadow-card md:p-9" aria-labelledby="inquiry-title" data-reveal="fade">
         <h2 id="inquiry-title" class="text-2xl text-foreground md:text-3xl">Nezávazná poptávka</h2>
         <p id="inquiry-help" class="mt-2 leading-7 text-muted">
           Vyplňte pár údajů a poptávka nám přijde rovnou do e-mailu. Odpovídáme obvykle do dvou pracovních dnů.
@@ -136,9 +137,8 @@ const webMcpForm: Record<string, string> = {
 
         <form
           class="inquiry mt-6 grid gap-5"
-          action={`mailto:${primary.email}`}
+          action={withBase("/api/inquiry")}
           method="post"
-          enctype="text/plain"
           aria-describedby="inquiry-help inquiry-required"
           data-inquiry
           data-to={primary.email}
@@ -186,7 +186,7 @@ const webMcpForm: Record<string, string> = {
           </div>
         </form>
 
-        <div class="inquiry__success mt-6" role="status" tabindex="-1" hidden data-inquiry-success>
+        <div id="odeslano" class="inquiry__success mt-6" role="status" tabindex="-1" hidden data-inquiry-success>
           <svg class="inquiry__success-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9.5" /><path d="M8 12.5l2.7 2.7L16.2 9.5" />
           </svg>
@@ -335,6 +335,16 @@ const webMcpForm: Record<string, string> = {
     display: none;
   }
 
+  /* Without JavaScript the form posts to /api/inquiry, which redirects back
+     to #odeslano – show the confirmation instead of the form. */
+  .inquiry__success:target {
+    display: flex;
+  }
+
+  section:has(.inquiry__success:target) .inquiry {
+    display: none;
+  }
+
   .inquiry__success:focus-visible {
     outline: 2px solid var(--color-success);
     outline-offset: 2px;
@@ -390,6 +400,10 @@ const webMcpForm: Record<string, string> = {
     success.hidden = false;
     success.focus();
   };
+
+  if (new URLSearchParams(location.search).has("chyba")) {
+    setStatus("Poptávku se nepodařilo odeslat. Zkuste to prosím znovu, nebo nám napište e-mail.");
+  }
 
   again?.addEventListener("click", () => {
     if (!form || !success) return;

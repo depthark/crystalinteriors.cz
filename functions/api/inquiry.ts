@@ -16,10 +16,14 @@
  * the CMS: Stránky → Kontakt → Formulář). It is sent only after the inquiry
  * itself went out, and a failed confirmation never fails the request.
  *
- * Spam (bots get a fake 200 and nothing is sent, so they learn nothing):
+ * Without JavaScript the form posts here as form data: the reply is a 303
+ * back to /kontakt/#odeslano (confirmation shown with CSS :target), or to
+ * /kontakt/?chyba=1#poptavka on an error.
+ *
+ * Spam (bots get a fake success and nothing is sent, so they learn nothing):
  *   - hidden `website` honeypot field,
  *   - `elapsed` (time on the page, measured by the page script) missing or
- *     under 3 s – direct POSTs and instant submits,
+ *     under 3 s – script submissions only; plain form posts cannot carry it,
  *   - more than two links in the message.
  *
  * Environment (Pages → Settings → Variables and Secrets):
@@ -86,10 +90,11 @@ function validate(data: Inquiry): string | null {
 }
 
 /** Honeypot, time on page and link count – true means "a bot, drop it silently". */
-function looksLikeSpam(data: Inquiry): boolean {
+function looksLikeSpam(data: Inquiry, viaScript: boolean): boolean {
   const elapsed = Number(data.elapsed);
   const links = data.message.match(/https?:\/\/|www\./gi)?.length ?? 0;
-  return Boolean(data.website) || !(elapsed >= MIN_FILL_MS) || links > MAX_LINKS;
+  const tooFast = viaScript && !(elapsed >= MIN_FILL_MS);
+  return Boolean(data.website) || tooFast || links > MAX_LINKS;
 }
 
 function recipients(env: Env): string[] {
@@ -139,33 +144,39 @@ const sendEmail = (env: Env, email: Record<string, unknown>) =>
   });
 
 export const onRequestPost = async ({ request, env }: Context): Promise<Response> => {
+  const viaScript = (request.headers.get("Content-Type") ?? "").includes("application/json");
+  const back = (hash: string, query = "") =>
+    Response.redirect(new URL(`/kontakt/${query}${hash}`, request.url).toString(), 303);
+  const reply = (body: { ok?: true; error?: string }, status = 200) =>
+    viaScript ? json(body, status) : body.ok ? back("#odeslano") : back("#poptavka", "?chyba=1");
+
   let data: Inquiry;
   try {
     data = await readBody(request);
   } catch {
-    return json({ error: "Neplatný požadavek." }, 400);
+    return reply({ error: "Neplatný požadavek." }, 400);
   }
 
   // Bots: pretend success, send nothing.
-  if (looksLikeSpam(data)) return json({ ok: true });
+  if (looksLikeSpam(data, viaScript)) return reply({ ok: true });
 
   const invalid = validate(data);
-  if (invalid) return json({ error: invalid }, 400);
+  if (invalid) return reply({ error: invalid }, 400);
 
   const to = recipients(env);
   if (!env.RESEND_API_KEY || to.length === 0) {
-    return json({ error: "Odesílání z webu není nastavené." }, 503);
+    return reply({ error: "Odesílání z webu není nastavené." }, 503);
   }
 
   const response = await sendEmail(env, { to, reply_to: data.email, ...compose(data) });
   if (!response.ok) {
     console.error("Resend error", response.status, await response.text());
-    return json({ error: "Poptávku se nepodařilo odeslat." }, 503);
+    return reply({ error: "Poptávku se nepodařilo odeslat." }, 503);
   }
 
   // Replies to the confirmation go to the designers, not to the robot sender.
   const confirmation = await sendEmail(env, { to: [data.email], reply_to: to, ...composeConfirmation(data) });
   if (!confirmation.ok) console.error("Confirmation error", confirmation.status, await confirmation.text());
 
-  return json({ ok: true });
+  return reply({ ok: true });
 };

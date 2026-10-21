@@ -54,6 +54,19 @@ const families = [
   { name: "Manrope", file: "manrope", weight: "400 600" },
   { name: "Playfair Display", file: "playfair-display", weight: "400 600" },
 ];
+// Local fallbacks with the web fonts' metrics (computed with fontTools from
+// the woff2 files vs. Arial / Times New Roman), so swapping in the real font
+// does not move the text (no layout shift).
+const fallbacks = [
+  ["Inter Fallback", "Arial", "108.40%", "89.37%", "22.25%"],
+  ["Manrope Fallback", "Arial", "106.51%", "100.09%", "28.17%"],
+  ["Playfair Display Fallback", "Times New Roman", "113.00%", "95.76%", "22.21%"],
+]
+  .map(
+    ([name, local, size, ascent, descent]) =>
+      `@font-face{font-family:"${name}";src:local("${local}");size-adjust:${size};ascent-override:${ascent};descent-override:${descent};line-gap-override:0%}`,
+  )
+  .join("");
 const fontFaces = families
   .flatMap(({ name, file, weight }) =>
     [
@@ -64,7 +77,7 @@ const fontFaces = families
         `@font-face{font-family:"${name}";font-style:normal;font-display:swap;font-weight:${weight};src:url(${asset(`fonts/${file}-${subset}.woff2`)}) format("woff2");unicode-range:${range}}`,
     ),
   )
-  .join("");
+  .join("") + fallbacks;
 
 // Critical CSS is small (~9 kB brotli): inline it and skip two render-blocking
 // requests. The files stay the source of truth (Tailwind CLI output + global).

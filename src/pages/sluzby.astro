@@ -37,7 +37,7 @@ const page = site.servicesPage;
       <div class="mt-10 grid gap-6 sm:mt-12 lg:grid-cols-2">
         {
           page.pillars.map((pillar: { eyebrow: string; title: string; text: string; image?: string; imageAlt?: string }, index: number) => (
-            <article class="glass-hover group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface" data-reveal style={`--reveal-i: ${index}`}>
+            <article class="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface" data-reveal style={`--reveal-i: ${index}`}>
               {
                 pillar.image && (
                   <div class="relative overflow-hidden">
@@ -47,7 +47,7 @@ const page = site.servicesPage;
                       width={1200}
                       height={675}
                       sizes="(min-width: 1280px) 600px, (min-width: 1024px) 46vw, 100vw"
-                      class="aspect-[3/2] w-full object-cover transition-transform duration-700 sm:aspect-[21/9] lg:aspect-[16/9] ease-out-soft group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                      class="aspect-[3/2] w-full object-cover sm:aspect-[21/9] lg:aspect-[16/9]"
                     />
                     <span class="pillar__shade pointer-events-none absolute inset-0" aria-hidden="true"></span>
                   </div>

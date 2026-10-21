@@ -49,6 +49,11 @@ import SocialLinks from "./SocialLinks.astro";
       <span class="hidden sm:inline"> · </span>
       <span class="block sm:inline">Sídlo: <span class="text-white">{site.company.registeredAddress}</span></span>
     </p>
-    <p class="leading-6 sm:text-right">© {new Date().getFullYear()} {site.name}. Všechna práva vyhrazena.</p>
+    <p class="leading-6 sm:text-right">
+      <span class="block">© {new Date().getFullYear()} {site.name}. Všechna práva vyhrazena.</span>
+      <span class="block">
+        Created by{" "}<a href="https://lukaschylik.dev/" class="text-white underline decoration-white/30 underline-offset-4 transition-colors duration-fast hover:decoration-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Lukáš Chylík</a>
+      </span>
+    </p>
   </div>
 </footer>
