@@ -48,3 +48,11 @@
 /admin/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-cache
+
+# Deployment hosts (production *.pages.dev and preview builds) must not be
+# indexed – the canonical site is https://www.crystalinteriors.cz.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
