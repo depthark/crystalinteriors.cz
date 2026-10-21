@@ -2,13 +2,14 @@
  * Contact form → e-mail via Resend (Cloudflare Pages Function).
  *
  * POST /api/inquiry  { name, email, phone?, room?, message, website?, elapsed }
- *   → 200 { ok: true }            sent to the designers + confirmation to the visitor
+ *   → 200 { ok: true }            sent to the recipients + confirmation to the visitor
  *   → 400 { error }               invalid input (shown to the visitor)
  *   → 503 { error }               not configured / Resend down – the page
  *                                  falls back to a prepared mailto: e-mail
  *
- * Recipients are the contacts edited in the CMS (Nastavení → Kontakty,
- * src/data/content/settings.json), unless INQUIRY_TO overrides them. The
+ * Recipients are edited in the CMS (Stránky → Kontakt → Formulář → Komu chodí
+ * poptávky, contact.json → form.recipients); an empty list means all contacts
+ * from Nastavení → Kontakty. INQUIRY_TO overrides both. The
  * visitor's address is set as Reply-To, so "Odpovědět" in the mailbox
  * answers the visitor directly. Mailboxes stay on Webnode; Resend only sends.
  *
@@ -98,9 +99,12 @@ function looksLikeSpam(data: Inquiry, viaScript: boolean): boolean {
 }
 
 function recipients(env: Env): string[] {
+  const fromCms = contact.form.recipients ?? [];
   const list = env.INQUIRY_TO
     ? env.INQUIRY_TO.split(",")
-    : settings.company.contacts.map((contact) => contact.email);
+    : fromCms.length
+      ? fromCms
+      : settings.company.contacts.map((person) => person.email);
   return list.map((address) => address.trim()).filter((address) => EMAIL.test(address));
 }
 
@@ -174,7 +178,7 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
     return reply({ error: "Poptávku se nepodařilo odeslat." }, 503);
   }
 
-  // Replies to the confirmation go to the designers, not to the robot sender.
+  // Replies to the confirmation go to the recipients, not to the robot sender.
   const confirmation = await sendEmail(env, { to: [data.email], reply_to: to, ...composeConfirmation(data) });
   if (!confirmation.ok) console.error("Confirmation error", confirmation.status, await confirmation.text());
 

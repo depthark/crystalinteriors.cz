@@ -250,10 +250,11 @@ collections:
           - { name: title, label: Nadpis, widget: string }
           - { name: text, label: Text, widget: text }
           - name: form
-            label: Formulář – potvrzení odeslání
+            label: Formulář
             widget: object
             collapsed: true
             fields:
+              - { name: recipients, label: Komu chodí poptávky, widget: list, field: { name: email, label: E-mail, widget: string }, required: false, hint: "Adresy, na které web pošle poptávku z formuláře. Když je seznam prázdný, poptávka jde všem kontaktům z Nastavení." }
               - { name: successTitle, label: Nadpis po odeslání, widget: string, hint: "Zobrazí se na webu hned po odeslání." }
               - { name: successText, label: Text po odeslání, widget: text }
               - { name: confirmationSubject, label: Předmět potvrzovacího e-mailu, widget: string, hint: "E-mail, který dostane zákazník jako potvrzení." }

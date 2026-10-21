@@ -26,7 +26,7 @@ na stejné doméně pár malých serverových funkcí:
    | `DEPLOY_HOOK_URL` | volitelně – *Settings → Builds → Deploy hooks* | Secret |
    | `RESEND_API_KEY` | Resend API klíč (jen *Sending access*) – viz krok 4 | **Secret** |
    | `INQUIRY_FROM` | volitelně, výchozí `Crystal Interiors <web@crystalinteriors.cz>` | text |
-   | `INQUIRY_TO` | volitelně – příjemci oddělení čárkou (jinak kontakty z CMS) | text |
+   | `INQUIRY_TO` | volitelně – příjemci oddělení čárkou (jinak *Komu chodí poptávky* z CMS) | text |
    | `BUN_VERSION` | `1.4.3` | text |
    | `NODE_VERSION` | `24` (také v `.node-version`) | text |
 
@@ -64,8 +64,8 @@ na stejné doméně pár malých serverových funkcí:
   Záznamy MX, SPF, DMARC, DKIM (`mail`, `key-wb001`, `key-wb002._domainkey`), `autoconfig` a `_autodiscover._tcp` musí být v DNS
   beze změny (viz `ROLLBACK.md`). Předplatné Webnode nerušte, dokud schránky
   nejsou přesunuté jinam – jinak pošta přestane fungovat.
-- **Formulář na `/kontakt/`** posílá poptávku přes `/api/inquiry` a Resend oběma
-  designérkám (kontakty z *Nastavení* v CMS), `Reply-To` je adresa zákazníka.
+- **Formulář na `/kontakt/`** posílá poptávku přes `/api/inquiry` a Resend na adresy
+  z CMS (*Stránky → Kontakt → Formulář → Komu chodí poptávky*, teď jen Lucie), `Reply-To` je adresa zákazníka.
   Když funkce není dostupná (chybí klíč, výpadek), stránka otevře
   připravený e-mail v programu návštěvníka (`mailto:`).
 

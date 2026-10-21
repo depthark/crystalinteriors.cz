@@ -11,7 +11,10 @@ import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
 
 const page = site.contactPage;
-const primary = site.company.contacts[0];
+// Same recipients as functions/api/inquiry.ts (CMS list, else all contacts).
+const inquiryTo = page.form.recipients?.length
+  ? page.form.recipients
+  : site.company.contacts.map((person) => person.email);
 const roomOptions = site.services.map((service) => service.title);
 // Declarative WebMCP (draft spec) — not in Astro's attribute types yet.
 const webMcpForm: Record<string, string> = {
@@ -141,8 +144,8 @@ const webMcpForm: Record<string, string> = {
           method="post"
           aria-describedby="inquiry-help inquiry-required"
           data-inquiry
-          data-to={primary.email}
-          data-cc={site.company.contacts.slice(1).map((c) => c.email).join(",")}
+          data-to={inquiryTo[0]}
+          data-cc={inquiryTo.slice(1).join(",")}
           {...webMcpForm}
         >
           <p id="inquiry-required" class="text-sm text-muted">Pole označená <span class="inquiry__mark" aria-hidden="true">*</span> jsou povinná.</p>

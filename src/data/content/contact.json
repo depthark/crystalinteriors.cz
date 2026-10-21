@@ -7,6 +7,9 @@
   "title": "Pojďme probrat váš interiér",
   "text": "Ať řešíte novou kuchyň, celý byt, dům nebo komerční prostor, první krok je jednoduchý: ozvěte se a sladíme rozsah, rozpočet i další postup.",
   "form": {
+    "recipients": [
+      "vodakova@crystalinteriors.cz"
+    ],
     "successTitle": "Zpráva byla úspěšně odeslána",
     "successText": "Děkujeme za vaši zprávu, budeme vás kontaktovat v nejbližším možném termínu.",
     "confirmationSubject": "Děkujeme za vaši zprávu – Crystal Interiors",
