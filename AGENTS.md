@@ -87,7 +87,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/ui/CloudImage.astro` — responsive Cloudinary image (AVIF/WebP, srcset, no CLS).
 - `src/components/agent/WebMcp.astro` — WebMCP tools for in-browser AI agents.
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
-- `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image taken from old site CDN (`duyn491kcolsw.cloudfront.net/files/1u/1um/1umned.jpg`).
+- `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image `home.json → intro.parallaxImage` (Cloudinary `CrystalInteriors/Web`, moved off the old Webnode CDN).
 - `src/components/HeroSection.astro` — full-bleed hero with Cloudinary image (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`), eyebrow + serif title + CTAs (white `hero-primary`), staggered motion-safe entrance and a 3× scroll cue.
 - `src/components/ProjectSection.astro` — one project (title, subtitle, rich-text description, gallery) from `getProjectMedia()` (build-time Cloudinary scan merged with CMS → else CMS list → else optional runtime tag); photos + videos, Fancybox lightbox.
 

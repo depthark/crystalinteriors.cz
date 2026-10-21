@@ -31,6 +31,9 @@ Když nový web nefunguje, vraťte DNS / nameservery přesně na hodnoty níže.
 | `_dmarc.crystalinteriors.cz` | CNAME | `_dmarc-user.webnode.com.` (→ `v=DMARC1; p=none;`) |
 | `autoconfig.crystalinteriors.cz` | CNAME | `tb-wb.securemail.pro.` |
 | `_autodiscover._tcp.crystalinteriors.cz` | SRV | `10 10 443 ms-wb.securemail.pro.` |
+| `mail._domainkey.crystalinteriors.cz` | CNAME | `dkimuser.webnode.com.` (DKIM) |
+| `key-wb001._domainkey.crystalinteriors.cz` | CNAME | `key-wb001._domainkey.webnode.com.` (DKIM) |
+| `key-wb002._domainkey.crystalinteriors.cz` | CNAME | `key-wb002._domainkey.webnode.com.` (DKIM) |
 
 ## Cloudflare zóna (připravená 17. 10. 2026, zatím neaktivní)
 
@@ -40,8 +43,8 @@ Když nový web nefunguje, vraťte DNS / nameservery přesně na hodnoty níže.
 
 Apex přesměrovává `301` na `https://www.crystalinteriors.cz/` (server `webnode`).
 
-> 📧 **E-mail běží na Webnode** (`imap.mail.webnode.com`). MX, SPF, DMARC,
-> `autoconfig` a `_autodiscover._tcp` musí zůstat stejné i po přechodu na
+> 📧 **E-mail běží na Webnode** (`imap.mail.webnode.com`). MX, SPF, DMARC, DKIM (`mail`, `key-wb001`,
+> `key-wb002._domainkey`), `autoconfig` a `_autodiscover._tcp` musí zůstat stejné i po přechodu na
 > Cloudflare, jinak přestane chodit pošta. Schránky `@crystalinteriors.cz` musí
 > zůstat – **předplatné Webnode nerušte**, dokud nejsou přesunuté jinam.
 > Resend (formulář) přidává jen vlastní záznamy (`resend._domainkey`, `send.`).

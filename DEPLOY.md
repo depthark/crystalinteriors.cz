@@ -73,7 +73,7 @@ na stejné doméně tři malé serverové funkce:
 ## 4. E-mail – schránky na Webnode, formulář přes Resend
 
 - **Schránky `@crystalinteriors.cz` zůstávají na Webnode** (`imap.mail.webnode.com`).
-  Záznamy MX, SPF, DMARC, `autoconfig` a `_autodiscover._tcp` musí být v DNS
+  Záznamy MX, SPF, DMARC, DKIM (`mail`, `key-wb001`, `key-wb002._domainkey`), `autoconfig` a `_autodiscover._tcp` musí být v DNS
   beze změny (viz `ROLLBACK.md`). Předplatné Webnode nerušte, dokud schránky
   nejsou přesunuté jinam – jinak pošta přestane fungovat.
 - **Formulář na `/kontakt/`** posílá poptávku přes `/api/inquiry` a Resend oběma
