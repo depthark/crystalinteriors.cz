@@ -28,7 +28,7 @@ export interface Props {
 const {
   title,
   description,
-  keywords = site.keywords,
+  keywords = [],
   image,
   imageAlt,
   pathname = Astro.url.pathname,
@@ -44,6 +44,9 @@ const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME as
   | undefined;
 const base = import.meta.env.BASE_URL;
 const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
+
+// Page keywords first (as on the original site), then the studio-wide ones.
+const allKeywords = [...new Set([...keywords, ...site.keywords])];
 
 const canonicalPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
 const canonical = `${site.siteUrl}${canonicalPath}`;
@@ -71,7 +74,8 @@ const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": grap
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content={keywords.join(", ")} />
+    <meta name="keywords" content={allKeywords.join(", ")} />
+    {site.googleSiteVerification && <meta name="google-site-verification" content={site.googleSiteVerification} />}
     <meta
       name="robots"
       content={noindex

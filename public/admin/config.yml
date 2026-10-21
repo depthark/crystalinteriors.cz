@@ -172,6 +172,7 @@ collections:
             fields:
               - { name: title, label: Titulek stránky, widget: string, hint: "Do 60 znaků. Zobrazí se v Googlu a na záložce prohlížeče." }
               - { name: description, label: Popis stránky, widget: text, hint: "120–160 znaků. Text pod odkazem v Googlu." }
+              - { name: keywords, label: Klíčová slova stránky, widget: list, required: false, hint: "Doplní se ke klíčovým slovům z Nastavení." }
 
       - name: sluzby
         label: Služby a ceník
@@ -270,6 +271,7 @@ collections:
             widget: list
             allow_add: true
             field: { name: keyword, label: Slovo, widget: string }
+          - { name: googleSiteVerification, label: Ověření Google Search Console, widget: string, required: false, hint: "Kód z meta tagu google-site-verification. Neměnit." }
           - name: social
             label: Sociální sítě
             widget: object

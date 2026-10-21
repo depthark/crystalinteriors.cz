@@ -49,6 +49,7 @@ export const site = {
     "https://www.crystalinteriors.cz",
   description: settings.description,
   keywords: settings.keywords,
+  googleSiteVerification: settings.googleSiteVerification,
   nav: [
     { href: "/", label: "Úvod" },
     { href: "/projekty/", label: "Projekty" },

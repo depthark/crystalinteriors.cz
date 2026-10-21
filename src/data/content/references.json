@@ -1,7 +1,11 @@
 {
   "seo": {
     "title": "Projekty",
-    "description": "Projekty Crystal Interiors – realizace a vizualizace interiérů, kuchyní a nábytku na míru v Brně a okolí, s popisem každého projektu."
+    "description": "Projekty Crystal Interiors – realizace a vizualizace interiérů, kuchyní a nábytku na míru v Brně a okolí, s popisem každého projektu.",
+    "keywords": [
+      "vizualizace interiérů",
+      "realizace"
+    ]
   },
   "intro": {
     "title": "Naše projekty",
