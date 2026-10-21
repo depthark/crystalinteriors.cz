@@ -62,7 +62,12 @@ const page = site.referencesPage;
 
 <script>
   import { Fancybox } from "@fancyapps/ui";
-  import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+  // Lightbox styles are only needed once a photo is opened.
+  let styles: Promise<unknown> | undefined;
+  const loadStyles = () => (styles ??= import("@fancyapps/ui/dist/fancybox/fancybox.css"));
+  document.addEventListener("pointerover", (e) => (e.target as Element)?.closest?.("[data-fancybox]") && loadStyles(), { passive: true });
+  document.addEventListener("focusin", (e) => (e.target as Element)?.closest?.("[data-fancybox]") && loadStyles());
 
   const init = () =>
     Fancybox.bind("[data-fancybox]", {
@@ -75,6 +80,7 @@ const page = site.referencesPage;
         },
       },
       Images: { zoom: true },
+      on: { init: () => loadStyles() },
     } as unknown as Parameters<typeof Fancybox.bind>[1]);
 
   if (document.readyState === "loading") {

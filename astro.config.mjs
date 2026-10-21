@@ -12,4 +12,8 @@ export default defineConfig({
     enabled: false,
   },
   trailingSlash: "always",
+  // Page CSS is small: inline it so nothing blocks the first render.
+  build: {
+    inlineStylesheets: "always",
+  },
 });
