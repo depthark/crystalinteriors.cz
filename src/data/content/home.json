@@ -16,7 +16,7 @@
     "image": "/gallery/web/hero-kuchyne",
     "imageAlt": "Vizualizace moderní kuchyně na míru od Crystal Interiors",
     "primaryCta": {
-      "href": "/kontakt/",
+      "href": "/kontakt/#poptavka",
       "label": "Nezávazná konzultace"
     },
     "secondaryCta": {
@@ -52,7 +52,7 @@
     "eyebrow": "Další krok",
     "title": "Vytvoříme interiér přesně pro váš způsob bydlení nebo podnikání.",
     "label": "Domluvit schůzku",
-    "href": "/kontakt/"
+    "href": "/kontakt/#poptavka"
   },
   "faq": [
     {

@@ -49,7 +49,7 @@ All packages are on their latest release (`bun outdated` is clean) except two de
 
 Installed but currently unused: `@googlemaps/js-api-loader`, `@toolwind/anchors`.
 
-Hosting today: **GitHub Pages** (`.github/workflows/static.yml`, on push to `main`, base path `/crystalinteriors.cz/` via `PUBLIC_BASE_PATH`). Target: **Cloudflare Pages** at `https://www.crystalinteriors.cz` – needed for `/admin/` login and `/mcp` (see `DEPLOY.md`). Everything public (pages, PWA, sitemap, llms.txt) works on both; paths go through `import.meta.env.BASE_URL` / `withBase()`, and `public/sw.js` + `manifest.webmanifest` are scope-relative.
+Hosting: **Cloudflare Pages** at `https://www.crystalinteriors.cz` (Git integration, deploys on push to `main`; see `DEPLOY.md`). `*.pages.dev` hosts send `X-Robots-Tag: noindex` (`public/_headers`). GitHub Actions (`.github/workflows/build.yml`) only checks the build; GitHub Pages is switched off. Paths still go through `import.meta.env.BASE_URL` / `withBase()` (`PUBLIC_BASE_PATH` for a sub-path build), and `public/sw.js` + `manifest.webmanifest` are scope-relative.
 
 ## Design System
 

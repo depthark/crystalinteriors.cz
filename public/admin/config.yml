@@ -116,7 +116,7 @@ collections:
                 collapsed: true
                 fields:
                   - { name: label, label: Text, widget: string }
-                  - { name: href, label: Odkaz, widget: string, hint: "Např. /kontakt/" }
+                  - { name: href, label: Odkaz, widget: string, hint: "Např. /kontakt/#poptavka (rovnou na formulář) nebo /projekty/" }
               - name: secondaryCta
                 label: Druhé tlačítko
                 widget: object

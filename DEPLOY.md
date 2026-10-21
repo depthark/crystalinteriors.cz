@@ -66,7 +66,7 @@ na stejné doméně pár malých serverových funkcí:
   nejsou přesunuté jinam – jinak pošta přestane fungovat.
 - **Formulář na `/kontakt/`** posílá poptávku přes `/api/inquiry` a Resend oběma
   designérkám (kontakty z *Nastavení* v CMS), `Reply-To` je adresa zákazníka.
-  Když funkce není dostupná (GitHub Pages, chybí klíč, výpadek), stránka otevře
+  Když funkce není dostupná (chybí klíč, výpadek), stránka otevře
   připravený e-mail v programu návštěvníka (`mailto:`).
 
 Nastavení Resend (jednorázově):
