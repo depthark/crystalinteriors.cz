@@ -186,7 +186,7 @@ const webMcpForm: Record<string, string> = {
           </div>
         </form>
 
-        <div id="odeslano" class="inquiry__success mt-6" role="status" tabindex="-1" hidden data-inquiry-success>
+        <div id="odeslano" class="inquiry__success mt-6" role="status" tabindex="-1" data-inquiry-success>
           <svg class="inquiry__success-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9.5" /><path d="M8 12.5l2.7 2.7L16.2 9.5" />
           </svg>
@@ -330,16 +330,16 @@ const webMcpForm: Record<string, string> = {
     color: var(--color-foreground);
   }
 
-  .inquiry[hidden],
-  .inquiry__success[hidden] {
+  .inquiry[hidden] {
     display: none;
   }
 
-  /* Without JavaScript the form posts to /api/inquiry, which redirects back
-     to #odeslano – show the confirmation instead of the form. (!important:
-     Tailwind's preflight hides [hidden] with !important.) */
-  .inquiry__success[hidden]:target {
-    display: flex !important;
+  /* Shown by the page script after sending ([data-shown]); without JS the
+     form posts to /api/inquiry, which redirects back to #odeslano. (Not the
+     hidden attribute: Tailwind's preflight hides it with a layered
+     !important that :target cannot override.) */
+  .inquiry__success:not([data-shown], :target) {
+    display: none;
   }
 
   section:has(.inquiry__success:target) .inquiry {
@@ -398,7 +398,7 @@ const webMcpForm: Record<string, string> = {
     if (!form || !success) return;
     form.reset();
     form.hidden = true;
-    success.hidden = false;
+    success.dataset.shown = "";
     success.focus();
   };
 
@@ -408,7 +408,9 @@ const webMcpForm: Record<string, string> = {
 
   again?.addEventListener("click", () => {
     if (!form || !success) return;
-    success.hidden = true;
+    delete success.dataset.shown;
+    // Leave the no-JS #odeslano state (:target) without a new history entry.
+    if (location.hash === "#odeslano") location.replace("#poptavka");
     form.hidden = false;
     setStatus("");
     startedAt = Date.now();
