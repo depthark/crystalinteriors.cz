@@ -69,7 +69,7 @@ import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
       }
 
       <div
-        class="hero__rise flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center"
+        class="hero__rise flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:pt-8"
         style="--i: 4"
       >
         <Button
@@ -147,13 +147,15 @@ import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
     }
   }
 
+  /* Vertical bob only: the horizontal centring comes from Tailwind's
+     -translate-x-1/2 (the `translate` property), which `transform` adds to. */
   @keyframes hero-cue {
     0%,
     100% {
-      transform: translate(-50%, 0);
+      transform: translateY(0);
     }
     50% {
-      transform: translate(-50%, 0.35rem);
+      transform: translateY(0.35rem);
     }
   }
 </style>
