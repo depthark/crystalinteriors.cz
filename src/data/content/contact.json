@@ -5,5 +5,11 @@
     "keywords": []
   },
   "title": "Pojďme probrat váš interiér",
-  "text": "Ať řešíte novou kuchyň, celý byt, dům nebo komerční prostor, první krok je jednoduchý: ozvěte se a sladíme rozsah, rozpočet i další postup."
+  "text": "Ať řešíte novou kuchyň, celý byt, dům nebo komerční prostor, první krok je jednoduchý: ozvěte se a sladíme rozsah, rozpočet i další postup.",
+  "form": {
+    "successTitle": "Zpráva byla úspěšně odeslána",
+    "successText": "Děkujeme za vaši zprávu, budeme vás kontaktovat v nejbližším možném termínu.",
+    "confirmationSubject": "Děkujeme za vaši zprávu – Crystal Interiors",
+    "confirmationText": "Dobrý den,\n\nděkujeme za vaši zprávu, budeme vás kontaktovat v nejbližším možném termínu.\n\nNíže posíláme kopii toho, co jste nám napsali."
+  }
 }

@@ -247,6 +247,15 @@ collections:
         fields:
           - { name: title, label: Nadpis, widget: string }
           - { name: text, label: Text, widget: text }
+          - name: form
+            label: Formulář – potvrzení odeslání
+            widget: object
+            collapsed: true
+            fields:
+              - { name: successTitle, label: Nadpis po odeslání, widget: string, hint: "Zobrazí se na webu hned po odeslání." }
+              - { name: successText, label: Text po odeslání, widget: text }
+              - { name: confirmationSubject, label: Předmět potvrzovacího e-mailu, widget: string, hint: "E-mail, který dostane zákazník jako potvrzení." }
+              - { name: confirmationText, label: Text potvrzovacího e-mailu, widget: text, hint: "Pod text se automaticky připojí kopie zprávy a kontakty na designérky." }
           - *seo
 
   # ------------------------------------------------------------ Nastavení

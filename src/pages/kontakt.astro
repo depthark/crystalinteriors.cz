@@ -139,27 +139,32 @@ const webMcpForm: Record<string, string> = {
           action={`mailto:${primary.email}`}
           method="post"
           enctype="text/plain"
-          aria-describedby="inquiry-help"
+          aria-describedby="inquiry-help inquiry-required"
           data-inquiry
           data-to={primary.email}
+          data-cc={site.company.contacts.slice(1).map((c) => c.email).join(",")}
           {...webMcpForm}
         >
-          <div class="grid gap-5 sm:grid-cols-2">
+          <p id="inquiry-required" class="text-sm text-muted">Pole označená <span class="inquiry__mark" aria-hidden="true">*</span> jsou povinná.</p>
+          <div class="inquiry__row">
             <label class="inquiry__field">
-              <span>Jméno a příjmení</span>
-              <input name="name" type="text" autocomplete="name" required />
+              <span>Jméno a příjmení <span class="inquiry__mark" aria-hidden="true">*</span></span>
+              <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Jana Nováková" aria-describedby="inquiry-name-error" />
+              <span class="inquiry__error" id="inquiry-name-error">Vyplňte prosím jméno.</span>
             </label>
             <label class="inquiry__field">
               <span>Telefon <small>(nepovinné)</small></span>
-              <input name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+              <input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" pattern="[+0-9 \(\)\-]{9,20}" placeholder="+420 777 123 456" aria-describedby="inquiry-phone-error" />
+              <span class="inquiry__error" id="inquiry-phone-error">Zadejte telefon ve tvaru +420 777 123 456.</span>
             </label>
           </div>
           <label class="inquiry__field">
-            <span>E-mail</span>
-            <input name="email" type="email" autocomplete="email" required />
+            <span>E-mail <span class="inquiry__mark" aria-hidden="true">*</span></span>
+            <input name="email" type="email" autocomplete="email" required maxlength="200" pattern="[^@\s]+@[^@\s]+\.[^@\s]{2,}" placeholder="jana@example.cz" aria-describedby="inquiry-email-error" />
+            <span class="inquiry__error" id="inquiry-email-error">Zadejte platný e-mail, např. jana@example.cz.</span>
           </label>
           <label class="inquiry__field">
-            <span>Co řešíte</span>
+            <span>Co řešíte <small>(nepovinné)</small></span>
             <select name="room">
               <option value="">Vyberte typ prostoru</option>
               {roomOptions.map((room) => <option>{room}</option>)}
@@ -171,14 +176,26 @@ const webMcpForm: Record<string, string> = {
             Nevyplňujte <input name="website" type="text" tabindex="-1" autocomplete="off" />
           </label>
           <label class="inquiry__field">
-            <span>Zpráva</span>
-            <textarea name="message" rows="5" required maxlength="4000" placeholder="Např. kuchyň 3,5 × 4 m, plánujeme realizaci na jaře…"></textarea>
+            <span>Zpráva <span class="inquiry__mark" aria-hidden="true">*</span></span>
+            <textarea name="message" rows="5" required minlength="10" maxlength="4000" placeholder="Např. kuchyň 3,5 × 4 m, plánujeme realizaci na jaře…" aria-describedby="inquiry-message-error"></textarea>
+            <span class="inquiry__error" id="inquiry-message-error">Napište nám prosím aspoň pár slov (min. 10 znaků).</span>
           </label>
           <div class="flex flex-wrap items-center gap-4">
             <Button as="button" type="submit" variant="primary" size="lg">Odeslat poptávku</Button>
             <p class="text-sm text-muted" role="status" aria-live="polite" data-inquiry-status></p>
           </div>
         </form>
+
+        <div class="inquiry__success mt-6" role="status" tabindex="-1" hidden data-inquiry-success>
+          <svg class="inquiry__success-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.5" /><path d="M8 12.5l2.7 2.7L16.2 9.5" />
+          </svg>
+          <div>
+            <p class="inquiry__success-title">{page.form.successTitle}</p>
+            <p class="mt-1 leading-7">{page.form.successText}</p>
+            <button type="button" class="inquiry__again" data-inquiry-again>Napsat další zprávu</button>
+          </div>
+        </div>
       </section>
     </div>
   </main>
@@ -188,10 +205,40 @@ const webMcpForm: Record<string, string> = {
 <style>
   .inquiry__field {
     display: grid;
+    align-content: start;
     gap: calc(var(--spacing) * 2);
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-foreground);
+  }
+
+  /* Fields side by side share their rows (label / input / error) through
+     subgrid, so an error under one field never pushes the other out of line. */
+  .inquiry__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: calc(var(--spacing) * 5);
+    row-gap: calc(var(--spacing) * 2);
+  }
+
+  .inquiry__row > .inquiry__field {
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    gap: inherit;
+  }
+
+  .inquiry__row > .inquiry__field + .inquiry__field {
+    margin-top: calc(var(--spacing) * 3);
+  }
+
+  @media (min-width: 640px) {
+    .inquiry__row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .inquiry__row > .inquiry__field + .inquiry__field {
+      margin-top: 0;
+    }
   }
 
   .inquiry__field small {
@@ -231,8 +278,90 @@ const webMcpForm: Record<string, string> = {
     border-color: var(--color-primary);
   }
 
+  .inquiry__mark {
+    color: var(--color-danger);
+  }
+
+  .inquiry__error {
+    display: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-danger);
+  }
+
+  /* Validation states show only after the visitor touched the field (or tried
+     to submit) – :user-valid / :user-invalid, no JS. Empty optional fields
+     stay neutral. */
   .inquiry__field :is(input, textarea):user-invalid {
-    border-color: oklch(0.58 0.19 27);
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 1px var(--color-danger);
+    background: color-mix(in oklch, var(--color-danger-soft) 55%, var(--color-background));
+  }
+
+  .inquiry__field:has(:user-invalid) .inquiry__error {
+    display: block;
+  }
+
+  .inquiry__field :is(input, textarea):user-valid:not(:placeholder-shown),
+  .inquiry__field select:user-valid:has(option:checked:not([value=""])) {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 1px var(--color-success);
+  }
+
+  .inquiry__field :is(input, textarea):user-invalid:focus-visible {
+    outline-color: var(--color-danger);
+  }
+
+  .inquiry__field :is(input, textarea):user-valid:not(:placeholder-shown):focus-visible {
+    outline-color: var(--color-success);
+  }
+
+  .inquiry__field ::placeholder {
+    color: var(--color-subtle);
+  }
+
+  .inquiry__success {
+    display: flex;
+    gap: calc(var(--spacing) * 4);
+    padding: calc(var(--spacing) * 5);
+    border: 1px solid var(--color-success);
+    border-radius: var(--radius-lg);
+    background: var(--color-success-soft);
+    color: var(--color-foreground);
+  }
+
+  .inquiry[hidden],
+  .inquiry__success[hidden] {
+    display: none;
+  }
+
+  .inquiry__success:focus-visible {
+    outline: 2px solid var(--color-success);
+    outline-offset: 2px;
+  }
+
+  .inquiry__success-icon {
+    flex: none;
+    color: var(--color-success);
+  }
+
+  .inquiry__success-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+
+  .inquiry__again {
+    margin-top: calc(var(--spacing) * 3);
+    min-height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-primary);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
   }
 </style>
 
@@ -240,15 +369,36 @@ const webMcpForm: Record<string, string> = {
   // Sends the inquiry through /api/inquiry (Resend). If the endpoint is not
   // available (GitHub Pages, missing config, outage) it falls back to a
   // prepared mailto: e-mail; without JS the native mailto form posts.
+  // Validation is native (required, pattern, minlength) and styled in CSS
+  // with :user-valid / :user-invalid.
   const form = document.querySelector<HTMLFormElement>("[data-inquiry]");
   const status = document.querySelector<HTMLElement>("[data-inquiry-status]");
+  const success = document.querySelector<HTMLElement>("[data-inquiry-success]");
+  const again = document.querySelector<HTMLButtonElement>("[data-inquiry-again]");
   const submit = form?.querySelector<HTMLButtonElement>("button[type=submit]");
-  const startedAt = Date.now();
+  let startedAt = Date.now();
   const endpoint = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/api/inquiry`;
 
   const setStatus = (text: string) => {
     if (status) status.textContent = text;
   };
+
+  const showSuccess = () => {
+    if (!form || !success) return;
+    form.reset();
+    form.hidden = true;
+    success.hidden = false;
+    success.focus();
+  };
+
+  again?.addEventListener("click", () => {
+    if (!form || !success) return;
+    success.hidden = true;
+    form.hidden = false;
+    setStatus("");
+    startedAt = Date.now();
+    form.querySelector<HTMLInputElement>("input[name=name]")?.focus();
+  });
 
   const openMailto = (data: FormData) => {
     const value = (key: string) => String(data.get(key) ?? "").trim();
@@ -261,7 +411,8 @@ const webMcpForm: Record<string, string> = {
       ...(room ? [`Typ prostoru: ${room}`] : []),
     ];
     const body = [value("message"), "", ...details].join("\n");
-    window.location.href = `mailto:${form?.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const cc = form?.dataset.cc ? `&cc=${encodeURIComponent(form.dataset.cc)}` : "";
+    window.location.href = `mailto:${form?.dataset.to}?subject=${encodeURIComponent(subject)}${cc}&body=${encodeURIComponent(body)}`;
     setStatus("Odeslání z webu teď nefunguje – otevírám váš e-mailový program.");
   };
 
@@ -275,12 +426,12 @@ const webMcpForm: Record<string, string> = {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...Object.fromEntries(data), startedAt }),
+        body: JSON.stringify({ ...Object.fromEntries(data), elapsed: Date.now() - startedAt }),
       });
       const result = (await response.json().catch(() => ({}))) as { error?: string };
       if (response.ok) {
-        form.reset();
-        setStatus("Děkujeme, poptávka je odeslaná. Ozveme se vám do dvou pracovních dnů.");
+        setStatus("");
+        showSuccess();
       } else if (response.status === 400 && result.error) {
         setStatus(result.error);
       } else {

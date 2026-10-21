@@ -42,6 +42,12 @@
   --color-secondary: oklch(0.78 0.035 155);
   --color-secondary-hover: oklch(0.72 0.035 155);
 
+  /* Form states – valid / invalid fields, success and error messages */
+  --color-success: oklch(0.52 0.13 150); /* 4.9:1 on background */
+  --color-success-soft: oklch(0.95 0.035 150);
+  --color-danger: oklch(0.53 0.19 27); /* 5.3:1 on background */
+  --color-danger-soft: oklch(0.95 0.03 27);
+
   /* Ink — used on dark sections that stay dark in both themes  */
   --color-ink: oklch(0.21 0.004 80);
   --color-ink-deep: oklch(0.17 0.003 80);
@@ -137,6 +143,11 @@
 
   --color-secondary: oklch(0.73 0.032 155);
   --color-secondary-hover: oklch(0.67 0.032 155);
+
+  --color-success: oklch(0.76 0.13 150);
+  --color-success-soft: oklch(0.27 0.05 150);
+  --color-danger: oklch(0.72 0.16 25);
+  --color-danger-soft: oklch(0.28 0.06 25);
 
   --color-accent: oklch(0.74 0.1 306);
 
