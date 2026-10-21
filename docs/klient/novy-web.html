@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>Váš nový web – jak funguje | Crystal Interiors</title>
+<style>
+  @font-face { font-family: "Playfair Display"; src: url(../../public/fonts/playfair-display-latin.woff2) format("woff2"); font-weight: 400 600; unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122; }
+  @font-face { font-family: "Playfair Display"; src: url(../../public/fonts/playfair-display-cz.woff2) format("woff2"); font-weight: 400 600; unicode-range: U+010C-010F, U+011A-011B, U+0139-013A, U+013D-013E, U+0147-0148, U+0154-0155, U+0158-0159, U+0160-0161, U+0164-0165, U+016E-016F, U+017D-017E; }
+  @font-face { font-family: "Inter"; src: url(../../public/fonts/inter-latin.woff2) format("woff2"); font-weight: 400 600; unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212; }
+  @font-face { font-family: "Inter"; src: url(../../public/fonts/inter-cz.woff2) format("woff2"); font-weight: 400 600; unicode-range: U+010C-010F, U+011A-011B, U+0139-013A, U+013D-013E, U+0147-0148, U+0154-0155, U+0158-0159, U+0160-0161, U+0164-0165, U+016E-016F, U+017D-017E; }
+  @font-face { font-family: "Manrope"; src: url(../../public/fonts/manrope-latin.woff2) format("woff2"); font-weight: 400 600; unicode-range: U+0000-00FF, U+2000-206F; }
+  @font-face { font-family: "Manrope"; src: url(../../public/fonts/manrope-cz.woff2) format("woff2"); font-weight: 400 600; unicode-range: U+010C-010F, U+011A-011B, U+0139-013A, U+013D-013E, U+0147-0148, U+0154-0155, U+0158-0159, U+0160-0161, U+0164-0165, U+016E-016F, U+017D-017E; }
+
+  :root {
+    --ink: #1d1b18; --muted: #5b564f; --line: #e6e0d8; --paper: #fbf9f6; --soft: #f3eef7;
+    --plum: #44013F; --primary: #7C50A8; --royal: #5B2C83; --green: #2f7d4f; --green-soft: #e8f4ec;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font: 10.5pt/1.55 "Inter", Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; height: 297mm; padding: 18mm 18mm 16mm; position: relative; overflow: hidden; page-break-after: always; background: #fff; }
+  .page:last-child { page-break-after: auto; }
+  .foot { position: absolute; left: 18mm; right: 18mm; bottom: 9mm; display: flex; justify-content: space-between; font: 7.5pt "Manrope", sans-serif; color: #9a938a; letter-spacing: .04em; }
+  h1, h2, h3 { font-family: "Playfair Display", Georgia, serif; font-weight: 500; margin: 0; color: var(--ink); }
+  h1 { font-size: 30pt; line-height: 1.1; }
+  h2 { font-size: 21pt; line-height: 1.15; margin-bottom: 4mm; }
+  h3 { font-size: 13pt; line-height: 1.25; margin-bottom: 1.5mm; }
+  p { margin: 0 0 3mm; }
+  .eyebrow { font: 600 7.5pt "Manrope", sans-serif; letter-spacing: .22em; text-transform: uppercase; color: var(--primary); margin-bottom: 3mm; }
+  .lead { font-size: 11.5pt; color: var(--muted); max-width: 150mm; }
+  .muted { color: var(--muted); }
+  .small { font-size: 9pt; }
+  strong { font-weight: 600; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+  .card { border: 1px solid var(--line); border-radius: 4mm; padding: 5mm; background: #fff; }
+  .card.soft { background: var(--soft); border-color: #e4d9ef; }
+  .card h3 { display: flex; align-items: center; gap: 2.5mm; }
+  .tag { display: inline-block; font: 600 7pt "Manrope", sans-serif; letter-spacing: .08em; text-transform: uppercase; padding: .6mm 2.2mm; border-radius: 99px; background: var(--soft); color: var(--royal); }
+  .tag.green { background: var(--green-soft); color: var(--green); }
+  .dot { width: 8mm; height: 8mm; border-radius: 50%; display: grid; place-items: center; color: #fff; font: 600 9pt "Manrope", sans-serif; flex: none; }
+  img.shot { width: 100%; display: block; border-radius: 3mm; border: 1px solid var(--line); box-shadow: 0 2mm 6mm rgb(0 0 0 / .08); }
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; line-height: 1.45; }
+  th, td { text-align: left; vertical-align: top; padding: 1.7mm 3mm; border-bottom: 1px solid var(--line); }
+  th { font: 600 8pt "Manrope", sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  td.new { background: #faf7fc; }
+  .steps { counter-reset: s; display: grid; gap: 3mm; }
+  .step { display: grid; grid-template-columns: 9mm 1fr; gap: 3mm; align-items: start; }
+  .step .n { counter-increment: s; width: 9mm; height: 9mm; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font: 600 10pt "Manrope", sans-serif; }
+  .step .n::before { content: counter(s); }
+  .kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 4.5mm 0; }
+  .kpi div { border: 1px solid var(--line); border-radius: 4mm; padding: 4mm 5mm; }
+  .kpi b { display: block; font: 500 22pt/1.1 "Playfair Display", serif; color: var(--royal); }
+  .kpi span { font-size: 8.5pt; color: var(--muted); }
+  .note { border-left: 1mm solid var(--primary); background: var(--soft); padding: 3.5mm 4.5mm; border-radius: 0 3mm 3mm 0; font-size: 9.5pt; }
+  .note.green { border-color: var(--green); background: var(--green-soft); }
+  ul.clean { margin: 0; padding-left: 4.5mm; } ul.clean li { margin-bottom: 1.4mm; }
+  .cover { background: var(--paper); display: flex; flex-direction: column; }
+  .cover .logo { width: 46mm; margin: 6mm 0 10mm; }
+  dl.gloss { display: grid; grid-template-columns: 34mm 1fr; gap: 2mm 4mm; margin: 0; font-size: 9.5pt; }
+  dl.gloss dt { font-weight: 600; } dl.gloss dd { margin: 0; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- 1 · Titulní strana -->
+<section class="page cover">
+  <img class="logo" src="logo-plum.svg" alt="Crystal Interiors">
+  <div class="eyebrow">Crystal Interiors · nový web</div>
+  <h1>Váš nový web<br>a jak funguje</h1>
+  <p class="lead" style="margin-top:5mm">Srozumitelný přehled pro Lucii Vodákovou: co jsme oproti webu na Webnode změnili, které služby za webem stojí, jak web upravíte a co se děje s poptávkou zákazníka.</p>
+  <img class="shot" src="web-desktop.jpg" alt="Úvodní stránka nového webu" style="margin-top:12mm">
+  <p class="small muted" style="margin-top:4mm">www.crystalinteriors.cz · říjen 2026 · připravil Lukáš Chylík (lukaschylik.dev)</p>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>1</span></div>
+</section>
+
+<!-- 2 · Co se změnilo -->
+<section class="page">
+  <div class="eyebrow">Shrnutí</div>
+  <h2>Co se oproti Webnode změnilo</h2>
+  <p class="lead">Původní web byl postavený ve stavebnici Webnode. Nový web je postavený na míru: obsah vlastníte vy, je rychlejší, lépe ho najde Google a upravujete ho v jednoduché administraci.</p>
+
+  <div class="kpi">
+    <div><b>100 / 100</b><span>Google Lighthouse – rychlost, přístupnost, osvědčené postupy i SEO, na mobilu i počítači, na všech stránkách</span></div>
+    <div><b>1,1 s</b><span>první zobrazení na mobilu<br>(původní web 2,4 s)</span></div>
+    <div><b>0 Kč</b><span>měsíčně navíc – nové služby běží v bezplatných tarifech</span></div>
+  </div>
+
+  <table>
+    <tr><th style="width:26%"></th><th style="width:37%">Dřív – Webnode</th><th>Teď – nový web</th></tr>
+    <tr><td><strong>Kde web „bydlí“</strong></td><td>Na serverech Webnode, jen v jejich stavebnici</td><td class="new">Cloudflare – síť serverů po celém světě, návštěvník dostane web z nejbližšího místa</td></tr>
+    <tr><td><strong>Úpravy obsahu</strong></td><td>Editor Webnode</td><td class="new">Vlastní administrace na <strong>www.crystalinteriors.cz/admin</strong> s průvodcem v češtině</td></tr>
+    <tr><td><strong>Projekty</strong></td><td>Jedna stránka s fotkami</td><td class="new">12 projektů s nadpisem, popisem a galerií; nový projekt přidáte sami</td></tr>
+    <tr><td><strong>Fotky</strong></td><td>Nahrané do Webnode</td><td class="new">Prohlížeč je při nahrání sám zmenší a převede do moderního formátu AVIF; na mobilu se stahují malé verze</td></tr>
+    <tr><td><strong>Poptávkový formulář</strong></td><td>Formulář Webnode</td><td class="new">Poptávka přijde oběma designérkám, zákazník dostane potvrzení e-mailem, ochrana proti robotům</td></tr>
+    <tr><td><strong>Vyhledávače</strong></td><td>Základní nastavení</td><td class="new">Popisy pro Google a sociální sítě, náhledové obrázky, mapa webu, strukturovaná data o firmě a projektech</td></tr>
+    <tr><td><strong>Záloha a historie</strong></td><td>Omezený počet záloh</td><td class="new">Každá změna je uložená zvlášť a dá se vrátit</td></tr>
+    <tr><td><strong>Doména a e-maily</strong></td><td>Webnode</td><td class="new"><strong>Beze změny – zůstávají u Webnode</strong> (stránka 7)</td></tr>
+  </table>
+  <p class="small muted" style="margin-top:4mm">Měřeno nástrojem Google Lighthouse 21. 10. 2026 na stejném zařízení a připojení. Původní web: výkon 94 na mobilu.</p>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>2</span></div>
+</section>
+
+<!-- 3 · Jak to spolu funguje -->
+<section class="page">
+  <div class="eyebrow">Celkový obraz</div>
+  <h2>Jak to spolu funguje</h2>
+  <p class="lead">Web se skládá z několika služeb. Každá dělá jednu věc a dělá ji dobře. Vy pracujete jen s administrací, zbytek se děje automaticky.</p>
+
+  <svg viewBox="0 0 660 470" width="100%" style="margin:4mm 0 2mm" font-family="Inter, Arial, sans-serif">
+    <defs>
+      <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7C50A8"/></marker>
+      <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2f7d4f"/></marker>
+    </defs>
+    <!-- lanes -->
+    <text x="0" y="14" font-size="10" font-weight="600" fill="#7C50A8" letter-spacing="2">ÚPRAVA WEBU</text>
+    <text x="0" y="214" font-size="10" font-weight="600" fill="#7C50A8" letter-spacing="2">NÁVŠTĚVA WEBU</text>
+    <text x="0" y="364" font-size="10" font-weight="600" fill="#2f7d4f" letter-spacing="2">POPTÁVKA A E-MAILY</text>
+
+    <!-- Row 1: You -> Admin -> GitHub -> Cloudflare -->
+    <g>
+      <rect x="0" y="28" width="130" height="110" rx="14" fill="#f3eef7" stroke="#d9c9ea"/>
+      <text x="65" y="62" text-anchor="middle" font-size="22">👩‍🎨</text>
+      <text x="65" y="92" text-anchor="middle" font-size="13" font-weight="600" fill="#1d1b18">Vy</text>
+      <text x="65" y="110" text-anchor="middle" font-size="10" fill="#5b564f">Lucie a Hanka</text>
+
+      <rect x="175" y="28" width="140" height="110" rx="14" fill="#fff" stroke="#e6e0d8"/>
+      <text x="245" y="62" text-anchor="middle" font-size="22">🛠️</text>
+      <text x="245" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#1d1b18">Administrace</text>
+      <text x="245" y="107" text-anchor="middle" font-size="10" fill="#5b564f">texty, projekty, fotky</text>
+      <text x="245" y="122" text-anchor="middle" font-size="10" fill="#5b564f">…/admin</text>
+
+      <rect x="360" y="28" width="140" height="110" rx="14" fill="#fff" stroke="#e6e0d8"/>
+      <text x="430" y="62" text-anchor="middle" font-size="22">🗄️</text>
+      <text x="430" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#1d1b18">GitHub</text>
+      <text x="430" y="107" text-anchor="middle" font-size="10" fill="#5b564f">trezor obsahu</text>
+      <text x="430" y="122" text-anchor="middle" font-size="10" fill="#5b564f">+ historie změn</text>
+
+      <rect x="545" y="28" width="115" height="110" rx="14" fill="#fff" stroke="#e6e0d8"/>
+      <text x="602" y="62" text-anchor="middle" font-size="22">⚙️</text>
+      <text x="602" y="90" text-anchor="middle" font-size="13" font-weight="600" fill="#1d1b18">Cloudflare</text>
+      <text x="602" y="107" text-anchor="middle" font-size="10" fill="#5b564f">postaví nový web</text>
+      <text x="602" y="122" text-anchor="middle" font-size="10" fill="#5b564f">za 2–3 minuty</text>
+
+      <path d="M130 83H170" stroke="#7C50A8" stroke-width="2" marker-end="url(#a)"/>
+      <path d="M315 83H355" stroke="#7C50A8" stroke-width="2" marker-end="url(#a)"/>
+      <path d="M500 83H540" stroke="#7C50A8" stroke-width="2" marker-end="url(#a)"/>
+      <text x="150" y="76" text-anchor="middle" font-size="9" fill="#7C50A8">upravíte</text>
+      <text x="335" y="76" text-anchor="middle" font-size="9" fill="#7C50A8">uložíte</text>
+      <text x="520" y="76" text-anchor="middle" font-size="9" fill="#7C50A8">publikujete</text>
+      <path d="M602 138V175H602" stroke="#7C50A8" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#a)"/>
+    </g>
+
+    <!-- Row 2: Visitor -> Cloudflare network -> website -->
+    <g>
+      <rect x="0" y="228" width="130" height="100" rx="14" fill="#f3eef7" stroke="#d9c9ea"/>
+      <text x="65" y="262" text-anchor="middle" font-size="22">🧑‍💻</text>
+      <text x="65" y="290" text-anchor="middle" font-size="13" font-weight="600" fill="#1d1b18">Návštěvník</text>
+      <text x="65" y="307" text-anchor="middle" font-size="10" fill="#5b564f">mobil i počítač</text>
+
+      <rect x="175" y="228" width="485" height="100" rx="14" fill="#fff" stroke="#e6e0d8"/>
+      <text x="200" y="258" font-size="13" font-weight="600" fill="#1d1b18">Cloudflare – web www.crystalinteriors.cz</text>
+      <text x="200" y="279" font-size="10" fill="#5b564f">• stránka přijde z nejbližšího serveru (Praha, Vídeň, Frankfurt…)</text>
+      <text x="200" y="296" font-size="10" fill="#5b564f">• zabezpečené spojení (zámek v prohlížeči), ochrana před útoky</text>
+      <text x="200" y="313" font-size="10" fill="#5b564f">• fotky v malé velikosti pro mobil, velké pro počítač</text>
+      <path d="M130 278H170" stroke="#7C50A8" stroke-width="2" marker-end="url(#a)"/>
+    </g>
+
+    <!-- Row 3: form -> Resend -> mailboxes (Webnode) -->
+    <g>
+      <rect x="0" y="378" width="130" height="90" rx="14" fill="#e8f4ec" stroke="#c6e2cf"/>
+      <text x="65" y="408" text-anchor="middle" font-size="20">✉️</text>
+      <text x="65" y="433" text-anchor="middle" font-size="12" font-weight="600" fill="#1d1b18">Formulář</text>
+      <text x="65" y="449" text-anchor="middle" font-size="10" fill="#5b564f">na stránce Kontakt</text>
+
+      <rect x="175" y="378" width="140" height="90" rx="14" fill="#fff" stroke="#e6e0d8"/>
+      <text x="245" y="408" text-anchor="middle" font-size="20">📮</text>
+      <text x="245" y="433" text-anchor="middle" font-size="12" font-weight="600" fill="#1d1b18">Resend</text>
+      <text x="245" y="449" text-anchor="middle" font-size="10" fill="#5b564f">odešle e-maily</text>
+
+      <rect x="360" y="378" width="300" height="90" rx="14" fill="#fff" stroke="#e6e0d8"/>
+      <text x="380" y="404" font-size="12" font-weight="600" fill="#1d1b18">Vaše schránky u Webnode (beze změny)</text>
+      <text x="380" y="424" font-size="10" fill="#5b564f">• poptávka → vodakova@ i neklapilova@</text>
+      <text x="380" y="440" font-size="10" fill="#5b564f">• „Odpovědět“ míří rovnou na zákazníka</text>
+      <text x="380" y="456" font-size="10" fill="#5b564f">• zákazník dostane potvrzení o přijetí</text>
+      <path d="M130 423H170" stroke="#2f7d4f" stroke-width="2" marker-end="url(#g)"/>
+      <path d="M315 423H355" stroke="#2f7d4f" stroke-width="2" marker-end="url(#g)"/>
+    </g>
+  </svg>
+
+  <div class="note">Klíčové: <strong>obsah webu (texty i fotky) leží v GitHubu</strong> a dá se kdykoli přenést jinam. Cloudflare z něj po každé změně postaví hotový web. Nic není „zamčené“ v jedné stavebnici.</div>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>3</span></div>
+</section>
+
+<!-- 4 · Služby -->
+<section class="page">
+  <div class="eyebrow">Kdo co dělá</div>
+  <h2>Služby, které web používá</h2>
+  <p class="lead">Přehled pro představu – do žádné z nich nemusíte chodit, vše ovládáte z administrace.</p>
+
+  <div class="grid2" style="margin-top:4mm">
+    <div class="card">
+      <h3><span class="dot" style="background:#f38020">CF</span>Cloudflare</h3>
+      <p class="small"><strong>Co dělá:</strong> drží web a doručuje ho návštěvníkům z nejbližšího serveru, stará se o zabezpečení (HTTPS), po každém zveřejnění web sám znovu „postaví“. Po přesunu domény bude spravovat i adresu crystalinteriors.cz.</p>
+      <p class="small muted"><strong>Přirovnání:</strong> výloha, která stojí v každém městě zároveň.</p>
+      <span class="tag green">zdarma</span>
+    </div>
+    <div class="card">
+      <h3><span class="dot" style="background:#1d1b18">GH</span>GitHub</h3>
+      <p class="small"><strong>Co dělá:</strong> bezpečně ukládá veškerý obsah webu – texty, projekty i fotky. Každá změna se zapíše zvlášť (kdo, kdy, co), takže jde cokoli vrátit. Slouží i k přihlášení do administrace.</p>
+      <p class="small muted"><strong>Přirovnání:</strong> trezor s kronikou všech úprav.</p>
+      <span class="tag green">zdarma</span>
+    </div>
+    <div class="card soft">
+      <h3><span class="dot" style="background:#7C50A8">✎</span>Administrace</h3>
+      <p class="small"><strong>Co dělá:</strong> místo, kde upravujete texty, projekty, fotky, ceník, časté dotazy, kontakty i popisy pro Google. Česky, s průvodcem a tlačítkem Nápověda. Adresa: <strong>www.crystalinteriors.cz/admin</strong>.</p>
+      <p class="small muted">Technicky Decap CMS – ověřený otevřený systém.</p>
+      <span class="tag green">zdarma</span>
+    </div>
+    <div class="card">
+      <h3><span class="dot" style="background:#111">R</span>Resend</h3>
+      <p class="small"><strong>Co dělá:</strong> odesílá e-maily z formuláře – poptávku vám oběma a potvrzení zákazníkovi. Odesílá pod vaší doménou ze serverů v EU, takže zprávy nepadají do spamu.</p>
+      <p class="small muted"><strong>Přirovnání:</strong> spolehlivý pošťák jen pro formulář.</p>
+      <span class="tag green">zdarma do 3 000 e-mailů / měsíc</span>
+    </div>
+    <div class="card">
+      <h3><span class="dot" style="background:#2b6cb0">W</span>Webnode</h3>
+      <p class="small"><strong>Co zůstává:</strong> registrace domény crystalinteriors.cz a <strong>vaše e-mailové schránky</strong> (@crystalinteriors.cz). Pošta funguje přesně jako dosud.</p>
+      <p class="small muted">Předplatné u Webnode proto <strong>nerušte</strong> – platí se z něj schránky a doména.</p>
+      <span class="tag">stávající předplatné</span>
+    </div>
+    <div class="card">
+      <h3><span class="dot" style="background:#34a853">G</span>Google</h3>
+      <p class="small"><strong>Co dělá:</strong> Tag Manager měří návštěvnost (stejný účet jako dřív), Search Console ukazuje, jak web vidí vyhledávač. Ověření v Search Console jsme přenesli ze starého webu.</p>
+      <p class="small muted">Statistiky se načítají až po zobrazení stránky, web nezdržují.</p>
+      <span class="tag green">zdarma</span>
+    </div>
+  </div>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>4</span></div>
+</section>
+
+<!-- 5 · Úpravy webu -->
+<section class="page">
+  <div class="eyebrow">Každodenní práce</div>
+  <h2>Jak upravíte web</h2>
+  <img class="shot" src="admin-projekty.jpg" alt="Administrace – seznam projektů" style="margin:2mm 0 6mm">
+  <div class="steps">
+    <div class="step"><div class="n"></div><div><strong>Přihlaste se</strong> na www.crystalinteriors.cz/admin tlačítkem „Přihlásit se přes GitHub“ (jednou si založíte bezplatný účet GitHub, Lukáš vás pozve).</div></div>
+    <div class="step"><div class="n"></div><div><strong>Vyberte, co upravit:</strong> <em>Projekty</em> (každý projekt zvlášť), <em>Stránky</em> (úvod, služby a ceník, o nás, kontakt) nebo <em>Nastavení</em> (kontakty, adresa, sociální sítě).</div></div>
+    <div class="step"><div class="n"></div><div><strong>Upravte text</strong> – u projektu jde i tučné písmo, odrážky a odkazy. Šedé nápovědy u polí říkají, kde se text na webu zobrazí.</div></div>
+    <div class="step"><div class="n"></div><div><strong>Uložit</strong> – vznikne koncept. Na webu se zatím nic nemění, můžete se k němu vrátit.</div></div>
+    <div class="step"><div class="n"></div><div><strong>Publikovat → Publikovat nyní</strong> – vpravo dole uvidíte průběh. Do 2–3 minut je změna na webu.</div></div>
+  </div>
+  <div class="note green" style="margin-top:6mm">Nebojte se zkoušet. Před každým smazáním se administrace zeptá a každá zveřejněná změna jde vrátit. Tlačítko <strong>Nápověda</strong> vlevo dole kdykoli spustí průvodce.</div>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>5</span></div>
+</section>
+
+<!-- 6 · Fotky -->
+<section class="page">
+  <div class="eyebrow">Projekty a fotky</div>
+  <h2>Galerie projektu</h2>
+  <img class="shot" src="admin-galerie.jpg" alt="Administrace – galerie fotek projektu" style="margin:2mm 0 6mm">
+  <div class="grid2">
+    <div>
+      <h3>Nahrání fotek</h3>
+      <ul class="clean small">
+        <li>Klikněte na <strong>Nahrát fotky</strong> – můžete vybrat více fotek najednou.</li>
+        <li>Prohlížeč každou fotku sám zmenší a převede do formátu <strong>AVIF</strong> (výrazně menší než JPG při stejné kvalitě). Chvilku to trvá, uvidíte průběh.</li>
+        <li>Ideální jsou fotky <strong>na šířku kolem 2400 px</strong>, ve formátu JPG nebo PNG. Fotky z iPhonu (HEIC) je potřeba převést na JPG.</li>
+        <li>Na webu se fotky objeví po <strong>Publikovat</strong>.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Úpravy u každé fotky</h3>
+      <ul class="clean small">
+        <li><strong>Kliknutím na fotku</strong> určíte, co má být vidět v náhledu (dlaždice ořízne fotku na 4 : 3). Ve zvětšení je fotka vždy celá.</li>
+        <li><strong>Hvězdička</strong> – hlavní fotka, na webu je velká.</li>
+        <li><strong>Šipky</strong> mění pořadí, <strong>koš</strong> fotku odebere.</li>
+        <li><strong>Popis fotky</strong> – krátce co je na ní (čtou ho nevidomí a Google).</li>
+        <li><strong>Dočasně skrýt</strong> – fotka zůstane uložená, jen se nezobrazí.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>6</span></div>
+</section>
+
+<!-- 7 · Poptávka, e-maily, mobil -->
+<section class="page">
+  <div class="eyebrow">Zákazníci</div>
+  <h2>Co se stane, když vám někdo napíše</h2>
+  <div style="display:grid;grid-template-columns:1fr 62mm;gap:8mm;align-items:start">
+    <div>
+      <div class="steps">
+        <div class="step"><div class="n"></div><div>Zákazník klikne na <strong>Nezávazná konzultace</strong> (na webu je na několika místech) a dostane se rovnou k formuláři na stránce Kontakt.</div></div>
+        <div class="step"><div class="n"></div><div>Formulář hlídá vyplnění: povinná pole jsou označená hvězdičkou, chybně vyplněné pole zčervená a napíše, co opravit.</div></div>
+        <div class="step"><div class="n"></div><div>Po odeslání vidí poděkování: <em>„Zpráva byla úspěšně odeslána. Děkujeme za vaši zprávu, budeme vás kontaktovat v nejbližším možném termínu.“</em></div></div>
+        <div class="step"><div class="n"></div><div><strong>Vám oběma</strong> přijde e-mail s poptávkou. Stačí kliknout na <strong>Odpovědět</strong> – odpověď jde přímo zákazníkovi.</div></div>
+        <div class="step"><div class="n"></div><div><strong>Zákazník</strong> dostane potvrzení o přijetí s kopií své zprávy a vašimi kontakty.</div></div>
+      </div>
+      <div class="note" style="margin-top:6mm">Roboti, kteří rozesílají spam, se poznají podle skrytého pole, příliš rychlého odeslání nebo hromady odkazů – jejich „poptávky“ se tiše zahodí a k vám nedojdou.</div>
+      <h3 style="margin-top:8mm">E-maily @crystalinteriors.cz</h3>
+      <p class="small">Schránky zůstávají u Webnode a fungují stejně jako dosud – v telefonu, v počítači i ve webmailu. Nic nenastavujete znovu.</p>
+    </div>
+    <div>
+      <img class="shot" src="web-mobil.jpg" alt="Web na mobilu" style="border-radius:6mm">
+      <p class="small muted" style="margin-top:2mm;text-align:center">Web na mobilu – menší fotky, velká tlačítka, světlý i tmavý režim.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>7</span></div>
+</section>
+
+<!-- 8 · Bezpečnost, další krok, slovníček -->
+<section class="page">
+  <div class="eyebrow">Jistota</div>
+  <h2>Bezpečnost, zálohy a další krok</h2>
+  <div class="grid3" style="margin-bottom:6mm">
+    <div class="card"><h3>Bezpečně</h3><p class="small">Šifrované spojení (zámek v prohlížeči), do administrace se dostane jen pozvaný člověk přes svůj účet. Web nemá vlastní databázi ani hesla, která by šlo ukrást.</p></div>
+    <div class="card"><h3>Se zálohou</h3><p class="small">Každá zveřejněná změna je uložená v GitHubu. Kdyby se cokoli pokazilo, vrátí se předchozí verze během chvilky.</p></div>
+    <div class="card"><h3>Bez závislosti</h3><p class="small">Obsah je ve standardních souborech. Web jde kdykoli přesunout k jinému poskytovateli bez přepisování.</p></div>
+  </div>
+
+  <h3>Co ještě proběhne</h3>
+  <p class="small">Požádali jsme Webnode o přesun správy adresy crystalinteriors.cz pod Cloudflare (tzv. změna NSSET). Web už teď běží z Cloudflare, po přesunu bude pod Cloudflare i adresa bez „www“ a doplníme další zabezpečení (DNSSEC). <strong>Pro vás se nic nemění</strong> – web ani e-maily nevypadnou, všechna nastavení pošty jsou zkopírovaná. Doména i schránky dál zůstávají u Webnode.</p>
+
+  <h3 style="margin-top:6mm">Malý slovníček</h3>
+  <dl class="gloss">
+    <dt>Doména</dt><dd>Adresa webu – crystalinteriors.cz. Registrovaná u Webnode.</dd>
+    <dt>DNS / NSSET</dt><dd>„Telefonní seznam“ internetu: říká, kde web a e-maily najít. NSSET určuje, kdo tento seznam pro vaši doménu vede.</dd>
+    <dt>Hosting</dt><dd>Kde web fyzicky běží – teď Cloudflare.</dd>
+    <dt>Administrace (CMS)</dt><dd>Stránka, ve které upravujete obsah webu – /admin.</dd>
+    <dt>Publikovat</dt><dd>Poslat uložené změny na skutečný web (trvá 2–3 minuty).</dd>
+    <dt>AVIF</dt><dd>Moderní formát fotek – stejná kvalita, mnohem menší soubor, rychlejší web.</dd>
+    <dt>SEO</dt><dd>Vše, co pomáhá, aby vás našel Google – popisy stránek, mapa webu, údaje o firmě.</dd>
+    <dt>Lighthouse</dt><dd>Měřicí nástroj Googlu (0–100) pro rychlost, přístupnost a kvalitu webu.</dd>
+  </dl>
+
+  <div class="card soft" style="margin-top:7mm;display:flex;justify-content:space-between;align-items:center">
+    <div><strong>Otázky, úpravy, nápady?</strong><br><span class="small muted">Web připravil a stará se o něj Lukáš Chylík</span></div>
+    <div style="text-align:right"><strong>lukaschylik.dev</strong></div>
+  </div>
+  <div class="foot"><span>Crystal Interiors – nový web</span><span>8</span></div>
+</section>
+
+</body>
+</html>
