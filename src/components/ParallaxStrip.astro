@@ -48,6 +48,7 @@ const overlayClass = tone === "dark" ? "parallax-strip__overlay--dark" : "parall
   ]}
   style={`--parallax-image: url('${large}'); --parallax-image-sm: url('${small}');`}
   aria-label={title}
+  data-parallax
 >
   <div class:list={["parallax-strip__overlay absolute inset-0 z-0", overlayClass]} aria-hidden="true"></div>
 
@@ -73,8 +74,14 @@ const overlayClass = tone === "dark" ? "parallax-strip__overlay--dark" : "parall
      Image stays in viewport while the section scrolls past it.
      On iOS Safari (mobile), `fixed` is unreliable — fall back to
      `scroll` under the hover/pointer media query for touch devices. */
-  .parallax-strip {
+  /* The photo is set once the strip is near the viewport (script below), so it
+     never competes with the hero image on the first load. */
+  .parallax-strip[data-near] {
     background-image: var(--parallax-image);
+  }
+
+  .parallax-strip {
+    background-color: var(--color-ink-deep);
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -84,6 +91,9 @@ const overlayClass = tone === "dark" ? "parallax-strip__overlay--dark" : "parall
   @media (hover: none), (max-width: 768px) {
     .parallax-strip {
       background-attachment: scroll;
+    }
+
+    .parallax-strip[data-near] {
       background-image: var(--parallax-image-sm);
     }
   }
@@ -110,3 +120,24 @@ const overlayClass = tone === "dark" ? "parallax-strip__overlay--dark" : "parall
     }
   }
 </style>
+
+<noscript><style is:inline>[data-parallax] { background-image: var(--parallax-image); }</style></noscript>
+
+<script>
+  const strips = document.querySelectorAll<HTMLElement>("[data-parallax]:not([data-near])");
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).dataset.near = "";
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "100% 0px" },
+    );
+    strips.forEach((strip) => observer.observe(strip));
+  } else {
+    strips.forEach((strip) => (strip.dataset.near = ""));
+  }
+</script>
