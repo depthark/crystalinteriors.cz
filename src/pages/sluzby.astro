@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
 import Button from "@/components/ui/Button.astro";
 import ArrowRightIcon from "@/components/icons/ArrowRightIcon.astro";
+import ResponsiveImage from "@/components/ui/ResponsiveImage.astro";
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
 import { serviceNodes } from "@/lib/structured-data";
@@ -35,13 +36,30 @@ const page = site.servicesPage;
 
       <div class="mt-10 grid gap-6 sm:mt-12 lg:grid-cols-2">
         {
-          page.pillars.map((pillar) => (
-            <article class="glass-hover rounded-2xl border border-border bg-surface p-6 sm:p-8" data-reveal>
-              <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
-                {pillar.eyebrow}
-              </p>
-              <h2 class="mt-4 text-2xl text-foreground sm:text-3xl">{pillar.title}</h2>
-              <p class="mt-4 leading-7 text-muted sm:leading-8">{pillar.text}</p>
+          page.pillars.map((pillar: { eyebrow: string; title: string; text: string; image?: string; imageAlt?: string }, index: number) => (
+            <article class="glass-hover group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface" data-reveal style={`--reveal-i: ${index}`}>
+              {
+                pillar.image && (
+                  <div class="relative overflow-hidden">
+                    <ResponsiveImage
+                      src={pillar.image}
+                      alt={pillar.imageAlt ?? ""}
+                      width={1200}
+                      height={675}
+                      sizes="(min-width: 1280px) 600px, (min-width: 1024px) 46vw, 100vw"
+                      class="aspect-[3/2] w-full object-cover transition-transform duration-700 sm:aspect-[21/9] lg:aspect-[16/9] ease-out-soft group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    />
+                    <span class="pillar__shade pointer-events-none absolute inset-0" aria-hidden="true"></span>
+                  </div>
+                )
+              }
+              <div class="p-6 sm:p-8">
+                <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
+                  {pillar.eyebrow}
+                </p>
+                <h2 class="mt-4 text-2xl text-foreground sm:text-3xl">{pillar.title}</h2>
+                <p class="mt-4 leading-7 text-muted sm:leading-8">{pillar.text}</p>
+              </div>
             </article>
           ))
         }
@@ -79,3 +97,14 @@ const page = site.servicesPage;
   </main>
   <SiteFooter />
 </BaseLayout>
+
+<style>
+  /* Soft fade from the photo into the card surface (theme-aware). */
+  .pillar__shade {
+    background: linear-gradient(
+      to bottom,
+      transparent 55%,
+      color-mix(in oklch, var(--color-surface) 35%, transparent)
+    );
+  }
+</style>

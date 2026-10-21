@@ -188,6 +188,8 @@ collections:
             collapsed: true
             summary: "{{fields.title}}"
             fields:
+              - { name: image, label: Fotka v hlavičce karty, widget: photo, required: false, hint: "Na šířku, ořízne se na 16:9." }
+              - { name: imageAlt, label: Popis fotky, widget: string, required: false, hint: "Co je na fotce – pro nevidomé a Google." }
               - { name: eyebrow, label: Drobný text, widget: string }
               - { name: title, label: Nadpis, widget: string }
               - { name: text, label: Text, widget: text }
