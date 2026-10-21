@@ -1,0 +1,33 @@
+{
+  "order": 11,
+  "slug": "panelakova-kuchyne",
+  "title": "Vizualizace panelákové kuchyně",
+  "text": "V tomto bytě v Brněnském paneláku jsme navrhovaly kuchyni propojenou se snídaňovým pultem a jídelním/pracovním stolem v obýváku. Jako obklad jsme zvolily hexagonovou keramickou mozaiku. Dominantou je výrazný dřevodekor, který koresponduje s parketami.",
+  "images": [
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/01-brinkova-vizu-pohled1-watermarked.png",
+      "alt": "Vizualizace panelákové kuchyně — foto 1",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/02-brinkova-vizu-pohled2-watermarked.png",
+      "alt": "Vizualizace panelákové kuchyně — foto 2",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/03-brinkova-vizu-pohled3-watermarked.png",
+      "alt": "Vizualizace panelákové kuchyně — foto 3",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/04-brinkova-vizu-pohled4-watermarked.png",
+      "alt": "Vizualizace panelákové kuchyně — foto 4",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563321/CrystalInteriors/Projekty/panelakova-kuchyne/05-brinkova-vizu-pohled5-watermarked.png",
+      "alt": "Vizualizace panelákové kuchyně — foto 5",
+      "hidden": false
+    }
+  ]
+}

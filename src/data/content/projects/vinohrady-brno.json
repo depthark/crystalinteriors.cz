@@ -1,0 +1,39 @@
+{
+  "order": 5,
+  "slug": "vinohrady-brno",
+  "title": "Vinohrady Brno",
+  "subtitle": "Tato zakázka ložnice se realizovala v panelovém domě v Brně-Vinohrady.",
+  "text": "Skříň má integrované LED pásky a výklopnou šatní tyč. Závěsné noční stolky mají vestavnou zásuvku. Toaletní stolek s akcentovými poličkami a zrcadlem ve tvaru hexagonu slouží pro ranní krášlení. Textilní akustické panely za postelí jsou velmi příjemné na opření.",
+  "images": [
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/01-11-02-2021-varianta-k-podpisu-1-watermarked.png",
+      "alt": "Vinohrady Brno — foto 1",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/02-11-02-2021-varianta-k-podpisu-2-watermarked.png",
+      "alt": "Vinohrady Brno — foto 2",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/03-11-02-2021-varianta-k-podpisu-3-watermarked.png",
+      "alt": "Vinohrady Brno — foto 3",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/04-11-02-2021-varianta-k-podpisu-4-watermarked.png",
+      "alt": "Vinohrady Brno — foto 4",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563300/CrystalInteriors/Projekty/vinohrady-brno/05-img-20210427-152945-1.jpg",
+      "alt": "Vinohrady Brno — foto 5",
+      "hidden": false
+    },
+    {
+      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563300/CrystalInteriors/Projekty/vinohrady-brno/06-img-20210427-153838-1.jpg",
+      "alt": "Vinohrady Brno — foto 6",
+      "hidden": false
+    }
+  ]
+}
