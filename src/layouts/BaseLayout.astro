@@ -8,7 +8,6 @@ import {
 } from "@/lib/structured-data";
 import { ogImageFor } from "@/lib/og-image";
 import WebMcp from "@/components/agent/WebMcp.astro";
-import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 
 export interface Props {
@@ -43,12 +42,34 @@ const {
 
 const base = import.meta.env.BASE_URL;
 const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
-// /styles/* are not content-hashed and cached for days: version the URL by
-// content so a deploy with new CSS is picked up immediately.
-const styled = (path: string) => {
-  const hash = createHash("sha1").update(readFileSync(`public/${path}`)).digest("hex").slice(0, 10);
-  return `${asset(path)}?v=${hash}`;
-};
+// Self-hosted variable fonts (Fontsource, OFL): Latin + a tiny Czech/Slovak
+// subset per family (public/fonts/, built from Latin Extended with pyftsubset).
+const CZ_RANGE =
+  "U+010C-010F,U+011A-011B,U+0139-013A,U+013D-013E,U+0147-0148,U+0154-0155,U+0158-0159,U+0160-0161,U+0164-0165,U+016E-016F,U+017D-017E";
+const LATIN_RANGE =
+  "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD";
+const families = [
+  { name: "Inter", file: "inter", weight: "100 900" },
+  { name: "Manrope", file: "manrope", weight: "200 800" },
+  { name: "Playfair Display", file: "playfair-display", weight: "400 900" },
+];
+const fontFaces = families
+  .flatMap(({ name, file, weight }) =>
+    [
+      ["latin", LATIN_RANGE],
+      ["cz", CZ_RANGE],
+    ].map(
+      ([subset, range]) =>
+        `@font-face{font-family:"${name}";font-style:normal;font-display:swap;font-weight:${weight};src:url(${asset(`fonts/${file}-${subset}.woff2`)}) format("woff2");unicode-range:${range}}`,
+    ),
+  )
+  .join("");
+
+// Critical CSS is small (~9 kB brotli): inline it and skip two render-blocking
+// requests. The files stay the source of truth (Tailwind CLI output + global).
+const inlineCss = [fontFaces, readFileSync("public/styles/tailwind.css", "utf8"), readFileSync("public/styles/global.css", "utf8")]
+  .join("\n")
+  .replace(/\/\*# sourceMappingURL=.*?\*\//g, "");
 
 // Page keywords first (as on the original site), then the studio-wide ones.
 const allKeywords = [...new Set([...keywords, ...site.keywords])];
@@ -137,9 +158,9 @@ const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": grap
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-    <!-- Connections: open early, they are on the LCP path -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts used above the fold: hero heading (Playfair) and body (Inter) -->
+    <link rel="preload" as="font" type="font/woff2" href={asset("fonts/playfair-display-latin.woff2")} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={asset("fonts/inter-latin.woff2")} crossorigin />
     {
       preload && (
         <link
@@ -153,13 +174,7 @@ const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": grap
         />
       )
     }
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href={styled("styles/tailwind.css")} />
-    <link rel="stylesheet" href={styled("styles/global.css")} />
+    <style is:inline set:html={inlineCss}></style>
 
     <script is:inline>
       (() => {
@@ -178,18 +193,28 @@ const jsonLd = JSON.stringify({ "@context": "https://schema.org", "@graph": grap
 
     <script is:inline type="application/ld+json" set:html={jsonLd} />
 
-    <!-- Google Tag Manager -->
+    <!-- Google Tag Manager – loaded after the page (idle after load, or on the
+         first interaction), so it never competes with rendering. -->
     <script is:inline>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-542MMSL");
+      (function (w, d, id) {
+        w.dataLayer = w.dataLayer || [];
+        w.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var done = false;
+        var events = ["pointerdown", "keydown", "scroll", "touchstart"];
+        function load() {
+          if (done) return;
+          done = true;
+          events.forEach(function (e) { w.removeEventListener(e, load); });
+          var j = d.createElement("script");
+          j.async = true;
+          j.src = "https://www.googletagmanager.com/gtm.js?id=" + id;
+          d.head.appendChild(j);
+        }
+        events.forEach(function (e) { w.addEventListener(e, load, { once: true, passive: true }); });
+        w.addEventListener("load", function () {
+          (w.requestIdleCallback || function (cb) { setTimeout(cb, 2000); })(load, { timeout: 4000 });
+        });
+      })(window, document, "GTM-542MMSL");
     </script>
     <!-- End Google Tag Manager -->
   </head>

@@ -16,6 +16,11 @@
 /images/*
   Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
+# Self-hosted fonts (file names change only with the font version)
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
 # Photo sets from the CMS (new uploads always get new file names)
 /gallery/*
   Cache-Control: public, max-age=31536000, stale-while-revalidate=86400
