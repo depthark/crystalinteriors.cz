@@ -89,8 +89,8 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
           {
             site.services.map((service, index) => (
               <li data-reveal style={`--reveal-i: ${index % 3}`}>
-                <article class="group h-full overflow-hidden rounded-xl border border-border bg-background shadow-card transition duration-300 ease-standard hover:-translate-y-1 hover:shadow-lifted">
-                  <div class="overflow-hidden">
+                <article class="h-full overflow-hidden rounded-xl border border-border bg-background shadow-card">
+                  <div>
                     <ResponsiveImage
                       src={service.image}
                       alt={`${service.title} — ukázka návrhu Crystal Interiors`}
@@ -98,7 +98,7 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
                       height={675}
                       max={800}
                       sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
-                      class="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out-soft group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                      class="aspect-[4/3] w-full object-cover"
                     />
                   </div>
                   <div class="flex flex-col gap-3 p-5 sm:p-6">
