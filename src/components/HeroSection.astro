@@ -59,12 +59,16 @@ import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
         {site.hero.title}
       </h1>
 
-      <p
-        class="hero__rise mx-auto max-w-2xl text-balance text-base leading-7 text-white/85 sm:text-lg sm:leading-8"
-        style="--i: 3"
-      >
-        {site.hero.text}
-      </p>
+      {
+        site.hero.text && (
+          <p
+            class="hero__rise mx-auto max-w-2xl text-balance text-base leading-7 text-white/85 sm:text-lg sm:leading-8"
+            style="--i: 3"
+          >
+            {site.hero.text}
+          </p>
+        )
+      }
 
       <div
         class="hero__rise flex w-full flex-col items-stretch justify-center gap-3 pt-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center"

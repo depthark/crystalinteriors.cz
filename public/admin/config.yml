@@ -110,7 +110,7 @@ collections:
             fields:
               - { name: eyebrow, label: Drobný text nad nadpisem, widget: string }
               - { name: title, label: Hlavní nadpis, widget: text, hint: "Krátce a výstižně – je to první, co návštěvník uvidí." }
-              - { name: text, label: Podnadpis, widget: text }
+              - { name: text, label: Podnadpis, widget: text, required: false, hint: "Nepovinné – když zůstane prázdné, pod nadpisem nic není." }
               - { name: image, label: Fotka na pozadí, widget: cloud-image, hint: "Ideálně na šířku, alespoň 2000 px. Zobrazuje se ztmavená." }
               - { name: imageAlt, label: Popis fotky, widget: string, hint: "Pro nevidomé a vyhledávače, např. Kuchyně na míru v bílém dekoru." }
               - name: primaryCta
