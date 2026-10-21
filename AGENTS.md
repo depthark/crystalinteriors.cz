@@ -29,21 +29,22 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
 | CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
-| Hosting | [Cloudflare Pages](https://pages.cloudflare.com) | — | `wrangler.toml`, `public/_headers` |
+| Hosting | [Cloudflare Pages](https://pages.cloudflare.com) project `crystalinteriors-cz` (custom domain `www.crystalinteriors.cz`); DNS zone on Cloudflare once the NSSET moves (see `docs/AFTER-NSSET.md`) | — | `wrangler.toml`, `public/_headers` |
 | Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth, contact form), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
-| Mail / contact | [Resend](https://resend.com) via Pages Function `/api/inquiry` (both designers, customer as Reply-To); falls back to a prepared `mailto:` e-mail; `tel:`/`mailto:` links | — | `functions/api/inquiry.ts`, `src/pages/kontakt.astro`, `ROLLBACK.md` |
+| Mail / contact | [Resend](https://resend.com) (EU, domain `crystalinteriors.cz` verified, sending only) via Pages Function `/api/inquiry`: inquiry to both designers (customer as Reply-To) + confirmation e-mail to the customer; honeypot, time-on-page and link-count spam checks; script → JSON, no-JS form post → 303 to `/kontakt/#odeslano`; `mailto:` only as the JS fallback when sending is down. Mailboxes stay on Webnode | — | `functions/api/inquiry.ts`, `src/pages/kontakt.astro`, `contact.json → form` |
 | Maps | Google Maps embed (iframe) | — | `settings.json → company.mapEmbed` |
-| Analytics | Google Tag Manager `GTM-542MMSL` | — | `src/layouts/BaseLayout.astro` |
+| Analytics | Google Tag Manager `GTM-542MMSL`, loaded on idle after `load` or on the first interaction | — | `src/layouts/BaseLayout.astro` |
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
 | Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
 | SEO | Per-page meta/OG/Twitter, schema.org JSON-LD graph, generated `sitemap.xml` (+ images), `robots.txt` | — | `src/lib/structured-data.ts`, `src/pages/sitemap.xml.ts` |
 | Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/lavender light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |
-| Fonts | Google Fonts – Playfair Display (h1–h3), Manrope (UI), Inter (body) | — | `BaseLayout.astro`, `global.css` |
+| Fonts | Self-hosted variable woff2 (Fontsource, OFL) – Playfair Display (h1–h3), Manrope (UI), Inter (body): Latin + tiny Czech/Slovak subset, `wght` 400–600 only (107 kB total); metric-matched local fallbacks (no swap shift); `@font-face` inlined | 5.3 | `public/fonts/`, `BaseLayout.astro` |
 | Rich text | `marked` – Markdown from the CMS editor → HTML (project descriptions) | 18 | `src/lib/markdown.ts` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
+| CI | GitHub Actions build check only (no deploy; GitHub Pages is off) | — | `.github/workflows/build.yml` |
 
 All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
 
@@ -73,10 +74,10 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 
 ### Layout
 
-- `src/layouts/BaseLayout.astro` — `<head>` boilerplate, meta tags, OG, schema.org JSON-LD, Google Tag Manager (`GTM-542MMSL`), skip link, theme-init inline script.
+- `src/layouts/BaseLayout.astro` — `<head>` boilerplate, meta tags, OG, schema.org JSON-LD, Google Tag Manager (`GTM-542MMSL`, deferred), skip link, theme-init inline script. **Critical CSS is inlined**: `@font-face` + fallback faces + `public/styles/tailwind.css` + `global.css` go into one `<style>` (no render-blocking requests); page CSS is inlined too (`build.inlineStylesheets: "always"`).
 - `src/components/SiteHeader.astro` — sticky `.glass` header. Logo (SVG, white art via filter inversion in light theme), brand text, nav (desktop ≥lg), mobile cluster with `ThemeToggle` + `MobileMenu`.
 - `src/components/MobileMenu.astro` — disclosure nav (toggle `aria-expanded`/`aria-controls`), **not** a second header: the panel (fixed, `z-modal`) holds only links, CTA and social icons and slides out *under* the real header – SiteHeader's logo link, theme toggle and the hamburger (→ X) sit at `z-modal + 1`, so the header looks identical open or closed. While open: `main`/`footer` are `inert`, body scroll-locked, focus moves to the first link; Escape/X/link click close it. Never duplicate the logo or a close button inside the panel.
-- `src/components/SiteFooter.astro` — three-column footer with brand, atelier, social. Bottom row shows legal info (Provozovatel, IČO, sídlo) + copyright.
+- `src/components/SiteFooter.astro` — three-column footer with brand, atelier, social. Bottom row shows legal info (Provozovatel, IČO, sídlo), copyright and „Created by Lukáš Chylík“ (link to lukaschylik.dev).
 
 ### Reusable
 
@@ -87,8 +88,8 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/ui/ResponsiveImage.astro` — responsive AVIF image from an image set (`src/lib/image-set.ts`): srcset/sizes (`auto` when lazy), `max` width cap, `focus` → object-position, no CLS; plain `<img>` for other paths.
 - `src/components/agent/WebMcp.astro` — WebMCP tools for in-browser AI agents.
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
-- `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image `home.json → intro.parallaxImage` (image set in `public/gallery/web/`; 1800 px desktop, 1200 px on touch).
-- `src/components/HeroSection.astro` — full-bleed hero with an image set (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`), eyebrow + serif title + CTAs (white `hero-primary`), staggered motion-safe entrance and a 3× scroll cue.
+- `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image `home.json → intro.parallaxImage` (image set in `public/gallery/web/`; 1800 px desktop, 1200 px on touch). The photo is applied only when the strip is within one viewport (`data-near` via IntersectionObserver, `noscript` fallback) so it never competes with the LCP image.
+- `src/components/HeroSection.astro` — full-bleed hero with an image set (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`, SVGO-optimised), eyebrow + serif title (no subtitle unless `hero.text` is filled) + CTAs (white `hero-primary`, extra top spacing ≥lg), staggered motion-safe entrance and a 3× scroll cue (keyframes move only Y – Tailwind 4 centres with the `translate` property).
 - `src/components/ProjectSection.astro` — one project (title, subtitle, rich-text description, gallery) from `getProjectMedia()` (`src/lib/gallery.ts`: CMS list → image sets in `public/gallery/projekty/<slug>/`); tiles ≤800 px with focus crop, Fancybox lightbox with its own srcset (≥1200 px) and 400 px thumbs.
 
 ### Icons
@@ -103,9 +104,9 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 
 - `settings.json` – name, tagline, description, keywords, social, `company` (legal info, address parts, geo, opening hours, designers with role/phone/email, map embed)
 - `home.json` – SEO, `hero`, `intro` (title, text, statement, `parallaxImage`), `process` (4 items, icons in index.astro), `faq`, `cta`
-- `services.json` – SEO, intro, pillars, `services` (9 cards with local thumbnail `image`, shown on the home page in "Co navrhujeme"), `pricing` (`price` text + optional numeric `amount` for schema)
-- `about.json` (paragraphs may contain `<strong>`), `contact.json`, `references.json` (page SEO + intro)
-- `projects/<slug>.json` – one file per project (CMS collection *Projekty*): `order`, `slug`, `title` (Nadpis), optional `subtitle` (Podnadpis), `text` (Popis – Markdown from the CMS rich-text editor: bold, italics, bullet/numbered lists, links; rendered by `src/lib/markdown.ts` with `marked`), `images: [{ src, alt, hidden }]`, optional `tag`. Projects, not room types (client decision); the page shows an empty state until the first project is added.
+- `services.json` – SEO, intro, `pillars` (2 cards with `image`/`imageAlt` header photos), `services` (9 cards with local thumbnail `image`, shown on the home page in "Co navrhujeme"), `pricing` (`price` text + optional numeric `amount` for schema)
+- `about.json` (paragraphs may contain `<strong>`), `contact.json` (+ `form`: success title/text, confirmation e-mail subject/text), `references.json` (page SEO + intro)
+- `projects/<slug>.json` – one file per project (CMS collection *Projekty*): `order`, `slug`, `title` (Nadpis), optional `subtitle` (Podnadpis), `text` (Popis – Markdown from the CMS rich-text editor: bold, italics, bullet/numbered lists, links; rendered by `src/lib/markdown.ts` with `marked`), `images: [{ src, alt, hidden, focus: { x, y } }]` (`src` = image-set base path). Projects, not room types (client decision); the page shows an empty state until the first project is added.
 
 `site.nav` stays in code. Derived helpers: `site.company.address/phones/emails`, `telHref()`. Machine-readable facts for agents: `src/lib/site-data.ts`.
 
@@ -113,14 +114,14 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 
 ### `/` (index.astro)
 
-1. Hero (`HeroSection`) — full bleed with an image set, two CTAs (`hero-primary`, `hero-outline`).
+1. Hero (`HeroSection`) — full bleed with an image set, two CTAs (`hero-primary` → `/kontakt/#poptavka`, `hero-outline` → `/projekty/`).
 2. "Jak pracujeme" — two-column: `SectionIntro` + consumer-focused blockquote (large `&ldquo;` quote mark, "PRO KLIENTA" eyebrow).
 3. Parallax strip "Čím se zabýváme" (medium height).
 4. `#co-navrhujeme` — "Co navrhujeme" photo cards (9 services from `services.json`), 3×3; **not links** (client: no click-through to another page from this section).
 5. Parallax strip "Náš přístup" (small height).
 6. Process boxes — 4 items with primary/10 icon circles.
 7. FAQ accordion (`FaqSection`).
-8. CTA section — "Domluvit schůzku" primary button (full-width mobile via `fullWidth lg:w-auto`).
+8. CTA section — "Domluvit schůzku" primary button → `/kontakt/#poptavka` (full-width mobile via `fullWidth lg:w-auto`).
 
 ### `/projekty/` (projekty.astro)
 
@@ -128,7 +129,7 @@ Renders `ProjectSection` for each project (CMS *Projekty*), or an empty state wi
 
 ### `/sluzby/` (sluzby.astro)
 
-Two info cards + pricing table + "Poptat projekt" CTA (service photo cards live on the home page).
+Two info cards ("pillars") with a photo header from the project gallery (`services.json → pillars[].image/imageAlt`; 3:2 phone, 21:9 tablet, 16:9 two-column; first one `priority` – it is the mobile LCP; **no hover effect**, client decision) + pricing table + "Poptat projekt" CTA → `/kontakt/#poptavka` (service photo cards live on the home page).
 
 ### `/o-nas/` (o-nas.astro)
 
@@ -136,19 +137,23 @@ Designer info block.
 
 ### `/kontakt/` (kontakt.astro)
 
-Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + email/phone pills (icon in primary/10 circle, hover → primary/white). Below: Atelier address card (MapPin icon, address, route link, legal info) + Google Maps iframe (`self-start`). Then the inquiry form: posts to `/api/inquiry` (Resend → both designers), falls back to a prepared `mailto:` e-mail when the function is unavailable; WebMCP `prefill_inquiry` can fill it but never sends.
+Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + email/phone pills (icon in primary/10 circle, hover → primary/white). Below: Atelier address card (MapPin icon, address, route link, legal info) + Google Maps iframe (`self-start`). Then the inquiry form `#poptavka` (all "Nezávazná konzultace"/poptávka CTAs link here; nav/footer "Kontakt" go to the page top):
+  - `action="/api/inquiry" method="post"` (never a `mailto:` action – Best Practices flags it). JS sends JSON with `elapsed` (time on page); without JS the function answers with a 303 to `/kontakt/#odeslano`.
+  - Native validation (required `*`, `minlength`, `pattern`; phone pattern escaped for the `v` flag) styled with `:user-valid` / `:user-invalid` (green/red border + ring, inline hint via `:has(:user-invalid)`); empty optional fields stay neutral. Name/phone share rows through **CSS subgrid** so an error never misaligns the pair.
+  - Success: the form is hidden and `#odeslano` shown (`[data-shown]` from JS, `:target` without JS). Don't use the `hidden` attribute for it – Tailwind's preflight hides `[hidden]` with a layered `!important` no unlayered rule can beat. Texts in `contact.json → form` (CMS).
+  - WebMCP `prefill_inquiry` can fill it but never sends.
 
 ## SEO / Metadata
 
 - Per-page `title`, `description` (from CMS `seo`), keywords, canonical, hreflang, Open Graph, Twitter, geo meta in `BaseLayout`.
 - JSON-LD `@graph` (`src/lib/structured-data.ts`): `WebSite`, `ProfessionalService`+`HomeAndConstructionBusiness`, `Person` ×2, `OfferCatalog`, per-page `WebPage`/`AboutPage`/`ContactPage`/`CollectionPage`, `BreadcrumbList`, `FAQPage` (home), `Service` (služby), `ImageGallery` per project (projekty).
-- Generated `sitemap.xml` (with image entries) and `llms.txt`; `robots.txt` in `/public`.
+- Generated `sitemap.xml` (pages + 149 image entries, all on `https://www.crystalinteriors.cz`) and `llms.txt`; `robots.txt` in `/public` (disallows `/admin/`, `/api/`). `*.pages.dev` hosts are `noindex` via `_headers`. Search Console verification meta (`settings.json → googleSiteVerification`) carried over from the Webnode site; page keywords from the old site in `seo.keywords`.
 - Share images: `/og/<page>.jpg` (1200×630) rendered at build by `src/lib/og-image.ts` + `src/pages/og/[slug].jpg.ts` with sharp – official logo, page title in Playfair (font files in `src/assets/fonts/`, OFL), royal + lavender light over a local project photo. `BaseLayout` uses them for og/twitter and `primaryImageOfPage` unless a page passes `image`.
 - One `<h1>` per page (`SectionIntro level={1}` on subpages).
 
 ## Tracking
 
-- **Google Tag Manager**: `GTM-542MMSL` (same container as the live site). Standard snippet in `BaseLayout` `<head>`, noscript iframe right after `<body>`. Uses the default `dataLayer` global (the live site uses `_gtmDataLayer`; we use the standard name for better GA4/3rd-party compatibility).
+- **Google Tag Manager**: `GTM-542MMSL` (same container as the live site). Loaded by a small inline script on `requestIdleCallback` after `load` or on the first pointer/key/scroll/touch event (keeps TBT at 0); noscript iframe right after `<body>`. Uses the default `dataLayer` global (the live site uses `_gtmDataLayer`; we use the standard name for better GA4/3rd-party compatibility).
 
 ## Admin / CMS (`/admin/`)
 
@@ -159,6 +164,16 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 - Photo pipeline (project-agnostic, reusable in other Decap sites): `image-pipeline.js` compresses in the browser – module-worker pool (`image-worker.js`) with the vendored Squoosh AVIF encoder + Lanczos3 resize (`vendor/`), widths 400–2400 never upscaled, smartcrop focus; `repo-store.js` commits all files of an upload in one `[skip ci]` commit via the GitHub Git Data API with the editor's CMS token (locally via `decap-server`). Files: `public/gallery/projekty/<slug>/`, `public/gallery/web/`. Removed photos stay in the repo.
 - Editor UX: driver.js guided tours + help button + removal confirmations (`admin-ux.js`), publish progress panel polling `/build.json` (`publish-status.js`).
 - Auth: GitHub OAuth via `functions/api/auth.ts` + `callback.ts` (env `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`). Works only on Cloudflare Pages (`base_url` in config). Local: `bun run cms:local`.
+
+## Performance budget
+
+Measured with Lighthouse 12 on the deployed site (2026-10-21): **100/100/100/100 on every page, mobile and desktop**; mobile LCP 1.0–1.8 s, TBT 0 ms, CLS ≤ 0.001. Keep it that way:
+
+- Nothing render-blocking: no external stylesheets, no web-font CSS from other origins, no synchronous third-party scripts. New CSS goes through the inline path.
+- Fonts: only the self-hosted files in `public/fonts/`; new weights/subsets must be generated the same way (pyftsubset + fontTools instancer) and keep the fallback metrics in `BaseLayout.astro` in sync.
+- Only the LCP image is eager/`fetchpriority="high"` (hero on `/`, first pillar photo on `/sluzby/`); everything else lazy. Below-the-fold backgrounds must not load on first paint.
+- Third parties (GTM, Maps iframe) load after the page or lazily.
+- Static assets: `/_astro/*` immutable, `/fonts/*` immutable, `/gallery/*` one year (new uploads get new names).
 
 ## Editorial / Copy Rules
 
