@@ -12,7 +12,7 @@ import WrenchScrewdriverIcon from "@/components/icons/WrenchScrewdriverIcon.astr
 import ClockIcon from "@/components/icons/ClockIcon.astro";
 import ParallaxStrip from "@/components/ParallaxStrip.astro";
 import FaqSection from "@/components/FaqSection.astro";
-import CloudImage from "@/components/ui/CloudImage.astro";
+import ResponsiveImage from "@/components/ui/ResponsiveImage.astro";
 import { site } from "@/data/site";
 import { heroPreload } from "@/lib/images";
 import { faqPage } from "@/lib/structured-data";
@@ -91,12 +91,12 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
               <li data-reveal style={`--reveal-i: ${index % 3}`}>
                 <article class="group h-full overflow-hidden rounded-xl border border-border bg-background shadow-card transition duration-300 ease-standard hover:-translate-y-1 hover:shadow-lifted">
                   <div class="overflow-hidden">
-                    <CloudImage
-                      src={service.image.startsWith("/") ? withBase(service.image) : service.image}
+                    <ResponsiveImage
+                      src={service.image}
                       alt={`${service.title} — ukázka návrhu Crystal Interiors`}
                       width={900}
                       height={675}
-                      widths={[400, 600, 900, 1200]}
+                      max={800}
                       sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
                       class="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out-soft group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                     />

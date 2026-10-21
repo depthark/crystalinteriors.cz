@@ -35,13 +35,10 @@ slug:
   clean_accents: true
   sanitize_replacement: "-"
 
-# Photos go straight to Cloudinary through our own upload dialog
-# (public/admin/cloudinary-upload.js + functions/api/cloudinary.ts).
-# Editors only need their CMS login – no Cloudinary account.
-media_library:
-  name: crystal-cloudinary
-
-# Required by Decap even with an external media library (fallback only).
+# Photos are compressed to AVIF in the editor's browser and committed to
+# public/gallery/ by the "photo" and "project-gallery" widgets
+# (photo-upload.js → image-pipeline.js + repo-store.js). No image service.
+# Decap's own media library is only a fallback.
 media_folder: public/images/uploads
 public_folder: /images/uploads
 
@@ -77,7 +74,7 @@ collections:
         editor_components: []
         hint: "Co jste řešili a jak. Tučné písmo, odrážky i číslovaný seznam najdete na liště nad textem."
       - name: images
-        label: Fotky a videa
+        label: Fotky
         widget: project-gallery
         default: []
       - name: order
@@ -91,7 +88,7 @@ collections:
         label: Adresa projektu
         widget: string
         pattern: ["^[a-z0-9-]+$", "Jen malá písmena bez diakritiky, čísla a pomlčky, např. kuchyne-lesna"]
-        hint: Část odkazu – crystalinteriors.cz/projekty/#kuchyne-lesna. Po vytvoření už neměňte (podle ní se jmenuje složka fotek v Cloudinary).
+        hint: Část odkazu – crystalinteriors.cz/projekty/#kuchyne-lesna. Po vytvoření už neměňte (podle ní se jmenuje složka s fotkami projektu).
 
   # -------------------------------------------------------------- Stránky
   - name: stranky
@@ -111,7 +108,7 @@ collections:
               - { name: eyebrow, label: Drobný text nad nadpisem, widget: string }
               - { name: title, label: Hlavní nadpis, widget: text, hint: "Krátce a výstižně – je to první, co návštěvník uvidí." }
               - { name: text, label: Podnadpis, widget: text, required: false, hint: "Nepovinné – když zůstane prázdné, pod nadpisem nic není." }
-              - { name: image, label: Fotka na pozadí, widget: cloud-image, hint: "Ideálně na šířku, alespoň 2000 px. Zobrazuje se ztmavená." }
+              - { name: image, label: Fotka na pozadí, widget: photo, hint: "Na šířku, ideálně 2400 px. Zobrazuje se ztmavená." }
               - { name: imageAlt, label: Popis fotky, widget: string, hint: "Pro nevidomé a vyhledávače, např. Kuchyně na míru v bílém dekoru." }
               - name: primaryCta
                 label: Hlavní tlačítko
@@ -135,7 +132,7 @@ collections:
               - { name: title, label: Nadpis, widget: string }
               - { name: text, label: Text, widget: text }
               - { name: statement, label: Zvýrazněná věta, widget: text }
-              - { name: parallaxImage, label: Fotka v pásech mezi sekcemi, widget: cloud-image }
+              - { name: parallaxImage, label: Fotka v pásech mezi sekcemi, widget: photo }
           - name: process
             label: Proč s námi (4 karty)
             label_singular: kartu
@@ -204,7 +201,7 @@ collections:
             fields:
               - { name: title, label: Název, widget: string }
               - { name: text, label: Popis, widget: text }
-              - { name: image, label: Fotka, widget: cloud-image }
+              - { name: image, label: Fotka, widget: photo }
           - { name: pricingIntro, label: Text nad ceníkem, widget: text }
           - name: pricing
             label: Ceník

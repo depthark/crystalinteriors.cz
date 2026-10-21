@@ -3,7 +3,7 @@
  * Feeds /agent/site.json, /llms.txt, the WebMCP tools and the /mcp server.
  */
 import { site } from "@/data/site";
-import { getProjectMedia } from "@/lib/cloudinary-gallery";
+import { getProjectMedia } from "@/lib/gallery";
 import { markdownToText } from "@/lib/markdown";
 
 const url = (path: string) => `${site.siteUrl}${path}`;
@@ -25,8 +25,7 @@ export function getSiteData() {
       subtitle: project.subtitle ?? null,
       description: markdownToText(project.text),
       url: url(`/projekty/#${project.slug}`),
-      photos: getProjectMedia(project).filter((item) => item.type === "image").length,
-      videos: getProjectMedia(project).filter((item) => item.type === "video").length,
+      photos: getProjectMedia(project).length,
     })),
     faq: site.faq,
     process: site.process,

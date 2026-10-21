@@ -6,44 +6,76 @@
   "text": "Návrh koupelny a WC v půdní nádstavbě bytu v Brně v béžových tónech.\n\nSušička i pračka jsou na přání klienta vestavné, nad nimi pracovní plocha a horní úložný prostor pro prádlo a prací prostředky.\n\nPodomítkové baterie a odkládací nika ve Walk-in sprchovém koutě dodávají minimalistický vzhled.\n\nBaterie ve sprchovém koutě je záměrně zvolena v nerez úpravě, z důvodu lepší údržby a trvanlivosti oproti černému matu nebo chromu.\n\nDesignový radiátor je sladěný s hexagonovou mozaikou za umyvadlem.\n\nÚložný prostor je záměrně zkrácený kvůli revizním dvířkům vedle umyvadla.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563285/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/01-koupelna-001-pohled3-kopie.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-01",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 46,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563285/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/02-koupelna-001-pohled3.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-02",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 2",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 46,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563284/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/03-koupelna-001-pohled5.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-03",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 3",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 53,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563285/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/04-koupelna-002-pohled1-kopie.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-04",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 4",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 46,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563286/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/05-koupelna-002-pohled1.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-05",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 5",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 46,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563286/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/06-koupelna-002-pohled2.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-06",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 6",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 43,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563286/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/07-koupelna-002-pohled3.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-07",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 7",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563286/CrystalInteriors/Projekty/pudni-nastavba-brno-lisen/08-wc-001-pohled1.png",
+      "src": "/gallery/projekty/pudni-nastavba-brno-lisen/pudni-nastavba-brno-lisen-08",
       "alt": "Půdní nádstavba v Brně-Líšni — foto 8",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 44,
+        "y": 50
+      }
     }
   ]
 }

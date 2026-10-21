@@ -7,10 +7,10 @@
  * BaseLayout's `schema` prop.
  */
 import { site, type Project } from "@/data/site";
-import { cloudinaryImage } from "@/lib/cloudinary";
+import { absoluteUrl, imageSet } from "@/lib/image-set";
 import { ogImageFor } from "@/lib/og-image";
 import { markdownToText } from "@/lib/markdown";
-import { galleryGeneratedAt, getProjectMedia } from "@/lib/cloudinary-gallery";
+import { getProjectMedia } from "@/lib/gallery";
 
 type Node = Record<string, unknown>;
 
@@ -23,8 +23,11 @@ export const ids = {
 
 const absolute = (path: string) => (/^https?:/i.test(path) ? path : `${site.siteUrl}${path}`);
 
-export const shareImage = (source: string) =>
-  cloudinaryImage(source, { width: 1200, height: 630, fit: "fill" });
+/** Absolute URL of a content image (image set → its ~1200 px file). */
+export const shareImage = (source: string) => {
+  const set = imageSet(source);
+  return set ? absoluteUrl(site.siteUrl, set) : absolute(source);
+};
 
 const people = (): Node[] =>
   site.company.contacts.map((person, index) => ({
@@ -181,7 +184,7 @@ export const serviceNodes = (): Node[] =>
     name: service.title,
     description: service.text,
     serviceType: service.title,
-    image: cloudinaryImage(service.image, { width: 1200, height: 900, fit: "fill" }),
+    image: shareImage(service.image),
     provider: { "@id": ids.business },
     areaServed: { "@type": "City", name: "Brno" },
   }));
@@ -196,24 +199,14 @@ export const projectGalleries = (projects: Project[]): Node[] =>
       name: project.title,
       description: [project.subtitle, markdownToText(project.text)].filter(Boolean).join(" – "),
       creator: { "@id": ids.business },
-      image: media
-        .filter((item) => item.type === "image")
-        .map((item) => ({
-          "@type": "ImageObject",
-          contentUrl: item.full,
-          thumbnailUrl: item.thumb,
-          caption: item.alt,
-          creator: { "@id": ids.business },
-          copyrightHolder: { "@id": ids.business },
-        })),
-      video: media
-        .filter((item) => item.type === "video")
-        .map((item) => ({
-          "@type": "VideoObject",
-          name: item.alt,
-          description: `${project.title} – ${item.alt}`,
-          contentUrl: item.full,
-          thumbnailUrl: item.poster ?? item.thumb,
-          uploadDate: item.uploadedAt ?? galleryGeneratedAt() ?? undefined,
-        })),
+      image: media.map(({ alt, set }) => ({
+        "@type": "ImageObject",
+        contentUrl: absoluteUrl(site.siteUrl, set, 2400),
+        thumbnailUrl: absoluteUrl(site.siteUrl, set, 400),
+        width: set.width,
+        height: set.height,
+        caption: alt,
+        creator: { "@id": ids.business },
+        copyrightHolder: { "@id": ids.business },
+      })),
     }));

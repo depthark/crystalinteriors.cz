@@ -6,29 +6,49 @@
   "text": "Tato bytová jednotka byla vybavena kuchyňskou linkou a nábytkem do ložnice za účelem pronájmu. Vše je čisté a jednoduché, avšak s dostatkem úložného prostoru pro budoucí obyvatele.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563291/CrystalInteriors/Projekty/ponava-city-brno/01-20220720-151538-6.jpg",
+      "src": "/gallery/projekty/ponava-city-brno/ponava-city-brno-01",
       "alt": "Ponava CITY Brno — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 56
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563291/CrystalInteriors/Projekty/ponava-city-brno/02-20220720-151609-6.jpg",
+      "src": "/gallery/projekty/ponava-city-brno/ponava-city-brno-02",
       "alt": "Ponava CITY Brno — foto 2",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 59
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563291/CrystalInteriors/Projekty/ponava-city-brno/03-img-946d399b3e91b5a866eb4bfd738d6e4f-v-3.jpg",
+      "src": "/gallery/projekty/ponava-city-brno/ponava-city-brno-03",
       "alt": "Ponava CITY Brno — foto 3",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 63
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563291/CrystalInteriors/Projekty/ponava-city-brno/04-img-27c0af57ff6040fa254b68db55267bed-v-9.jpg",
+      "src": "/gallery/projekty/ponava-city-brno/ponava-city-brno-04",
       "alt": "Ponava CITY Brno — foto 4",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 54
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563292/CrystalInteriors/Projekty/ponava-city-brno/05-img-475623f584afd8fee04ff5807cd8c48f-v-4.jpg",
+      "src": "/gallery/projekty/ponava-city-brno/ponava-city-brno-05",
       "alt": "Ponava CITY Brno — foto 5",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 50
+      }
     }
   ]
 }

@@ -6,44 +6,76 @@
   "text": "Zde se realizovala nová kuchyňská linka a vybourala původní spižírna. Tato spižírna se nahradila velmi praktickou skříní s vyjížděcí pracovní deskou na kávovar. Na fotkách je vidět stav před rekonstrukcí a po rekonstrukci.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563288/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/01-20231229-170335.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-01",
       "alt": "Rodinný dům Ochoz u Brna — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 56
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563288/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/02-20231229-170355.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-02",
       "alt": "Rodinný dům Ochoz u Brna — foto 2",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 44
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563288/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/03-img-20240611-wa0002.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-03",
       "alt": "Rodinný dům Ochoz u Brna — foto 3",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 30
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563288/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/04-img-20240612-wa0000.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-04",
       "alt": "Rodinný dům Ochoz u Brna — foto 4",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 33
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563289/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/05-img-20240621-wa0000.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-05",
       "alt": "Rodinný dům Ochoz u Brna — foto 5",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 35
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563289/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/06-img-20240621-wa0001.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-06",
       "alt": "Rodinný dům Ochoz u Brna — foto 6",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 61
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563289/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/07-img-20240621-wa0002.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-07",
       "alt": "Rodinný dům Ochoz u Brna — foto 7",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 40
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563289/CrystalInteriors/Projekty/rodinny-dum-ochoz-u-brna/08-img-20240621-wa0003-2.jpg",
+      "src": "/gallery/projekty/rodinny-dum-ochoz-u-brna/rodinny-dum-ochoz-u-brna-08",
       "alt": "Rodinný dům Ochoz u Brna — foto 8",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 54
+      }
     }
   ]
 }

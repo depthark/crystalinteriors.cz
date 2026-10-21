@@ -5,9 +5,13 @@
   "text": "Realizace rohové kuchyně, která je velmi jednoduchá, ale elegantní a funkční.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563311/CrystalInteriors/Projekty/kuchyne-brno-slatina/01-img-7356-1-watermarked.jpg",
+      "src": "/gallery/projekty/kuchyne-brno-slatina/kuchyne-brno-slatina-01",
       "alt": "Kuchyně Brno-Slatina — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 50
+      }
     }
   ]
 }

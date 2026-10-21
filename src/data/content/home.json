@@ -13,7 +13,7 @@
     "eyebrow": "Interiérové studio · Brno",
     "title": "Interiér, který krásně funguje a skvěle vypadá.",
     "text": "",
-    "image": "https://res.cloudinary.com/lukaschylik/image/upload/v1792562136/CrystalInteriors/Web/hero-kuchyne.png",
+    "image": "/gallery/web/hero-kuchyne",
     "imageAlt": "Vizualizace moderní kuchyně na míru od Crystal Interiors",
     "primaryCta": {
       "href": "/kontakt/",
@@ -28,7 +28,7 @@
     "title": "Návrh, vizualizace a realizace v jednom procesu",
     "text": "Od prvního dispozičního návrhu až po osazení posledního detailu držíme projekt pohromadě. Díky tomu hlídáme ergonomii, rozpočet i kvalitu provedení.",
     "statement": "Pomáháme klientům rozhodovat se jistěji a investovat do interiéru, který dává smysl dlouhodobě.",
-    "parallaxImage": "https://res.cloudinary.com/lukaschylik/image/upload/v1792562137/CrystalInteriors/Web/pas-interier.jpg"
+    "parallaxImage": "/gallery/web/pas-interier"
   },
   "process": [
     {

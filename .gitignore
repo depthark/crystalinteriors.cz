@@ -17,8 +17,5 @@ node_modules
 .windsurf/
 *.code-workspace
 
-# Cloudinary gallery data (generated at build time by scripts/build-cloudinary-gallery.mjs)
-public/data/projects-gallery.json
-
 # Wrangler local dev state
 .wrangler/

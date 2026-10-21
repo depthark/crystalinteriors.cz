@@ -14,10 +14,12 @@ import references from "./content/references.json";
 import contact from "./content/contact.json";
 
 export interface ReferenceImage {
-  /** Cloudinary delivery URL (upload) or any public image URL. */
+  /** Image set base path, e.g. /gallery/projekty/<slug>/<slug>-01 (see src/lib/image-set.ts). */
   src: string;
   alt?: string;
   hidden?: boolean;
+  /** Focus point in percent, kept in frame when tiles crop the photo. */
+  focus?: { x: number; y: number };
 }
 
 export interface Project {
@@ -29,8 +31,6 @@ export interface Project {
   /** Description in Markdown (bold, italics, lists, links) from the CMS editor. */
   text: string;
   images: ReferenceImage[];
-  /** Optional Cloudinary tag, used at runtime when the project has no media yet. */
-  tag?: string;
 }
 
 // One file per project (CMS folder collection "Projekty"), sorted by `order`.

@@ -1,8 +1,9 @@
 /** sitemap.xml generated from the navigation, with image entries for galleries. */
 import type { APIRoute } from "astro";
 import { site } from "@/data/site";
-import { cloudinaryImage } from "@/lib/cloudinary";
-import { getProjectMedia } from "@/lib/cloudinary-gallery";
+import { getProjectMedia } from "@/lib/gallery";
+import { absoluteUrl } from "@/lib/image-set";
+import { shareImage } from "@/lib/structured-data";
 
 const escape = (value: string) =>
   value.replace(/[<>&'"]/g, (char) => `&#${char.charCodeAt(0)};`);
@@ -10,14 +11,14 @@ const escape = (value: string) =>
 export const GET: APIRoute = () => {
   const lastmod = new Date().toISOString().slice(0, 10);
   const imagesFor = (href: string): Array<{ loc: string; title: string }> => {
-    if (href === "/") return [{ loc: cloudinaryImage(site.hero.image, { width: 1600, fit: "limit" }), title: site.hero.imageAlt }];
-    if (href === "/sluzby/")
-      return site.services.map((service) => ({ loc: cloudinaryImage(service.image, { width: 1600, fit: "limit" }), title: service.title }));
+    if (href === "/")
+      return [
+        { loc: shareImage(site.hero.image), title: site.hero.imageAlt },
+        ...site.services.map((service) => ({ loc: shareImage(service.image), title: service.title })),
+      ];
     if (href === "/projekty/")
       return site.projects.flatMap((project) =>
-        getProjectMedia(project)
-          .filter((item) => item.type === "image")
-          .map((item) => ({ loc: item.full, title: item.alt })),
+        getProjectMedia(project).map(({ set, alt }) => ({ loc: absoluteUrl(site.siteUrl, set, 2400), title: alt })),
       );
     return [];
   };

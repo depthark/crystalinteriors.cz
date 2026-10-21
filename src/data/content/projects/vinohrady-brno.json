@@ -6,34 +6,58 @@
   "text": "Skříň má integrované LED pásky a výklopnou šatní tyč. Závěsné noční stolky mají vestavnou zásuvku. Toaletní stolek s akcentovými poličkami a zrcadlem ve tvaru hexagonu slouží pro ranní krášlení. Textilní akustické panely za postelí jsou velmi příjemné na opření.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/01-11-02-2021-varianta-k-podpisu-1-watermarked.png",
+      "src": "/gallery/projekty/vinohrady-brno/vinohrady-brno-01",
       "alt": "Vinohrady Brno — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 53,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/02-11-02-2021-varianta-k-podpisu-2-watermarked.png",
+      "src": "/gallery/projekty/vinohrady-brno/vinohrady-brno-02",
       "alt": "Vinohrady Brno — foto 2",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 62,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/03-11-02-2021-varianta-k-podpisu-3-watermarked.png",
+      "src": "/gallery/projekty/vinohrady-brno/vinohrady-brno-03",
       "alt": "Vinohrady Brno — foto 3",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 53,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563299/CrystalInteriors/Projekty/vinohrady-brno/04-11-02-2021-varianta-k-podpisu-4-watermarked.png",
+      "src": "/gallery/projekty/vinohrady-brno/vinohrady-brno-04",
       "alt": "Vinohrady Brno — foto 4",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 52,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563300/CrystalInteriors/Projekty/vinohrady-brno/05-img-20210427-152945-1.jpg",
+      "src": "/gallery/projekty/vinohrady-brno/vinohrady-brno-05",
       "alt": "Vinohrady Brno — foto 5",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 70
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563300/CrystalInteriors/Projekty/vinohrady-brno/06-img-20210427-153838-1.jpg",
+      "src": "/gallery/projekty/vinohrady-brno/vinohrady-brno-06",
       "alt": "Vinohrady Brno — foto 6",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 50
+      }
     }
   ]
 }

@@ -1,4 +1,7 @@
 ---
+import { imageSet, pick, urlOf } from "@/lib/image-set";
+import { withBase } from "@/lib/navigation";
+
 export interface Props {
   image: string;
   eyebrow?: string;
@@ -20,6 +23,11 @@ const {
   class: className = "",
 } = Astro.props as Props;
 
+// Fixed background covers the viewport: 1800 px on desktop, 1200 px on touch.
+const set = imageSet(image);
+const large = set ? urlOf(set, pick(set, 1800)) : withBase(image);
+const small = set ? urlOf(set, pick(set, 1200)) : large;
+
 const heightClass =
   height === "sm"
     ? "min-h-[220px] sm:min-h-[280px]"
@@ -38,7 +46,7 @@ const overlayClass = tone === "dark" ? "parallax-strip__overlay--dark" : "parall
     heightClass,
     className,
   ]}
-  style={`--parallax-image: url('${image}');`}
+  style={`--parallax-image: url('${large}'); --parallax-image-sm: url('${small}');`}
   aria-label={title}
 >
   <div class:list={["parallax-strip__overlay absolute inset-0 z-0", overlayClass]} aria-hidden="true"></div>
@@ -76,6 +84,7 @@ const overlayClass = tone === "dark" ? "parallax-strip__overlay--dark" : "parall
   @media (hover: none), (max-width: 768px) {
     .parallax-strip {
       background-attachment: scroll;
+      background-image: var(--parallax-image-sm);
     }
   }
 

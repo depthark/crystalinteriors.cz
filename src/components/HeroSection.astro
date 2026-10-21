@@ -9,20 +9,18 @@ import { site } from "@/data/site";
 import { hero } from "@/lib/images";
 import { withBase } from "@/lib/navigation";
 import Button from "./ui/Button.astro";
-import CloudImage from "./ui/CloudImage.astro";
+import ResponsiveImage from "./ui/ResponsiveImage.astro";
 import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
 ---
 
 <section class="relative isolate overflow-hidden bg-ink-deep" aria-labelledby="hero-title">
   <div class="absolute inset-0" aria-hidden="true">
-    <CloudImage
+    <ResponsiveImage
       src={site.hero.image}
       alt=""
       width={hero.width}
       height={hero.height}
-      widths={hero.widths}
       sizes={hero.sizes}
-      fit="limit"
       priority
       class="h-full w-full scale-105 object-cover motion-safe:animate-hero-zoom"
     />

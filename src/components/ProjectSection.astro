@@ -2,14 +2,14 @@
 /**
  * One project on /projekty/: title, subtitle, rich-text description and gallery.
  *
- * Media come from `getProjectMedia()`: the build-time Cloudinary scan merged
- * with the CMS (anewstyle approach), or the CMS list alone. They render at
- * build time – crawlable, AVIF/WebP via Cloudinary, sized with srcset.
- * Videos open as HTML5 video in Fancybox. Projects without any media fall back
- * to their optional Cloudinary tag at runtime (src/pages/projekty.astro).
+ * Photos are image sets in the repo (src/lib/gallery.ts). Tiles offer at most
+ * 800 px (1200 px for the large first tile) and crop with the CMS focus point;
+ * the lightbox gets its own srcset from 1200 px up, loaded only on click, so
+ * phones never download the 2400 px file.
  */
 import type { Project } from "@/data/site";
-import { getProjectMedia } from "@/lib/cloudinary-gallery";
+import { getProjectMedia } from "@/lib/gallery";
+import { focusStyle, LIGHTBOX_MIN, pick, srcsetOf, TILE_MAX, urlOf } from "@/lib/image-set";
 import { renderMarkdown } from "@/lib/markdown";
 
 export interface Props {
@@ -22,18 +22,14 @@ const headingId = `${galleryId}-title`;
 const descriptionId = `${galleryId}-description`;
 const media = getProjectMedia(project);
 const descriptionHtml = renderMarkdown(project.text);
-const isStatic = media.length > 0;
-const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
+const leads = media.length > 1;
+const tileSizes = "(min-width: 1024px) 320px, (min-width: 640px) 45vw, 92vw";
+const leadSizes = "(min-width: 1024px) 660px, 92vw";
 ---
 
 <section
   id={project.slug}
   class="grid gap-8 border-t border-border py-12 first:border-t-0 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14"
-  data-references-section
-  data-static={isStatic ? "true" : undefined}
-  data-tag={project.tag}
-  data-gallery-id={galleryId}
-  data-title={project.title}
   aria-labelledby={headingId}
   aria-describedby={descriptionId}
 >
@@ -47,61 +43,45 @@ const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
     <div id={descriptionId} class="project-text text-base leading-8 text-muted" set:html={descriptionHtml} />
   </div>
 
-  <div class="py-4" aria-busy={isStatic ? "false" : "true"} aria-live="polite" data-references-live>
-    {
-      !isStatic && (
-        <p class="text-sm leading-7 text-muted" data-references-status>
-          Načítání referencí…
-        </p>
-      )
-    }
-    <ul
-      class:list={["references-grid list-none", !isStatic && "hidden"]}
-      data-references-grid
-      aria-label={`Galerie — ${project.title}`}
-    >
-      {
-        media.map((item, index) => (
-          <li data-reveal style={`--reveal-i: ${index % 4}`}>
-            <a
-              href={item.full}
-              data-fancybox={galleryId}
-              data-caption={item.alt}
-              data-type={item.type === "video" ? "html5video" : undefined}
-              data-width={item.fullWidth}
-              data-height={item.fullHeight}
-              aria-label={`${item.type === "video" ? "Přehrát video" : "Zvětšit"}: ${item.alt}`}
-              class="glass-hover group relative block overflow-hidden rounded-lg bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lifted"
-            >
-              <img
-                src={item.thumb}
-                srcset={item.thumbSrcset}
-                sizes={item.thumbSrcset ? sizes : undefined}
-                alt={item.alt}
-                width={item.width}
-                height={item.height}
-                loading="lazy"
-                decoding="async"
-                class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {
-                item.type === "video" && (
-                  <span
-                    class="pointer-events-none absolute inset-0 z-[3] grid place-items-center"
-                    aria-hidden="true"
-                  >
-                    <span class="grid h-14 w-14 place-items-center rounded-full bg-black/55 text-white shadow-lifted backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
-                    </span>
-                  </span>
-                )
-              }
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+  {
+    media.length > 0 && (
+      <ul class="references-grid list-none py-4" aria-label={`Galerie — ${project.title}`}>
+        {media.map(({ alt, set, focus }, index) => {
+          const lead = leads && index === 0;
+          const max = lead ? LIGHTBOX_MIN : TILE_MAX;
+          return (
+            <li data-reveal style={`--reveal-i: ${index % 4}`}>
+              <a
+                href={urlOf(set, pick(set, 1800))}
+                data-fancybox={galleryId}
+                data-caption={alt}
+                data-thumb-src={urlOf(set, set.widths[0])}
+                data-srcset={srcsetOf(set, { min: LIGHTBOX_MIN })}
+                data-sizes={`min(100vw, ${Math.round((100 * set.width) / set.height)}vh)`}
+                data-width={set.width}
+                data-height={set.height}
+                aria-label={`Zvětšit: ${alt}`}
+                class="glass-hover group relative block overflow-hidden rounded-lg bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lifted"
+              >
+                <img
+                  src={urlOf(set, pick(set, Math.min(400, max)))}
+                  srcset={srcsetOf(set, { max })}
+                  sizes={`auto, ${lead ? leadSizes : tileSizes}`}
+                  alt={alt}
+                  width={800}
+                  height={600}
+                  loading="lazy"
+                  decoding="async"
+                  style={focusStyle(focus)}
+                  class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )
+  }
 </section>
 
 <style>
@@ -166,10 +146,6 @@ const sizes = "(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw";
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
     gap: calc(var(--spacing) * 4);
-  }
-
-  .references-grid.hidden {
-    display: none;
   }
 
   /* First tile leads: double size on wider screens. */

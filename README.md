@@ -1,6 +1,6 @@
 # Crystal Interiors
 
-Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwind CSS v4, Fancybox, Cloudinary and Decap CMS on Cloudflare Pages.
+Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwind CSS v4, Fancybox and Decap CMS on Cloudflare Pages – photos are AVIF files in the repo, no image service.
 
 ## Stack
 
@@ -16,13 +16,13 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Design tokens | OKLCH colours, rem spacing, tracking, motion, z-index | — | `@theme` in `tailwind.source.css` |
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
-| Images / CDN | [Cloudinary](https://cloudinary.com) – upload + fetch delivery, `f_auto` (AVIF/WebP), `q_auto`, `g_auto`, `srcset` | — | `src/lib/cloudinary.ts`, `src/components/ui/CloudImage.astro` |
-| Gallery data | `cloudinary` Node SDK – build-time Admin Search API scan of `CrystalInteriors/Projekty/<project>`, merged with CMS metadata (anewstyle approach), photos + videos | 2.11 | `scripts/build-cloudinary-gallery.mjs` → `public/data/projects-gallery.json` → `src/lib/cloudinary-gallery.ts` |
+| Images | AVIF image sets in the repo – no image CDN. CMS compresses in the browser (Squoosh AVIF codec via jSquash 2.1 WASM, Lanczos3 resize, smartcrop 2.0 focus point) in module workers; widths 400/800/1200/1800/2400, never upscaled; tiles ≤800 px, lightbox `srcset` ≥1200 px, `sizes="auto"`, focus via `object-position` | — | `public/admin/image-pipeline.js` + `image-worker.js` + `vendor/`, `src/lib/image-set.ts`, `src/components/ui/ResponsiveImage.astro`, `scripts/image-set.mjs` (sharp + smartcrop-sharp) |
+| Photo storage | `public/gallery/<group>/<name>-<width>.avif`, committed by the CMS through the GitHub Git Data API (one `[skip ci]` commit per upload) or `decap-server` locally | — | `public/admin/repo-store.js`, `photo-upload.js` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
 | CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
 | Hosting | [Cloudflare Pages](https://pages.cloudflare.com) | — | `wrangler.toml`, `public/_headers` |
-| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth; Cloudinary upload signing + folder listing), `functions/mcp.ts` |
+| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth, contact form), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
 | Mail / contact | [Resend](https://resend.com) via Pages Function `/api/inquiry` (both designers, customer as Reply-To); falls back to a prepared `mailto:` e-mail; `tel:`/`mailto:` links | — | `functions/api/inquiry.ts`, `src/pages/kontakt.astro`, `ROLLBACK.md` |
@@ -37,7 +37,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Rich text | `marked` – Markdown from the CMS editor → HTML (project descriptions) | 18 | `src/lib/markdown.ts` |
 | Dev scripts | `npm-run-all` (parallel CSS watch + Astro dev) | 4.1 | `bun run dev` |
 
-Hosting: GitHub Pages today (`.github/workflows/static.yml`, base path `/crystalinteriors.cz/`); Cloudflare Pages at `www.crystalinteriors.cz` is the target and is required for the CMS login, Cloudinary uploads and `/mcp` – see [DEPLOY.md](DEPLOY.md).
+Hosting: GitHub Pages today (`.github/workflows/static.yml`, base path `/crystalinteriors.cz/`); Cloudflare Pages at `www.crystalinteriors.cz` is the target and is required for the CMS login and `/mcp` – see [DEPLOY.md](DEPLOY.md).
 
 All packages are on their latest release (`bun outdated` is clean) except two deliberate holds: `typescript` stays on 6 for `@astrojs/check`, and `@types/node` follows the Node 24 LTS line.
 
@@ -55,12 +55,12 @@ bun run build
 ```
 
 ## Content & CMS
-All copy lives in `src/data/content/*.json` (one file per project in `src/data/content/projects/`) and is edited in **Decap CMS** at `/admin/` – Czech UI, guided tours, confirmations before removals, signed Cloudinary uploads, publish-status panel. `src/data/site.ts` composes the files into one typed object.
+All copy lives in `src/data/content/*.json` (one file per project in `src/data/content/projects/`) and is edited in **Decap CMS** at `/admin/` – Czech UI, guided tours, confirmations before removals, in-browser AVIF photo uploads committed to the repo, publish-status panel. `src/data/site.ts` composes the files into one typed object.
 
-Setup (Cloudflare Pages, GitHub OAuth, Cloudinary): see **[DEPLOY.md](DEPLOY.md)**.
+Setup (Cloudflare Pages, GitHub OAuth, Resend): see **[DEPLOY.md](DEPLOY.md)**.
 
 ## Images
-`src/lib/cloudinary.ts` + `<CloudImage>` serve every image through Cloudinary with `f_auto` (AVIF → WebP → JPEG), `q_auto`, responsive `srcset`/`sizes` and fixed dimensions (no CLS). The hero is the LCP image: preloaded with the same `imagesrcset`, `fetchpriority="high"`.
+Photos are **image sets** in `public/gallery/`: `<name>-400/800/1200/1800/2400.avif`, never upscaled. Content stores only the base path (`/gallery/projekty/<slug>/<slug>-01`); `src/lib/image-set.ts` reads the widths and size from the files at build. `<ResponsiveImage>` renders `srcset` + `sizes` (`auto` for lazy images) with fixed dimensions (no CLS); gallery tiles offer ≤800 px, the Fancybox lightbox gets its own `data-srcset` from 1200 px, so phones never download 2400 px. Tiles crop with the CMS focus point (`object-position`). The hero is the LCP image: preloaded with the same `imagesrcset`, `fetchpriority="high"`. Bulk import: `bun run image-set <file-or-url> /gallery/<group>/<name>`.
 
 ## SEO, PWA & agents
 - Per-page title/description/canonical/OG/Twitter, `schema.org` graph (`src/lib/structured-data.ts`): ProfessionalService + HomeAndConstructionBusiness, Person, OfferCatalog, FAQPage, Service, ImageGallery, BreadcrumbList.

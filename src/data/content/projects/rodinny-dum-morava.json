@@ -5,39 +5,67 @@
   "text": "Tento prostor jsme pro klienta navrhly v zemitých barvách s černými akcenty. Dominantou pokoje je ostrůvek s masivním pultem. Schodiště zdobí gumolanové zábradlí. Krb je vestavný s dekorativní betonovou stěrkou.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563316/CrystalInteriors/Projekty/rodinny-dum-morava/01-196966061-1905792222935376-6282906658225751315-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-01",
       "alt": "Vizualizace rodinného domu na Moravě — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 57,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563316/CrystalInteriors/Projekty/rodinny-dum-morava/02-196867057-1905791959602069-5633339558679177300-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-02",
       "alt": "Vizualizace rodinného domu na Moravě — foto 2",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 41,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563316/CrystalInteriors/Projekty/rodinny-dum-morava/03-195733539-1905791919602073-6620689023007779862-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-03",
       "alt": "Vizualizace rodinného domu na Moravě — foto 3",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 62,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563316/CrystalInteriors/Projekty/rodinny-dum-morava/04-195942683-1905792182935380-7778603736742405019-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-04",
       "alt": "Vizualizace rodinného domu na Moravě — foto 4",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 59,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563317/CrystalInteriors/Projekty/rodinny-dum-morava/05-196315199-1905792256268706-1644408579764899231-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-05",
       "alt": "Vizualizace rodinného domu na Moravě — foto 5",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 62,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563317/CrystalInteriors/Projekty/rodinny-dum-morava/06-195793444-1905791936268738-3266413107642204736-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-06",
       "alt": "Vizualizace rodinného domu na Moravě — foto 6",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 50,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563318/CrystalInteriors/Projekty/rodinny-dum-morava/07-196461753-1905792292935369-8953993768414667784-n-1.jpg",
+      "src": "/gallery/projekty/rodinny-dum-morava/rodinny-dum-morava-07",
       "alt": "Vizualizace rodinného domu na Moravě — foto 7",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 62,
+        "y": 50
+      }
     }
   ]
 }

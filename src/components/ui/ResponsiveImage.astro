@@ -1,0 +1,50 @@
+---
+/**
+ * Responsive AVIF image from an image set in public/gallery (see
+ * src/lib/image-set.ts). Any other src (e.g. /images/thumbnails/*.avif)
+ * renders as a plain <img>.
+ *
+ * Always reserves its box with width/height (no CLS). `max` caps the widths
+ * offered, so a 400 px tile never pulls the 2400 px file. `focus` keeps the
+ * subject in frame when CSS crops the photo (object-fit: cover). Pass
+ * `priority` for the LCP image: eager + fetchpriority=high.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { focusStyle, imageSet, pick, srcsetOf, urlOf, type Focus } from "@/lib/image-set";
+import { withBase } from "@/lib/navigation";
+
+interface Props extends Omit<HTMLAttributes<"img">, "src" | "srcset" | "width" | "height"> {
+  src: string;
+  alt: string;
+  /** Box size (aspect ratio of the rendered image). Defaults to the photo's own. */
+  width?: number;
+  height?: number;
+  sizes?: string;
+  /** Largest width offered in srcset. */
+  max?: number;
+  focus?: Focus;
+  priority?: boolean;
+}
+
+const { src, alt, width, height, sizes = "100vw", max, focus, priority = false, style, ...attrs } = Astro.props;
+
+const set = imageSet(src);
+const boxWidth = width ?? set?.width;
+const boxHeight = height ?? set?.height;
+const lazy = !priority;
+const css = [focusStyle(focus), style].filter(Boolean).join("; ") || undefined;
+---
+
+<img
+  src={set ? urlOf(set, pick(set, Math.min(boxWidth ?? 800, max ?? Infinity))) : withBase(src)}
+  srcset={set ? srcsetOf(set, { max }) : undefined}
+  sizes={set ? (lazy ? `auto, ${sizes}` : sizes) : undefined}
+  alt={alt}
+  width={boxWidth}
+  height={boxHeight}
+  loading={lazy ? "lazy" : "eager"}
+  decoding={priority ? "sync" : "async"}
+  fetchpriority={priority ? "high" : undefined}
+  style={css}
+  {...attrs}
+/>

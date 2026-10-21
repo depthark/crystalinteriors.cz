@@ -81,7 +81,7 @@
         title: list ? "Odebrat tuto položku?" : "Odebrat soubor?",
         text: list
           ? `${label ? `„${label}“ ` : ""}zmizí z formuláře. Na webu se změna projeví až po uložení a publikování.`
-          : "Soubor se odpojí od tohoto pole. V Cloudinary zůstane uložený.",
+          : "Soubor se odpojí od tohoto pole. V úložišti webu zůstane.",
       });
       if (!ok) return;
       bypass = true;
@@ -150,13 +150,11 @@
     ],
     gallery: () => [
       step(".rg-help", "Galerie projektu",
-        "Tady jsou všechny fotky a videa tohoto projektu. Co vidíte tady, je na webu – ve stejném pořadí."),
-      step(".rg-primary", "Nahrát fotky a videa",
-        "Klikněte, nebo soubory rovnou přetáhněte do okna. Můžete vybrat víc najednou, velké fotky zmenšíme automaticky. Uloží se do složky projektu v Cloudinary a přidají se na konec.", "left"),
-      step(".rg-secondary", "Přidat z Cloudinary",
-        "Máte fotky nahrané přímo v Cloudinary (složka <b>CrystalInteriors/Projekty/…</b>)? Tady je vyberete a přidáte do galerie. Dokud je galerie v administraci prázdná, web ukazuje automaticky vše ze složky.", "left"),
+        "Tady jsou všechny fotky tohoto projektu. Co vidíte tady, je na webu – ve stejném pořadí a se stejným výřezem."),
+      step(".rg-primary", "Nahrát fotky",
+        "Klikněte a vyberte fotky (i víc najednou). Prohlížeč je sám zmenší a zkomprimuje do moderního formátu AVIF – chvilku to trvá – a uloží je do složky projektu. Ideální jsou fotky 2400 px na šířku.", "left"),
       step(".rg-card", "Karta fotky",
-        "<b>Popis fotky</b> – krátce, co je na fotce (čtou ho nevidomí a Google). <b>Hvězdička</b> udělá z fotky hlavní – na webu je velká. Šipky mění pořadí, <b>Dočasně skrýt</b> fotku schová a koš ji odebere (v Cloudinary zůstane).", "right"),
+        "<b>Kliknutím na fotku</b> určíte, co má být vidět v náhledu (výřez 4:3) – ve zvětšení je fotka vždy celá. <b>Popis fotky</b> – krátce, co je na fotce (čtou ho nevidomí a Google). <b>Hvězdička</b> udělá z fotky hlavní – na webu je velká. Šipky mění pořadí, <b>Dočasně skrýt</b> fotku schová a koš ji odebere.", "right"),
       step('[class*="SaveButton"]', "Nezapomeňte uložit a publikovat",
         "Po úpravách galerie klikněte na <b>Uložit</b> a pak <b>Publikovat → Publikovat nyní</b>. Web se aktualizuje do 3 minut."),
     ],

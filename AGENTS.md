@@ -24,13 +24,13 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | Design tokens | OKLCH colours, rem spacing, tracking, motion, z-index | — | `@theme` in `tailwind.source.css` |
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
-| Images / CDN | [Cloudinary](https://cloudinary.com) – upload + fetch delivery, `f_auto` (AVIF/WebP), `q_auto`, `g_auto`, `srcset` | — | `src/lib/cloudinary.ts`, `src/components/ui/CloudImage.astro` |
-| Gallery data | `cloudinary` Node SDK – build-time Admin Search API scan of `CrystalInteriors/Projekty/<project>`, merged with CMS metadata (anewstyle approach), photos + videos | 2.11 | `scripts/build-cloudinary-gallery.mjs` → `public/data/projects-gallery.json` → `src/lib/cloudinary-gallery.ts` |
+| Images | AVIF image sets in the repo – no image CDN. CMS compresses in the browser (Squoosh AVIF codec via jSquash 2.1 WASM, Lanczos3 resize, smartcrop 2.0 focus point) in module workers; widths 400/800/1200/1800/2400, never upscaled; tiles ≤800 px, lightbox `srcset` ≥1200 px, `sizes="auto"`, focus via `object-position` | — | `public/admin/image-pipeline.js` + `image-worker.js` + `vendor/`, `src/lib/image-set.ts`, `src/components/ui/ResponsiveImage.astro`, `scripts/image-set.mjs` (sharp + smartcrop-sharp) |
+| Photo storage | `public/gallery/<group>/<name>-<width>.avif`, committed by the CMS through the GitHub Git Data API (one `[skip ci]` commit per upload) or `decap-server` locally | — | `public/admin/repo-store.js`, `photo-upload.js` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
 | CMS onboarding tours | [driver.js](https://driverjs.com) (from jsDelivr) | 1.10 | `public/admin/admin-ux.js` |
 | Hosting | [Cloudflare Pages](https://pages.cloudflare.com) | — | `wrangler.toml`, `public/_headers` |
-| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth; Cloudinary upload signing + folder listing), `functions/mcp.ts` |
+| Serverless | Cloudflare Pages Functions | — | `functions/api/*` (GitHub OAuth, contact form), `functions/mcp.ts` |
 | CMS auth | GitHub OAuth app → Decap GitHub backend, editorial workflow (PRs) | — | `functions/api/auth.ts`, `callback.ts` |
 | Content storage | JSON files in git | — | `src/data/content/**/*.json` → `src/data/site.ts` |
 | Mail / contact | [Resend](https://resend.com) via Pages Function `/api/inquiry` (both designers, customer as Reply-To); falls back to a prepared `mailto:` e-mail; `tel:`/`mailto:` links | — | `functions/api/inquiry.ts`, `src/pages/kontakt.astro`, `ROLLBACK.md` |
@@ -49,7 +49,7 @@ All packages are on their latest release (`bun outdated` is clean) except two de
 
 Installed but currently unused: `@googlemaps/js-api-loader`, `@toolwind/anchors`.
 
-Hosting today: **GitHub Pages** (`.github/workflows/static.yml`, on push to `main`, base path `/crystalinteriors.cz/` via `PUBLIC_BASE_PATH`). Target: **Cloudflare Pages** at `https://www.crystalinteriors.cz` – needed for `/admin/` login, Cloudinary upload signing and `/mcp` (see `DEPLOY.md`). Everything public (pages, PWA, sitemap, llms.txt) works on both; paths go through `import.meta.env.BASE_URL` / `withBase()`, and `public/sw.js` + `manifest.webmanifest` are scope-relative.
+Hosting today: **GitHub Pages** (`.github/workflows/static.yml`, on push to `main`, base path `/crystalinteriors.cz/` via `PUBLIC_BASE_PATH`). Target: **Cloudflare Pages** at `https://www.crystalinteriors.cz` – needed for `/admin/` login and `/mcp` (see `DEPLOY.md`). Everything public (pages, PWA, sitemap, llms.txt) works on both; paths go through `import.meta.env.BASE_URL` / `withBase()`, and `public/sw.js` + `manifest.webmanifest` are scope-relative.
 
 ## Design System
 
@@ -84,12 +84,12 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/ui/IconButton.astro` — icon-only round button.
 - `src/components/SectionIntro.astro` — eyebrow + heading + lead; `level={1}` renders the page `<h1>`.
 - `src/components/FaqSection.astro` — native `<details name>` accordion (CMS FAQ, also FAQPage schema).
-- `src/components/ui/CloudImage.astro` — responsive Cloudinary image (AVIF/WebP, srcset, no CLS).
+- `src/components/ui/ResponsiveImage.astro` — responsive AVIF image from an image set (`src/lib/image-set.ts`): srcset/sizes (`auto` when lazy), `max` width cap, `focus` → object-position, no CLS; plain `<img>` for other paths.
 - `src/components/agent/WebMcp.astro` — WebMCP tools for in-browser AI agents.
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
-- `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image `home.json → intro.parallaxImage` (Cloudinary `CrystalInteriors/Web`, moved off the old Webnode CDN).
-- `src/components/HeroSection.astro` — full-bleed hero with Cloudinary image (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`), eyebrow + serif title + CTAs (white `hero-primary`), staggered motion-safe entrance and a 3× scroll cue.
-- `src/components/ProjectSection.astro` — one project (title, subtitle, rich-text description, gallery) from `getProjectMedia()` (build-time Cloudinary scan merged with CMS → else CMS list → else optional runtime tag); photos + videos, Fancybox lightbox.
+- `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image `home.json → intro.parallaxImage` (image set in `public/gallery/web/`; 1800 px desktop, 1200 px on touch).
+- `src/components/HeroSection.astro` — full-bleed hero with an image set (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`), eyebrow + serif title + CTAs (white `hero-primary`), staggered motion-safe entrance and a 3× scroll cue.
+- `src/components/ProjectSection.astro` — one project (title, subtitle, rich-text description, gallery) from `getProjectMedia()` (`src/lib/gallery.ts`: CMS list → image sets in `public/gallery/projekty/<slug>/`); tiles ≤800 px with focus crop, Fancybox lightbox with its own srcset (≥1200 px) and 400 px thumbs.
 
 ### Icons
 
@@ -113,7 +113,7 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 
 ### `/` (index.astro)
 
-1. Hero (`HeroSection`) — full bleed with Cloudinary image, two CTAs (`hero-primary`, `hero-outline`).
+1. Hero (`HeroSection`) — full bleed with an image set, two CTAs (`hero-primary`, `hero-outline`).
 2. "Jak pracujeme" — two-column: `SectionIntro` + consumer-focused blockquote (large `&ldquo;` quote mark, "PRO KLIENTA" eyebrow).
 3. Parallax strip "Čím se zabýváme" (medium height).
 4. `#co-navrhujeme` — "Co navrhujeme" photo cards (9 services from `services.json`), 3×3; **not links** (client: no click-through to another page from this section).
@@ -124,7 +124,7 @@ Content is edited in Decap CMS and stored as JSON in `src/data/content/`; `src/d
 
 ### `/projekty/` (projekty.astro)
 
-Renders `ProjectSection` for each project (CMS *Projekty*), or an empty state with a consultation CTA when there are none. Sections have `id={slug}` for `/projekty/#<slug>` anchors with `scroll-mt-28`. Projects without media can load Cloudinary images by their optional tag at runtime; Fancybox binds to all `[data-fancybox]` elements.
+Renders `ProjectSection` for each project (CMS *Projekty*), or an empty state with a consultation CTA when there are none. Sections have `id={slug}` for `/projekty/#<slug>` anchors with `scroll-mt-28`. Fancybox binds to all `[data-fancybox]` elements.
 
 ### `/sluzby/` (sluzby.astro)
 
@@ -155,10 +155,10 @@ Two designer tiles side-by-side (`md:grid-cols-2`), each with role + name + emai
 Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 
 - Config `public/admin/config.yml` – collections *Projekty* (folder, one entry per project), *Stránky*, *Nastavení*; Czech UI; editorial workflow (drafts are PRs → preview build → publish).
-- Custom widgets: `project-gallery` (`gallery-manager.js`, upload photos/videos + „Přidat z Cloudinary“ folder picker), `cloud-image` (`media-widgets.js`); uploads in `cloudinary-upload.js` go straight to Cloudinary (`CrystalInteriors/Projekty/<slug>`, `CrystalInteriors/Web`), signed by `functions/api/cloudinary.ts` for GitHub users with push access.
-- Same model as anewstyle.cz: Cloudinary folders hold the media, the CMS list holds order/alt/hidden and is the source of truth once non-empty; `scripts/build-cloudinary-gallery.mjs` merges both at build time (needs `CLOUDINARY_URL`, fails soft).
+- Custom widgets: `project-gallery` (`gallery-manager.js`: upload, order, alt, hide, focus-point editor) and `photo` (`media-widgets.js`: single photo, value = image-set base path).
+- Photo pipeline (project-agnostic, reusable in other Decap sites): `image-pipeline.js` compresses in the browser – module-worker pool (`image-worker.js`) with the vendored Squoosh AVIF encoder + Lanczos3 resize (`vendor/`), widths 400–2400 never upscaled, smartcrop focus; `repo-store.js` commits all files of an upload in one `[skip ci]` commit via the GitHub Git Data API with the editor's CMS token (locally via `decap-server`). Files: `public/gallery/projekty/<slug>/`, `public/gallery/web/`. Removed photos stay in the repo.
 - Editor UX: driver.js guided tours + help button + removal confirmations (`admin-ux.js`), publish progress panel polling `/build.json` (`publish-status.js`).
-- Auth: GitHub OAuth via `functions/api/auth.ts` + `callback.ts` (env `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `CLOUDINARY_URL`). Works only on Cloudflare Pages (`base_url` in config). Local: `bun run cms:local`.
+- Auth: GitHub OAuth via `functions/api/auth.ts` + `callback.ts` (env `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`). Works only on Cloudflare Pages (`base_url` in config). Local: `bun run cms:local`.
 
 ## Editorial / Copy Rules
 
@@ -180,7 +180,7 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 ## Conventions
 
 - Centralize copy in `src/data/content/*.json` (CMS) and read it through `src/data/site.ts`; never hardcode copy in templates.
-- Images: use `<CloudImage>` (Cloudinary `f_auto`/`q_auto`/`srcset`, fixed width/height); the LCP hero gets `priority` + preload via `heroPreload()`.
+- Images: use `<ResponsiveImage>` with an image-set path (AVIF only, no WebP/JPEG fallbacks, fixed width/height, `max` for small boxes); the LCP hero gets `priority` + preload via `heroPreload()`. Never add an image CDN.
 - Agents (WebMCP/MCP) are read-only or prefill-only — never submit the inquiry form for a visitor.
 - New design tokens go in the `@theme` block, not in component-scoped CSS.
 - Component-scoped `<style>` only for things Tailwind can't express cleanly: compound `:nth-child` selectors, `clamp()` with `vw`, multi-stop `radial-gradient` with `color-mix()`, runtime `transition-delay: calc(var(--i) * 60ms)` patterns.
@@ -191,7 +191,8 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 
 - `bun run dev` — concurrent Tailwind watcher + Astro dev server
 - `bun run cms:local` — local Decap backend (edit at `http://localhost:4321/admin/`, writes files directly)
-- `bun run build` — minify CSS → Cloudinary gallery scan (`gallery:build`) → `astro check` → TypeScript 7 `tsc --noEmit` → `astro build`
+- `bun run build` — minify CSS → `astro check` → TypeScript 7 `tsc --noEmit` → `astro build`
+- `bun run image-set <file-or-url> /gallery/<group>/<name>` — make an image set locally (sharp + smartcrop-sharp), prints `{ src, focus, … }`
 - `bun run icons` — regenerate favicon/PWA icons from the official logo (`scripts/generate-icons.mjs`: full logo for app/maskable/apple icons, crystal crop for small favicons), then `convert favicon-48x48.png -define icon:auto-resize=48,32,16 favicon.ico`
 - `bun run preview` — preview production build
 - `/dist` is gitignored. `public/styles/tailwind.css` is generated (by `bun run dev`/`build`) but committed – regenerate it, never edit by hand.

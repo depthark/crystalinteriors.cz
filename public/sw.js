@@ -3,14 +3,14 @@
  *
  *  - Pages: network first (always fresh), cached copy or /offline/ when offline.
  *  - /_astro/* and /styles/*: stale-while-revalidate (fast, self-updating).
- *  - Images (site + res.cloudinary.com): stale-while-revalidate, capped.
+ *  - Images (/gallery/*, /images/*): stale-while-revalidate, capped.
  *  - Never touches /admin/, /api/, /build.json, POSTs or other origins' data.
  *
  * Paths are relative to the registration scope, so the worker also runs
  * under a base path (GitHub Pages: /crystalinteriors.cz/).
  * Bump VERSION to drop every old cache on the next visit.
  */
-const VERSION = "v2";
+const VERSION = "v3";
 const BASE = new URL(self.registration.scope).pathname; // e.g. "/" or "/crystalinteriors.cz/"
 const PAGES = `pages-${VERSION}`;
 const ASSETS = `assets-${VERSION}`;
@@ -71,10 +71,6 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
 
-  if (url.origin === "https://res.cloudinary.com" && request.destination === "image") {
-    staleWhileRevalidate(event, IMAGES, MAX_IMAGES);
-    return;
-  }
   if (url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
   const path = url.pathname.slice(BASE.length);
   if (SKIP.test(path)) return;

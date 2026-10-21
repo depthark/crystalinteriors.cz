@@ -16,6 +16,10 @@
 /images/*
   Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
+# Photo sets from the CMS (new uploads always get new file names)
+/gallery/*
+  Cache-Control: public, max-age=31536000, stale-while-revalidate=86400
+
 /sw.js
   Cache-Control: no-cache
   Service-Worker-Allowed: /

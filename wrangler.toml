@@ -1,6 +1,6 @@
 # Cloudflare Pages project configuration (see DEPLOY.md).
 # Static Astro build served from dist/; functions/ adds /api/* (CMS login,
-# Cloudinary upload signing) and /mcp (read-only MCP server for AI agents).
+# contact form) and /mcp (read-only MCP server for AI agents).
 name = "crystalinteriors"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-10-01"

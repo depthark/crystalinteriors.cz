@@ -5,29 +5,49 @@
   "text": "V tomto bytě v Brněnském paneláku jsme navrhovaly kuchyni propojenou se snídaňovým pultem a jídelním/pracovním stolem v obýváku. Jako obklad jsme zvolily hexagonovou keramickou mozaiku. Dominantou je výrazný dřevodekor, který koresponduje s parketami.",
   "images": [
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/01-brinkova-vizu-pohled1-watermarked.png",
+      "src": "/gallery/projekty/panelakova-kuchyne/panelakova-kuchyne-01",
       "alt": "Vizualizace panelákové kuchyně — foto 1",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 62,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/02-brinkova-vizu-pohled2-watermarked.png",
+      "src": "/gallery/projekty/panelakova-kuchyne/panelakova-kuchyne-02",
       "alt": "Vizualizace panelákové kuchyně — foto 2",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 52,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/03-brinkova-vizu-pohled3-watermarked.png",
+      "src": "/gallery/projekty/panelakova-kuchyne/panelakova-kuchyne-03",
       "alt": "Vizualizace panelákové kuchyně — foto 3",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 39,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563319/CrystalInteriors/Projekty/panelakova-kuchyne/04-brinkova-vizu-pohled4-watermarked.png",
+      "src": "/gallery/projekty/panelakova-kuchyne/panelakova-kuchyne-04",
       "alt": "Vizualizace panelákové kuchyně — foto 4",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 59,
+        "y": 50
+      }
     },
     {
-      "src": "https://res.cloudinary.com/lukaschylik/image/upload/v1792563321/CrystalInteriors/Projekty/panelakova-kuchyne/05-brinkova-vizu-pohled5-watermarked.png",
+      "src": "/gallery/projekty/panelakova-kuchyne/panelakova-kuchyne-05",
       "alt": "Vizualizace panelákové kuchyně — foto 5",
-      "hidden": false
+      "hidden": false,
+      "focus": {
+        "x": 62,
+        "y": 50
+      }
     }
   ]
 }
