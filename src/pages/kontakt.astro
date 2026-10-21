@@ -337,7 +337,7 @@ const webMcpForm: Record<string, string> = {
 
   /* Without JavaScript the form posts to /api/inquiry, which redirects back
      to #odeslano – show the confirmation instead of the form. */
-  .inquiry__success:target {
+  .inquiry__success[hidden]:target {
     display: flex;
   }
 
