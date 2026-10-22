@@ -5,7 +5,7 @@
  * (EXIF orientation applied, metadata dropped), downsizes with Lanczos3 and
  * encodes each width with the AVIF codec from Squoosh (jSquash, vendored).
  *
- * In:  { id, file, standard: number[], quality }  (widths rule = scripts/image-set.mjs)
+ * In:  { id, file, standard: number[], quality }  (widths rule = scripts/image-set.ts)
  * Out: { id, type: "progress", done, total }
  *      { id, type: "done", width, height, files: [{ width, buffer }], preview }
  *      { id, type: "error", message }

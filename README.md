@@ -6,7 +6,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 
 | Area | Library / service | Version | Where |
 | --- | --- | --- | --- |
-| Framework | [Astro](https://astro.build) (static output) | 7.4 | `astro.config.mjs`, `src/` |
+| Framework | [Astro](https://astro.build) (static output) | 7.4 | `astro.config.ts`, `src/` |
 | Runtime / package manager | [Bun](https://bun.sh) | 1.4 | `bun install`, `bun run …` (`packageManager: bun@1.4.3`) |
 | Runtime (tooling) | Node.js 24 LTS (Krypton) | 24 | `engines`, `.node-version`, CI `node-version: 24` |
 | Language | TypeScript 7 (`typescript-7`, native `tsc`) | 7.0 | `bun run typecheck` (`.ts` files) |
@@ -16,7 +16,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Design tokens | OKLCH colours, rem spacing, tracking, motion, z-index | — | `@theme` in `tailwind.source.css` |
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
-| Images | AVIF image sets in the repo – no image CDN. CMS compresses in the browser (Squoosh AVIF codec via jSquash 2.1 WASM, Lanczos3 resize, smartcrop 2.0 focus point) in module workers; widths 400/800/1200/1800/2400, never upscaled; tiles ≤800 px, lightbox `srcset` ≥1200 px, `sizes="auto"`, focus via `object-position` | — | `public/admin/image-pipeline.js` + `image-worker.js` + `vendor/`, `src/lib/image-set.ts`, `src/components/ui/ResponsiveImage.astro`, `scripts/image-set.mjs` (sharp + smartcrop-sharp) |
+| Images | AVIF image sets in the repo – no image CDN. CMS compresses in the browser (Squoosh AVIF codec via jSquash 2.1 WASM, Lanczos3 resize, smartcrop 2.0 focus point) in module workers; widths 400/800/1200/1800/2400, never upscaled; tiles ≤800 px, lightbox `srcset` ≥1200 px, `sizes="auto"`, focus via `object-position` | — | `public/admin/image-pipeline.js` + `image-worker.js` + `vendor/`, `src/lib/image-set.ts`, `src/components/ui/ResponsiveImage.astro`, `scripts/image-set.ts` (sharp + smartcrop-sharp) |
 | Photo storage | `public/gallery/<group>/<name>-<width>.avif`, committed by the CMS through the GitHub Git Data API (one `[skip ci]` commit per upload) or `decap-server` locally | — | `public/admin/repo-store.js`, `photo-upload.js` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
@@ -29,7 +29,7 @@ Redesign of `crystalinteriors.cz` built with Astro 7, Bun, TypeScript 7, Tailwin
 | Maps | Google Maps embed (iframe) | — | `settings.json → company.mapEmbed` |
 | Analytics | Google Tag Manager `GTM-542MMSL` | — | `src/layouts/BaseLayout.astro` |
 | PWA | Web App Manifest + service worker (network-first pages, SWR assets/images, offline page) | — | `public/manifest.webmanifest`, `public/sw.js`, `src/pages/offline.astro` |
-| Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.mjs` |
+| Icons | `sharp` – favicon / PWA icons generated from the official logo | 0.35 | `bun run icons` → `scripts/generate-icons.ts` |
 | SEO | Per-page meta/OG/Twitter, schema.org JSON-LD graph, generated `sitemap.xml` (+ images), `robots.txt` | — | `src/lib/structured-data.ts`, `src/pages/sitemap.xml.ts` |
 | Share images | `sharp` text + composite → `/og/<page>.jpg` with logo, Playfair title, royal/lavender light | — | `src/lib/og-image.ts`, `src/pages/og/[slug].jpg.ts` |
 | AI agents | `llms.txt`, `/agent/site.json`, WebMCP tools, read-only MCP server | — | `src/pages/llms.txt.ts`, `src/components/agent/WebMcp.astro`, `functions/mcp.ts` |

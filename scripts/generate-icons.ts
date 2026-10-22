@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /**
  * Generates the favicon / PWA icon set from the official Crystal Interiors
  * logo (public/images/logos/crystalinteriors_logo-white.svg) – white art on
@@ -25,7 +25,7 @@ const inner = source.replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
 const [vx, vy, vw, vh] = (/viewBox="([^"]+)"/.exec(source)?.[1] ?? "0 0 1024 1024").split(/\s+/).map(Number);
 
 /** Logo art centred on an ink square; `scale` < 1 adds a safe-zone margin. */
-function iconSvg({ viewBox, scale = 1, radius = 0 }) {
+function iconSvg({ viewBox, scale = 1, radius = 0 }: { viewBox: string; scale?: number; radius?: number }) {
   const [x, y, w, h] = viewBox.split(/\s+/).map(Number);
   const size = Math.max(w, h) / scale;
   const ox = x - (size - w) / 2;
@@ -39,7 +39,7 @@ const appIcon = iconSvg({ viewBox: fullLogo, scale: 0.94, radius: 112 });
 const maskable = iconSvg({ viewBox: fullLogo, scale: 0.78 }); // logo inside the 80% safe zone
 const apple = iconSvg({ viewBox: fullLogo, scale: 0.88 });
 
-const png = (svg, size, file) =>
+const png = (svg: string, size: number, file: string) =>
   sharp(Buffer.from(svg), { density: 300 }).resize(size, size).png({ compressionLevel: 9 }).toFile(`${OUT}/${file}`);
 
 await writeFile(`${OUT}/favicon.svg`, `${favicon}\n`);

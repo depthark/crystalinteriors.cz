@@ -6,7 +6,7 @@
  * Content stores only the base path `/gallery/<group>/<name>`; the widths and
  * the intrinsic size are read from the files at build time. Files are written
  * by the CMS in the browser (public/admin/image-pipeline.js) or by
- * scripts/image-set.mjs.
+ * scripts/image-set.ts.
  *
  * Tiles never load more than 800 px (2× of a ~400 px tile), the lightbox
  * picks 1200–2400 px by screen, so a phone never downloads the 2400 file.

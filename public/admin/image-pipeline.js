@@ -6,7 +6,7 @@
  *     { width, height, focus: { x, y }, files: [{ width, blob }] }
  *
  * Each photo becomes AVIF files in fixed widths (400, 800, 1200, 1800, 2400),
- * never upscaled – the same rule as scripts/image-set.mjs. Encoding runs in a
+ * never upscaled – the same rule as scripts/image-set.ts. Encoding runs in a
  * small pool of module workers (image-worker.js), one photo per worker. The
  * focus point is the centre of smartcrop's best 4:3 crop; the website keeps
  * it in frame when tiles crop the photo.

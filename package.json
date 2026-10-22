@@ -38,9 +38,9 @@
     "astro:dev": "astro dev",
     "css:dev": "tailwindcss -i public/styles/tailwind.source.css -o public/styles/tailwind.css --watch",
     "css:build": "tailwindcss -i public/styles/tailwind.source.css -o public/styles/tailwind.css --minify",
-    "icons": "node scripts/generate-icons.mjs",
+    "icons": "bun scripts/generate-icons.ts",
     "cms:local": "decap-server",
-    "image-set": "node scripts/image-set.mjs",
+    "image-set": "bun scripts/image-set.ts",
     "typecheck": "astro check && node node_modules/typescript-7/bin/tsc --noEmit"
   },
   "engines": {

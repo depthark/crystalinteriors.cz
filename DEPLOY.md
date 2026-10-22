@@ -98,7 +98,7 @@ bun run dev          # http://localhost:4321
 bun run cms:local    # ve druhém terminálu → http://localhost:4321/admin/ (zapisuje přímo do souborů)
 bun run build        # css → astro check + TS 7 → astro build
 bun run image-set <soubor-nebo-url> /gallery/<skupina>/<název>   # AVIF sada fotky lokálně
-bun run icons        # přegeneruje favicony / PWA ikony ze scripts/generate-icons.mjs
+bun run icons        # přegeneruje favicony / PWA ikony ze scripts/generate-icons.ts
 ```
 
 ## 7. Kontrola po nasazení
