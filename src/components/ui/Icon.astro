@@ -1,0 +1,53 @@
+---
+/**
+ * Heroicons (https://heroicons.com – MIT, by the makers of Tailwind CSS),
+ * inlined at build time from the `heroicons` package: no runtime JS, no
+ * sprite request, `currentColor` so Tailwind text colours apply.
+ *
+ *   <Icon name="arrow-right" class="h-5 w-5" />
+ *   <Icon name="check" variant="mini" class="h-4 w-4" />
+ *   <Icon name="phone" label="Telefon" />   (meaningful icon → role="img")
+ *
+ * Names are the file names on heroicons.com. Variants: outline (24 px,
+ * 1.5 stroke – default), solid (24), mini (20 solid), micro (16 solid).
+ * Brand logos are not in Heroicons – they live in src/components/icons/.
+ */
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+
+type Variant = "outline" | "solid" | "mini" | "micro";
+
+export interface Props {
+  name: string;
+  variant?: Variant;
+  class?: string;
+  /** Accessible name; without it the icon is decorative (aria-hidden). */
+  label?: string;
+}
+
+const folders: Record<Variant, string> = {
+  outline: "24/outline",
+  solid: "24/solid",
+  mini: "20/solid",
+  micro: "16/solid",
+};
+
+const { name, variant = "outline", class: className = "h-6 w-6", label } = Astro.props;
+
+const require = createRequire(import.meta.url);
+let svg: string;
+try {
+  svg = readFileSync(require.resolve(`heroicons/${folders[variant]}/${name}.svg`), "utf8");
+} catch {
+  throw new Error(`[Icon] Heroicon "${name}" (${variant}) not found – check the name on heroicons.com`);
+}
+
+const escape = (value: string) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+const a11y = label ? `role="img" aria-label="${escape(label)}"` : `aria-hidden="true"`;
+const html = svg
+  .trim()
+  .replace(/\s(aria-hidden|data-slot)="[^"]*"/g, "")
+  .replace("<svg ", `<svg class="${escape(className)}" focusable="false" ${a11y} `);
+---
+
+<Fragment set:html={html} />

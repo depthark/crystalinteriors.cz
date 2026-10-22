@@ -24,12 +24,9 @@ import { site, telHref } from "@/data/site";
       <Button as="a" href={telHref(site.company.phones[0])} variant="primary" size="lg" rel={undefined}>
         Zavolat {site.company.phones[0]}
       </Button>
-      <Button as="button" variant="outline" size="lg" class="js-retry">Zkusit znovu</Button>
+      <Button as="a" href="" variant="outline" size="lg" rel={undefined}>Zkusit znovu</Button>
     </div>
   </main>
   <SiteFooter />
 </BaseLayout>
 
-<script>
-  document.querySelector(".js-retry")?.addEventListener("click", () => location.reload());
-</script>

@@ -4,6 +4,7 @@ import { withBase } from "@/lib/navigation";
 import SocialLinks from "./SocialLinks.astro";
 ---
 
+<!-- Always dark: use text-accent (light tint) here, not text-primary. -->
 <footer
   class="border-t border-white/10 bg-footer-bg py-10 text-footer-text sm:py-12"
   aria-labelledby="site-footer-heading"
@@ -11,7 +12,7 @@ import SocialLinks from "./SocialLinks.astro";
   <h2 id="site-footer-heading" class="sr-only">Patička stránky</h2>
   <div class="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr] md:items-start lg:px-8">
     <div class="space-y-2 sm:col-span-2 md:col-span-1">
-      <p class="text-sm font-medium uppercase tracking-eyebrow text-primary">
+      <p class="text-sm font-medium uppercase tracking-eyebrow text-accent">
         {site.name}
       </p>
       <p class="text-sm leading-6">
@@ -24,7 +25,7 @@ import SocialLinks from "./SocialLinks.astro";
       <p class="text-sm leading-6 text-white">{site.company.address}</p>
       <a
         href={withBase("/kontakt/")}
-        class="inline-flex min-h-6 items-center py-1 text-sm text-primary hover:underline"
+        class="inline-flex min-h-6 items-center py-1 text-sm text-accent hover:underline"
         aria-label="Přejít na kontaktní stránku"
       >
         Kontakt &rarr;

@@ -76,7 +76,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 
 - `src/layouts/BaseLayout.astro` — `<head>` boilerplate, meta tags, OG, schema.org JSON-LD, Google Tag Manager (`GTM-542MMSL`, deferred), skip link, theme-init inline script. **Critical CSS is inlined**: `@font-face` + fallback faces + `public/styles/tailwind.css` + `global.css` go into one `<style>` (no render-blocking requests); page CSS is inlined too (`build.inlineStylesheets: "always"`).
 - `src/components/SiteHeader.astro` — sticky `.glass` header. Logo (SVG, white art via filter inversion in light theme), brand text, nav (desktop ≥lg), mobile cluster with `ThemeToggle` + `MobileMenu`.
-- `src/components/MobileMenu.astro` — disclosure nav (toggle `aria-expanded`/`aria-controls`), **not** a second header: the panel (fixed, `z-modal`) holds only links, CTA and social icons and slides out *under* the real header – SiteHeader's logo link, theme toggle and the hamburger (→ X) sit at `z-modal + 1`, so the header looks identical open or closed. While open: `main`/`footer` are `inert`, body scroll-locked, focus moves to the first link; Escape/X/link click close it. Never duplicate the logo or a close button inside the panel.
+- `src/components/MobileMenu.astro` — native **Popover API** (`popover` + `popovertarget`): open/close, Escape, tap outside and `aria-expanded` come from the browser, no script for it. The panel holds only links, CTA and social icons and sits in the top layer exactly below the header (`--header-height`; the header has that fixed height), so logo, theme toggle and the hamburger (→ X via `:has(:popover-open)`) stay visible. Scroll lock via `:has()`, entrance via `@starting-style`, first link `autofocus`; one inline line closes the panel when a link is tapped. Never duplicate the logo or a close button inside the panel.
 - `src/components/SiteFooter.astro` — three-column footer with brand, atelier, social. Bottom row shows legal info (Provozovatel, IČO, sídlo), copyright and „Created by Lukáš Chylík“ (link to lukaschylik.dev).
 
 ### Reusable
@@ -94,9 +94,8 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 
 ### Icons
 
-`src/components/icons/*.astro` — Heroicons-style 1.5 stroke outline:
-
-`ArrowRightIcon`, `ChevronDownIcon`, `ClockIcon`, `EnvelopeIcon`, `FacebookIcon` (solid filled), `InstagramIcon` (outline), `LanguageIcon`, `MagnifyIcon`, `MapPinIcon`, `MoonIcon`, `PhoneIcon`, `SadFaceIcon`, `SendIcon`, `SparklesIcon`, `SunIcon`, `UserGroupIcon`, `WrenchScrewdriverIcon`.
+- UI icons: [Heroicons](https://heroicons.com) (`heroicons` package, MIT, by Tailwind Labs) inlined at build by `src/components/ui/Icon.astro` – `<Icon name="arrow-right" class="h-5 w-5" />`, `variant` outline (default) / solid / mini / micro, `label` for meaningful icons (else `aria-hidden`). No runtime JS, no icon font.
+- Brand logos (not in Heroicons): `src/components/icons/FacebookIcon.astro` (solid), `InstagramIcon.astro` (outline).
 
 ## Data Layer
 
@@ -197,6 +196,7 @@ Measured with Lighthouse 12 on the deployed site (2026-10-21): **100/100/100/100
 - Centralize copy in `src/data/content/*.json` (CMS) and read it through `src/data/site.ts`; never hardcode copy in templates.
 - Images: use `<ResponsiveImage>` with an image-set path (AVIF only, no WebP/JPEG fallbacks, fixed width/height, `max` for small boxes); the LCP hero gets `priority` + preload via `heroPreload()`. Never add an image CDN.
 - Agents (WebMCP/MCP) are read-only or prefill-only — never submit the inquiry form for a visitor.
+- **As little JavaScript as possible.** Prefer HTML/CSS platform features (`<details>`, Popover API, `<dialog>`, `:has()`, `:user-invalid`, `@starting-style`, scroll-driven animations, native form posts). JS only where the platform can't (theme persistence, Fancybox, form enhancement, lazy parallax background, WebMCP), small and loaded late; everything works or degrades gracefully without it.
 - New design tokens go in the `@theme` block, not in component-scoped CSS.
 - Component-scoped `<style>` only for things Tailwind can't express cleanly: compound `:nth-child` selectors, `clamp()` with `vw`, multi-stop `radial-gradient` with `color-mix()`, runtime `transition-delay: calc(var(--i) * 60ms)` patterns.
 - For dark-section components, use `outline-on-dark` Button variant or the hero variants rather than inverting colors ad-hoc.

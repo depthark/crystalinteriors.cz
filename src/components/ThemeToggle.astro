@@ -1,6 +1,5 @@
 ---
-import MoonIcon from "@/components/icons/MoonIcon.astro";
-import SunIcon from "@/components/icons/SunIcon.astro";
+import Icon from "@/components/ui/Icon.astro";
 ---
 
 <button
@@ -10,8 +9,8 @@ import SunIcon from "@/components/icons/SunIcon.astro";
   aria-label="Přepnout barevné téma"
   title="Přepnout barevné téma"
 >
-  <MoonIcon class="h-5 w-5 dark:hidden" />
-  <SunIcon class="hidden h-5 w-5 dark:block" />
+  <Icon name="moon" class="h-5 w-5 dark:hidden" />
+  <Icon name="sun" class="hidden h-5 w-5 dark:block" />
 </button>
 
 <script is:inline>

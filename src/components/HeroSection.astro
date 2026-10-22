@@ -1,4 +1,5 @@
 ---
+import Icon from "@/components/ui/Icon.astro";
 /**
  * Hero: full-bleed photo (LCP, preloaded) under an ink overlay, the official
  * Crystal Interiors logo as the brand moment, serif headline and two CTAs.
@@ -10,7 +11,6 @@ import { hero } from "@/lib/images";
 import { withBase } from "@/lib/navigation";
 import Button from "./ui/Button.astro";
 import ResponsiveImage from "./ui/ResponsiveImage.astro";
-import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
 ---
 
 <section class="relative isolate overflow-hidden bg-ink-deep" aria-labelledby="hero-title">
@@ -102,7 +102,7 @@ import ChevronDownIcon from "./icons/ChevronDownIcon.astro";
       class="hero__cue absolute bottom-6 left-1/2 inline-flex min-h-11 min-w-11 -translate-x-1/2 flex-col items-center justify-center gap-1 rounded-full text-[0.7rem] uppercase tracking-overline text-white/70 no-underline transition-colors duration-fast hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
     >
       <span>Více<span class="sr-only"> – jak pracujeme</span></span>
-      <span aria-hidden="true"><ChevronDownIcon class="h-5 w-5" /></span>
+      <span aria-hidden="true"><Icon name="chevron-down" class="h-5 w-5" /></span>
     </a>
   </div>
 </section>

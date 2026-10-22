@@ -1,7 +1,8 @@
 @layer base {
   :root {
-    /* Sticky header height (70–74px) – anchors and scroll-snap clear it. */
-    --header-height: 4.75rem;
+    /* Fixed header height: the header uses it, anchors clear it and the
+       mobile menu panel starts exactly below it. */
+    --header-height: 4.625rem;
   }
 
   html {

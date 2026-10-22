@@ -13,11 +13,11 @@ const activePath =
   pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : `${pathname}/`;
 ---
 
-<header class="glass sticky top-0 z-[var(--z-header)] border-b border-border">
-  <div class="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 min-[360px]:gap-4 sm:px-6 lg:gap-8 lg:px-8">
+<header class="glass sticky top-0 z-[var(--z-header)] h-(--header-height) border-b border-border">
+  <div class="mx-auto flex h-full max-w-7xl items-center gap-2 px-4 min-[360px]:gap-4 sm:px-6 lg:gap-8 lg:px-8">
     <a
       href={withBase("/")}
-      class="relative z-[calc(var(--z-modal)+1)] flex min-w-0 items-center gap-2 no-underline min-[360px]:gap-3 sm:pr-2 lg:shrink-0"
+      class="flex min-w-0 items-center gap-2 no-underline min-[360px]:gap-3 sm:pr-2 lg:shrink-0"
     >
       <img
         src={withBase("/images/logos/crystalinteriors_logo-white.svg")}
@@ -69,8 +69,7 @@ const activePath =
     </nav>
 
     <div class="ml-auto flex shrink-0 items-center gap-2 lg:hidden">
-      <!-- Header controls stay above the open mobile menu panel (z-modal). -->
-      <span class="relative z-[calc(var(--z-modal)+1)] inline-flex"><ThemeToggle /></span>
+      <ThemeToggle />
       <MobileMenu pathname={pathname} />
     </div>
   </div>

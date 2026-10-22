@@ -2,6 +2,7 @@
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
 import SocialLinks from "./SocialLinks.astro";
+import Icon from "./ui/Icon.astro";
 
 export interface Props {
   pathname: string;
@@ -12,66 +13,46 @@ const activePath =
   pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : `${pathname}/`;
 ---
 
-<div class="group/menu relative lg:hidden" data-mobile-menu data-state="closed">
+<!--
+  Mobile navigation on the native Popover API – no JavaScript for open/close:
+  the button toggles the panel (popovertarget), Escape and a tap outside close
+  it and return focus, the browser exposes aria-expanded. The panel sits in
+  the top layer just below the sticky header, so logo, theme toggle and the
+  button (hamburger → X via :has()) stay visible and usable. Baseline 2024.
+-->
+<div class="lg:hidden">
   <button
     type="button"
-    class="relative z-[calc(var(--z-modal)+1)] inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-    data-mobile-menu-toggle
-    aria-controls="mobile-menu-panel"
-    aria-expanded="false"
-    aria-label="Otevřít navigaci"
+    popovertarget="mobile-menu-panel"
+    class="mobile-menu__toggle inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur transition-colors duration-fast ease-standard hover:border-primary hover:text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    aria-label="Navigace"
   >
     <span class="relative block h-4 w-5" aria-hidden="true">
-      <span
-        class="mobile-menu__bar absolute inset-x-0 top-0 h-0.5 origin-center rounded-full bg-current"
-      ></span>
-      <span
-        class="mobile-menu__bar absolute inset-x-0 top-1/2 h-0.5 origin-center -translate-y-1/2 rounded-full bg-current"
-      ></span>
-      <span
-        class="mobile-menu__bar absolute inset-x-0 bottom-0 h-0.5 origin-center rounded-full bg-current"
-      ></span>
+      <span class="mobile-menu__bar absolute inset-x-0 top-0 h-0.5 origin-center rounded-full bg-current"></span>
+      <span class="mobile-menu__bar absolute inset-x-0 top-1/2 h-0.5 origin-center -translate-y-1/2 rounded-full bg-current"></span>
+      <span class="mobile-menu__bar absolute inset-x-0 bottom-0 h-0.5 origin-center rounded-full bg-current"></span>
     </span>
-    <span class="sr-only" data-mobile-menu-label>Otevřít navigaci</span>
   </button>
 
-  <!-- Panel only: the site header stays on top of it (SiteHeader lifts its
-       content above the panel), so logo, name and toggle never change. -->
-  <div
-    id="mobile-menu-panel"
-    class="pointer-events-none fixed inset-0 z-[var(--z-modal)] flex flex-col group-data-[state=open]/menu:pointer-events-auto [&[inert]]:invisible"
-    inert
-  >
-    <div
-      class="mobile-menu__backdrop absolute inset-0 opacity-0 transition-opacity duration-standard ease-out-soft group-data-[state=open]/menu:opacity-100"
-      aria-hidden="true"
-    ></div>
-
-    <div
-      class="glass-strong relative m-auto flex h-full w-full -translate-y-full flex-col gap-6 overflow-y-auto px-4 pt-[calc(var(--header-height)+1.5rem)] pb-8 opacity-0 transition-[transform,opacity] duration-slow ease-out-soft group-data-[state=open]/menu:translate-y-0 group-data-[state=open]/menu:opacity-100 sm:px-6 min-[480px]:gap-8 min-[480px]:pb-10 lg:px-8 motion-reduce:transition-none"
-    >
+  <div id="mobile-menu-panel" popover class="mobile-menu glass-strong">
+    <div class="flex h-full flex-col gap-6 overflow-y-auto px-4 pt-6 pb-8 sm:px-6 min-[480px]:gap-8 min-[480px]:pb-10">
       <nav class="flex w-full flex-1 items-center" aria-label="Hlavní navigace">
-        <ul class="flex w-full list-none flex-col gap-2 p-0 m-0">
+        <ul class="m-0 flex w-full list-none flex-col gap-2 p-0">
           {
             site.nav.map((item, index) => {
               const isActive = activePath === item.href;
               return (
-                <li
-                  class="mobile-menu__item translate-y-3 opacity-0 transition-[opacity,transform] duration-standard ease-out-soft group-data-[state=open]/menu:translate-y-0 group-data-[state=open]/menu:opacity-100 motion-reduce:transition-none"
-                  style={`--i:${index};`}
-                >
+                <li class="mobile-menu__item" style={`--i:${index};`}>
                   <a
                     href={withBase(item.href)}
                     class:list={[
-                      "mobile-menu__link group flex cursor-pointer items-center border-b border-border py-3 font-display leading-[1.1] no-underline transition-colors duration-fast ease-standard",
+                      "mobile-menu__link flex cursor-pointer items-center border-b border-border py-3 font-display leading-[1.1] no-underline transition-colors duration-fast ease-standard",
                       isActive ? "text-royal" : "text-foreground hover:text-primary focus-visible:text-primary",
                     ]}
                     aria-current={isActive ? "page" : undefined}
-                    data-mobile-menu-link
+                    autofocus={index === 0}
                   >
-                    <span class="transition-colors duration-fast ease-standard group-hover:text-primary group-focus-visible:text-primary">
-                      {item.label}
-                    </span>
+                    {item.label}
                   </a>
                 </li>
               );
@@ -84,22 +65,9 @@ const activePath =
         <a
           href={withBase("/kontakt/#poptavka")}
           class="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-action px-6 py-3.5 font-display text-base font-semibold text-on-action no-underline shadow-lifted transition-colors duration-fast ease-standard hover:bg-action-hover focus-visible:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          data-mobile-menu-link
         >
           Kontaktujte nás
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="h-5 w-5"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <Icon name="arrow-right" variant="mini" class="h-5 w-5" />
         </a>
 
         <div class="flex justify-center border-t border-border pt-4">
@@ -110,15 +78,76 @@ const activePath =
   </div>
 </div>
 
+<!-- The only script: a tapped link closes the panel (same-page anchors, and
+     no open menu when the page comes back from the back/forward cache). -->
+<script is:inline>
+  document.getElementById("mobile-menu-panel")?.addEventListener("click", (e) => {
+    if (e.target.closest("a")) e.currentTarget.hidePopover();
+  });
+</script>
+
 <style>
-  /* Stagger delay via --i — Tailwind can't compose
-     calc() with a runtime CSS var in transition-delay. */
+  /* Panel: full width below the sticky header (top layer, so it never fights
+     z-index), sliding in with @starting-style; UA popover styles reset. */
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-height) 0 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    color: inherit;
+    opacity: 0;
+    translate: 0 -1rem;
+    transition:
+      opacity var(--duration-standard) var(--ease-out-soft),
+      translate var(--duration-slow) var(--ease-out-soft),
+      overlay var(--duration-standard) allow-discrete,
+      display var(--duration-standard) allow-discrete;
+  }
+
+  .mobile-menu:popover-open {
+    opacity: 1;
+    translate: 0;
+  }
+
+  @starting-style {
+    .mobile-menu:popover-open {
+      opacity: 0;
+      translate: 0 -1rem;
+    }
+  }
+
+  /* Links rise in one after another (stagger needs calc() with --i). */
   .mobile-menu__item {
+    opacity: 0;
+    translate: 0 0.75rem;
+    transition:
+      opacity var(--duration-standard) var(--ease-out-soft),
+      translate var(--duration-standard) var(--ease-out-soft);
     transition-delay: calc(var(--i, 0) * 60ms + 120ms);
   }
 
-  /* Hamburger bar transforms — :nth-child + compound transforms
-     are easier as scoped CSS than Tailwind variants. */
+  .mobile-menu:popover-open .mobile-menu__item {
+    opacity: 1;
+    translate: 0;
+  }
+
+  @starting-style {
+    .mobile-menu:popover-open .mobile-menu__item {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+
+  /* Fluid type for nav links – clamp() with vw. */
+  .mobile-menu__link {
+    font-size: clamp(1.375rem, 5.5vw, 2.25rem);
+  }
+
+  /* Hamburger → X while the panel is open (no state attribute, no JS). */
   .mobile-menu__bar {
     transition:
       transform var(--duration-standard) var(--ease-out-soft),
@@ -126,102 +155,39 @@ const activePath =
       top var(--duration-standard) var(--ease-out-soft),
       bottom var(--duration-standard) var(--ease-out-soft);
   }
-  [data-state="open"] .mobile-menu__bar:nth-child(1) {
+
+  :global(html:has(#mobile-menu-panel:popover-open)) .mobile-menu__bar:nth-child(1) {
     top: 50%;
     transform: translateY(-50%) rotate(45deg);
   }
-  [data-state="open"] .mobile-menu__bar:nth-child(2) {
+
+  :global(html:has(#mobile-menu-panel:popover-open)) .mobile-menu__bar:nth-child(2) {
     opacity: 0;
     transform: translateY(-50%) scaleX(0);
   }
-  [data-state="open"] .mobile-menu__bar:nth-child(3) {
+
+  :global(html:has(#mobile-menu-panel:popover-open)) .mobile-menu__bar:nth-child(3) {
     bottom: 50%;
     transform: translateY(50%) rotate(-45deg);
   }
 
-  /* Backdrop tint uses color-mix() which Tailwind v4 utilities
-     don't expose cleanly with ink-deep + alpha. */
-  .mobile-menu__backdrop {
-    background: color-mix(in oklch, var(--color-ink-deep) 70%, transparent);
+  /* No page scrolling behind the open panel; on desktop the panel is gone. */
+  @media (max-width: 63.999rem) {
+    :global(html:has(#mobile-menu-panel:popover-open)) {
+      overflow: hidden;
+    }
   }
 
-  /* Fluid type for nav links — clamp() with vw isn't expressible
-     in a single Tailwind utility. */
-  .mobile-menu__link {
-    font-size: clamp(1.375rem, 5.5vw, 2.25rem);
+  @media (min-width: 64rem) {
+    .mobile-menu {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu,
+    .mobile-menu__item {
+      transition: none;
+    }
   }
 </style>
-
-<script>
-  const init = () => {
-    const root = document.querySelector<HTMLElement>("[data-mobile-menu]");
-    if (!root || (root as any).__mobileMenuInit) return;
-    (root as any).__mobileMenuInit = true;
-
-    const toggle = root.querySelector<HTMLButtonElement>(
-      "[data-mobile-menu-toggle]",
-    );
-    const panel = root.querySelector<HTMLElement>("#mobile-menu-panel");
-    const backdrop = root.querySelector<HTMLElement>(".mobile-menu__backdrop");
-    const links = root.querySelectorAll<HTMLAnchorElement>(
-      "[data-mobile-menu-link]",
-    );
-    const label = root.querySelector<HTMLElement>("[data-mobile-menu-label]");
-
-    if (!toggle || !panel) return;
-
-    const setState = (open: boolean) => {
-      root.dataset.state = open ? "open" : "closed";
-      toggle.setAttribute("aria-expanded", String(open));
-      toggle.setAttribute(
-        "aria-label",
-        open ? "Zavřít navigaci" : "Otevřít navigaci",
-      );
-      if (label) {
-        label.textContent = open ? "Zavřít navigaci" : "Otevřít navigaci";
-      }
-      // Content behind the open menu is inert, so Tab stays in header + menu.
-      document
-        .querySelectorAll<HTMLElement>("body > :is(main, footer), main, footer")
-        .forEach((el) => el.toggleAttribute("inert", open));
-      if (open) {
-        panel.removeAttribute("inert");
-        document.body.setAttribute("data-scroll-lock", "");
-        panel.querySelector<HTMLElement>("[data-mobile-menu-link]")?.focus({ preventScroll: true });
-      } else {
-        panel.setAttribute("inert", "");
-        document.body.removeAttribute("data-scroll-lock");
-      }
-    };
-
-    toggle.addEventListener("click", () => {
-      setState(root.dataset.state !== "open");
-    });
-
-    backdrop?.addEventListener("click", () => setState(false));
-
-    links.forEach((link) => {
-      link.addEventListener("click", () => setState(false));
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && root.dataset.state === "open") {
-        setState(false);
-        toggle.focus({ preventScroll: true });
-      }
-    });
-
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const handleResize = () => {
-      if (mq.matches && root.dataset.state === "open") setState(false);
-    };
-    mq.addEventListener("change", handleResize);
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once: true });
-  } else {
-    init();
-  }
-  document.addEventListener("astro:page-load", init);
-</script>

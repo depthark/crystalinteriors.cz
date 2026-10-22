@@ -1,15 +1,11 @@
 ---
+import Icon from "@/components/ui/Icon.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import HeroSection from "@/components/HeroSection.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
 import Button from "@/components/ui/Button.astro";
-import ArrowRightIcon from "@/components/icons/ArrowRightIcon.astro";
-import SparklesIcon from "@/components/icons/SparklesIcon.astro";
-import UserGroupIcon from "@/components/icons/UserGroupIcon.astro";
-import WrenchScrewdriverIcon from "@/components/icons/WrenchScrewdriverIcon.astro";
-import ClockIcon from "@/components/icons/ClockIcon.astro";
 import ParallaxStrip from "@/components/ParallaxStrip.astro";
 import FaqSection from "@/components/FaqSection.astro";
 import ResponsiveImage from "@/components/ui/ResponsiveImage.astro";
@@ -18,7 +14,7 @@ import { heroPreload } from "@/lib/images";
 import { faqPage } from "@/lib/structured-data";
 import { withBase } from "@/lib/navigation";
 
-const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockIcon];
+const processIcons = ["sparkles", "user-group", "wrench-screwdriver", "clock"];
 ---
 
 <BaseLayout
@@ -128,11 +124,10 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
       <ul class="grid list-none gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4">
         {
           site.process.map((item, index) => {
-            const Icon = processIcons[index] ?? SparklesIcon;
             return (
               <li class="flex h-full flex-col rounded-xl border border-border bg-surface p-6" data-reveal style={`--reveal-i: ${index}`}>
                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon class="h-5 w-5" />
+                  <Icon name={processIcons[index] ?? "sparkles"} class="h-5 w-5" />
                 </span>
                 <p class="mt-5 text-sm font-medium uppercase tracking-eyebrow text-primary">
                   {item.title}
@@ -170,7 +165,7 @@ const processIcons = [SparklesIcon, UserGroupIcon, WrenchScrewdriverIcon, ClockI
           class="lg:w-auto"
         >
           {site.home.cta.label}
-          <ArrowRightIcon class="h-5 w-5" />
+          <Icon name="arrow-right" class="h-5 w-5" />
         </Button>
       </div>
     </section>

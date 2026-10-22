@@ -1,11 +1,9 @@
 ---
+import Icon from "@/components/ui/Icon.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SectionIntro from "@/components/SectionIntro.astro";
-import EnvelopeIcon from "@/components/icons/EnvelopeIcon.astro";
-import PhoneIcon from "@/components/icons/PhoneIcon.astro";
-import MapPinIcon from "@/components/icons/MapPinIcon.astro";
 import Button from "@/components/ui/Button.astro";
 import { site } from "@/data/site";
 import { withBase } from "@/lib/navigation";
@@ -62,7 +60,7 @@ const webMcpForm: Record<string, string> = {
                     aria-label={`Napsat e-mail — ${contact.name} (${contact.email})`}
                   >
                     <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-fast ease-standard group-hover:bg-primary group-hover:text-white">
-                      <EnvelopeIcon class="h-4 w-4" />
+                      <Icon name="envelope" class="h-4 w-4" />
                     </span>
                     <span class="break-words text-sm sm:text-base">{contact.email.split("@")[0]}@<wbr />{contact.email.split("@")[1]}</span>
                   </a>
@@ -73,7 +71,7 @@ const webMcpForm: Record<string, string> = {
                     aria-label={`Zavolat — ${contact.name} (${contact.phone})`}
                   >
                     <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors duration-fast ease-standard group-hover:bg-primary group-hover:text-white">
-                      <PhoneIcon class="h-4 w-4" />
+                      <Icon name="phone" class="h-4 w-4" />
                     </span>
                     <span class="text-sm sm:text-base">{contact.phone}</span>
                   </a>
@@ -92,7 +90,7 @@ const webMcpForm: Record<string, string> = {
       >
         <div class="flex items-center gap-3">
           <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <MapPinIcon class="h-5 w-5" />
+            <Icon name="map-pin" class="h-5 w-5" />
           </span>
           <p id="contact-address-label" class="text-xs font-medium uppercase tracking-eyebrow text-primary sm:text-sm">
             Ateliér
