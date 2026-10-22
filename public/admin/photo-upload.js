@@ -148,7 +148,11 @@
             const bar = li.querySelector("progress");
             state.textContent = "zpracovávám";
             try {
-              const out = await window.ImagePipeline.process(file, { onProgress: (p) => (bar.value = p * 0.9) });
+              // Project galleries get the logo watermark (src/lib/watermark.ts).
+              const out = await window.ImagePipeline.process(file, {
+                onProgress: (p) => (bar.value = p * 0.9),
+                watermark: group.startsWith("projekty/"),
+              });
               const name = `${slugify(prefix)}-${slugify(file.name.replace(/\.\w+$/, "")) || "foto"}-${rand()}`;
               const src = `/gallery/${group}/${name}`;
               state.textContent = `${out.width} × ${out.height} px · ${(out.files.reduce((s, f) => s + f.blob.size, 0) / 1024).toFixed(0)} kB`;

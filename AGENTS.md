@@ -25,6 +25,7 @@ Modern Astro redesign of `crystalinteriors.cz`. Keeps the original navigation st
 | Component variants | `tailwind-variants` + `tailwind-merge` | 3.3 / 3.7 | `src/components/ui/Button.astro` |
 | Gallery / lightbox | [Fancybox](https://fancyapps.com) `@fancyapps/ui` | 6.1 | `src/pages/projekty.astro` |
 | Images | AVIF image sets in the repo – no image CDN. CMS compresses in the browser (Squoosh AVIF codec via jSquash 2.1 WASM, Lanczos3 resize, smartcrop 2.0 focus point) in module workers; widths 400/800/1200/1800/2400, never upscaled; tiles ≤800 px, lightbox `srcset` ≥1200 px, `sizes="auto"`, focus via `object-position` | — | `public/admin/image-pipeline.js` + `image-worker.js` + `vendor/`, `src/lib/image-set.ts`, `src/components/ui/ResponsiveImage.astro`, `scripts/image-set.ts` (sharp + smartcrop-sharp) |
+| Watermark | Project gallery photos (`/gallery/projekty/…`) get the official logo baked in on upload – centred, 32 % of the shorter side, white with a soft dark halo (`public/admin/watermark.png`, rendered by `bun run watermark`), drawn once on the full-size photo before resizing; rules in `src/lib/watermark.ts` (bundled to `public/admin/watermark-core.js` by `bun run admin:build`, part of `build`). Site photos (hero, parallax, service tiles) stay clean. The photos imported from the old site already carry the old site's mark, so they were not re-marked | — | `src/lib/watermark.ts`, `scripts/watermark.ts`, `public/admin/image-worker.js`, `scripts/image-set.ts` |
 | Photo storage | `public/gallery/<group>/<name>-<width>.avif`, committed by the CMS through the GitHub Git Data API (one `[skip ci]` commit per upload) or `decap-server` locally | — | `public/admin/repo-store.js`, `photo-upload.js` |
 | CMS | [Decap CMS](https://decapcms.org) (from unpkg) | 3.17 | `public/admin/` (`config.yml`, custom widgets) |
 | CMS local backend | `decap-server` | 3.11 | `bun run cms:local` |
@@ -160,6 +161,7 @@ Implemented with **Decap CMS** (replaces the earlier magic-link plan):
 
 - Config `public/admin/config.yml` – collections *Projekty* (folder, one entry per project), *Stránky*, *Nastavení*; Czech UI; editorial workflow (drafts are PRs → preview build → publish).
 - Custom widgets: `project-gallery` (`gallery-manager.js`: upload, order, alt, hide, focus-point editor) and `photo` (`media-widgets.js`: single photo, value = image-set base path).
+- Watermark: project gallery uploads are marked in the worker (`watermark: true` from `photo-upload.js` for `projekty/<slug>` groups); clean preview first, so the focus point ignores the mark.
 - Photo pipeline (project-agnostic, reusable in other Decap sites): `image-pipeline.js` compresses in the browser – module-worker pool (`image-worker.js`) with the vendored Squoosh AVIF encoder + Lanczos3 resize (`vendor/`), widths 400–2400 never upscaled, smartcrop focus; `repo-store.js` commits all files of an upload in one `[skip ci]` commit via the GitHub Git Data API with the editor's CMS token (locally via `decap-server`). Files: `public/gallery/projekty/<slug>/`, `public/gallery/web/`. Removed photos stay in the repo.
 - Editor UX: driver.js guided tours + help button + removal confirmations (`admin-ux.js`), publish progress panel polling `/build.json` (`publish-status.js`).
 - Auth: GitHub OAuth via `functions/api/auth.ts` + `callback.ts` (env `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`). Works only on Cloudflare Pages (`base_url` in config). Local: `bun run cms:local`.
@@ -208,6 +210,7 @@ Measured with Lighthouse 12 on the deployed site (2026-10-21): **100/100/100/100
 - `bun run cms:local` — local Decap backend (edit at `http://localhost:4321/admin/`, writes files directly)
 - `bun run build` — minify CSS → `astro check` → TypeScript 7 `tsc --noEmit` → `astro build`
 - `bun run image-set <file-or-url> /gallery/<group>/<name>` — make an image set locally (sharp + smartcrop-sharp), prints `{ src, focus, … }`
+- `bun run watermark` — render `public/admin/watermark.png` from the logo; `bun run watermark preview <dir> <files…>` writes marked JPEG previews. `bun run admin:build` bundles `src/lib/watermark.ts` → `public/admin/watermark-core.js` (generated, committed; runs in `build`).
 - `bun run icons` — regenerate favicon/PWA icons from the official logo (`scripts/generate-icons.ts`: full logo for app/maskable/apple icons, crystal crop for small favicons), then `convert favicon-48x48.png -define icon:auto-resize=48,32,16 favicon.ico`
 - `bun run preview` — preview production build
 - `/dist` is gitignored. `public/styles/tailwind.css` is generated (by `bun run dev`/`build`) but committed – regenerate it, never edit by hand.

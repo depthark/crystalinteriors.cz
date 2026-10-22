@@ -8,7 +8,8 @@
  * (src/lib/image-set.ts), so content only stores the base path
  * `/gallery/<group>/<name>`. The CMS does the same in the browser
  * (public/admin/image-pipeline.js); this is the server-side twin for bulk
- * imports – TypeScript run directly by Bun (no build step).
+ * imports – TypeScript run directly by Bun (no build step). Project photos
+ * (/gallery/projekty/…) get the watermark baked in (src/lib/watermark.ts).
  *
  * CLI:  bun scripts/image-set.ts <file-or-url> <base>   e.g. /gallery/web/hero
  * API:  makeImageSet(input, base) → { src, width, height, widths, focus }
@@ -17,6 +18,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import sharp, { type AvifOptions } from "sharp";
 import smartcrop from "smartcrop-sharp";
+import { needsWatermark, placeWatermark } from "../src/lib/watermark.ts";
 
 export const WIDTHS = [400, 800, 1200, 1800, 2400];
 
@@ -43,7 +45,7 @@ export const widthsFor = (width: number): number[] => {
   return [...WIDTHS.filter((w) => w * 1.18 <= width), width];
 };
 
-async function load(input: string | Buffer): Promise<Buffer> {
+export async function load(input: string | Buffer): Promise<Buffer> {
   if (Buffer.isBuffer(input)) return input;
   if (/^https?:\/\//.test(input)) {
     const res = await fetch(input);
@@ -51,6 +53,16 @@ async function load(input: string | Buffer): Promise<Buffer> {
     return Buffer.from(await res.arrayBuffer());
   }
   return sharp(input).toBuffer();
+}
+
+const WATERMARK_PNG = resolve("public/admin/watermark.png");
+
+/** Bakes the watermark into a full-size photo (before any resize). */
+export async function applyWatermark(buffer: Buffer): Promise<Buffer> {
+  const { width = 0, height = 0 } = await sharp(buffer).metadata();
+  const box = placeWatermark(width, height);
+  const mark = await sharp(WATERMARK_PNG).resize(box.width, box.height).toBuffer();
+  return sharp(buffer).composite([{ input: mark, left: box.left, top: box.top }]).toBuffer();
 }
 
 /** Focus point (percent) = centre of the best 4:3 crop. */
@@ -65,18 +77,21 @@ async function focusOf(buffer: Buffer, width: number, height: number): Promise<F
 export async function makeImageSet(
   input: string | Buffer,
   base: string,
-  { root = "public" }: { root?: string } = {},
+  { root = "public", watermark = needsWatermark(base) }: { root?: string; watermark?: boolean } = {},
 ): Promise<ImageSetResult> {
   // Bake EXIF orientation in, drop all metadata.
   const buffer = await sharp(await load(input)).rotate().toBuffer();
   const { width = 0, height = 0 } = await sharp(buffer).metadata();
   const widths = widthsFor(width);
   await mkdir(dirname(resolve(root, `.${base}`)), { recursive: true });
+  // Focus from the clean photo, so the mark never attracts it.
+  const focus = await focusOf(buffer, width, height);
+  const source = watermark ? await applyWatermark(buffer) : buffer;
   for (const w of widths) {
-    const out = await sharp(buffer).resize({ width: w }).avif(AVIF).toBuffer();
+    const out = await sharp(source).resize({ width: w }).avif(AVIF).toBuffer();
     await writeFile(resolve(root, `.${base}-${w}.avif`), out);
   }
-  return { src: base, width, height, widths, focus: await focusOf(buffer, width, height) };
+  return { src: base, width, height, widths, focus };
 }
 
 if (import.meta.main) {

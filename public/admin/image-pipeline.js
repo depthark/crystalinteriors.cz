@@ -2,14 +2,15 @@
  * Image pipeline for Decap CMS – photos are compressed in the editor's
  * browser, no image service or server involved.
  *
- *   ImagePipeline.process(file, { onProgress }) →
+ *   ImagePipeline.process(file, { onProgress, watermark }) →
  *     { width, height, focus: { x, y }, files: [{ width, blob }] }
  *
  * Each photo becomes AVIF files in fixed widths (400, 800, 1200, 1800, 2400),
  * never upscaled – the same rule as scripts/image-set.ts. Encoding runs in a
  * small pool of module workers (image-worker.js), one photo per worker. The
  * focus point is the centre of smartcrop's best 4:3 crop; the website keeps
- * it in frame when tiles crop the photo.
+ * it in frame when tiles crop the photo. `watermark: true` bakes the logo
+ * into the photo first (project galleries, see src/lib/watermark.ts).
  *
  * Project-agnostic: reuse it in other Decap sites as is.
  */
@@ -39,7 +40,7 @@
     next ? next(worker) : idle.push(worker);
   };
 
-  function encodeInWorker(file, onProgress) {
+  function encodeInWorker(file, onProgress, watermark) {
     return getWorker().then(
       (worker) =>
         new Promise((resolve, reject) => {
@@ -61,7 +62,7 @@
           };
           worker.addEventListener("message", onMessage);
           worker.addEventListener("error", onError);
-          worker.postMessage({ id, file, standard: STANDARD, quality: QUALITY });
+          worker.postMessage({ id, file, standard: STANDARD, quality: QUALITY, watermark });
         }),
     );
   }
@@ -84,10 +85,10 @@
     }
   }
 
-  async function process(file, { onProgress } = {}) {
+  async function process(file, { onProgress, watermark = false } = {}) {
     let result;
     try {
-      result = await encodeInWorker(file, onProgress);
+      result = await encodeInWorker(file, onProgress, watermark);
     } catch (error) {
       const small = /^too-small:(\d+)/.exec(error.message);
       if (small) {
