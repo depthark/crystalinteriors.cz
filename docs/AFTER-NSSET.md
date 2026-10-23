@@ -1,4 +1,43 @@
-# After the NSSET change – handoff for the next agent
+# After the NSSET change – status
+
+**Done on 2026-10-23.** Webnode switched the NSSET at 14:10 (`M4WN-0498B` →
+`lloyd`/`michelle.ns.cloudflare.com`) and removed the old KEYSET. The
+Cloudflare zone is **Active**; all 14 records match the table below (mail
+untouched, still on Webnode).
+
+Done in Cloudflare:
+
+- Apex → www: Redirect Rule "Redirect from root to WWW [Template]"
+  (`https://crystalinteriors.cz/*` → `https://www.crystalinteriors.cz/${1}`,
+  301, query string kept). Apex A records are proxied (`192.0.2.1` placeholder
+  and the old Webnode `3.125.172.46`, which is never reached because the rule
+  answers first). Verified: `http://crystalinteriors.cz/kontakt/?x=2` →
+  `https://www.crystalinteriors.cz/kontakt/?x=2`.
+- SSL/TLS Full (strict), Always Use HTTPS, minimum TLS 1.2, HSTS 6 months
+  (no subdomains, no preload, nosniff).
+- Email Address Obfuscation **off** (it injects a script), Browser Cache TTL
+  "Respect Existing Headers" (`public/_headers` decides), Smart Tiered Cache
+  on, Crawler Hints on, AI bot policy: Search + Agent allow, Training block.
+- DNSSEC enabled in Cloudflare – **pending** until the registry has the key:
+  `crystalinteriors.cz. 3600 IN DS 2371 13 2 DC5F834B8E07134F3B0063138058A61332E73937C5E48D1FDAB4A8037F6B1FD0`
+  (DNSKEY flags 257, alg 13, key `mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==`).
+  For .cz, CZ.NIC may pick it up automatically from the CDNSKEY records
+  Cloudflare publishes (automatic KEYSET management); otherwise ask Webnode
+  to create a KEYSET with that DNSKEY.
+
+Still open:
+
+- Delete the leftover apex A record `3.125.172.46` (harmless, cosmetic).
+- DNSSEC "Success" in Cloudflare, then check `DS` and dnsviz.net.
+- security.txt (needs a contact address).
+- Search Console: sitemap + request indexing were done on 2026-10-21; check
+  the Pages report for the apex redirect after a few days.
+
+The original handoff follows for reference.
+
+---
+
+## Original handoff
 
 Read this when the user says Webnode has switched the nameservers of
 `crystalinteriors.cz` to Cloudflare. It lists what is already done, what to
