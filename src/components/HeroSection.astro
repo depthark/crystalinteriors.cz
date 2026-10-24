@@ -27,7 +27,7 @@ import ResponsiveImage from "./ui/ResponsiveImage.astro";
     <div class="hero__overlay absolute inset-0"></div>
   </div>
 
-  <div class="relative mx-auto flex min-h-[88svh] max-w-4xl flex-col items-center justify-center px-4 pb-24 pt-16 text-center sm:min-h-[92svh] sm:px-6 lg:px-8">
+  <div class="relative mx-auto flex min-h-[calc(100svb-var(--header-height))] max-w-4xl flex-col items-center justify-center px-4 pb-24 pt-16 text-center sm:px-6 lg:px-8">
     <div class="flex flex-col items-center gap-6 text-white sm:gap-7">
       <img
         src={withBase("/images/logos/crystalinteriors_logo-white.svg")}
@@ -36,7 +36,7 @@ import ResponsiveImage from "./ui/ResponsiveImage.astro";
         height="248"
         loading="eager"
         decoding="async"
-        class="hero__rise h-auto w-36 drop-shadow-[0_6px_24px_rgb(0_0_0/0.35)] sm:w-44 md:w-52"
+        class="hero__rise h-[clamp(5.5rem,20svb,14rem)] w-auto drop-shadow-[0_6px_24px_rgb(0_0_0/0.35)]"
         style="--i: 0"
       />
 

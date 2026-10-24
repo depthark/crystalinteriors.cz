@@ -90,7 +90,7 @@ Dark theme toggle: `ThemeToggle.astro` writes `data-theme="dark"|"light"` to `<h
 - `src/components/agent/WebMcp.astro` — WebMCP tools for in-browser AI agents.
 - `src/components/SocialLinks.astro` — reusable Facebook (solid filled) + Instagram (outline) icons with `title` tooltip, `aria-label`, `sr-only` text, `focus-visible:ring`. `variant: inline | card`, `align: left | right | center`.
 - `src/components/ParallaxStrip.astro` — full-width banner with `background-attachment: fixed` parallax (mobile/iOS fallback to `scroll` via `@media (hover: none)` + `prefers-reduced-motion`). Used on homepage between sections; image `home.json → intro.parallaxImage` (image set in `public/gallery/web/`; 1800 px desktop, 1200 px on touch). The photo is applied only when the strip is within one viewport (`data-near` via IntersectionObserver, `noscript` fallback) so it never competes with the LCP image.
-- `src/components/HeroSection.astro` — full-bleed hero with an image set (LCP, preloaded), ink overlay, official logo (`/images/logos/crystalinteriors_logo-white.svg`, SVGO-optimised), eyebrow + serif title (no subtitle unless `hero.text` is filled) + CTAs (white `hero-primary`, extra top spacing ≥lg), staggered motion-safe entrance and a 3× scroll cue (keyframes move only Y – Tailwind 4 centres with the `translate` property).
+- `src/components/HeroSection.astro` — full-bleed hero, `min-h-[calc(100svb-var(--header-height))]` (header + hero = one screen), with an image set (LCP, preloaded), ink overlay, official logo sized by viewport height (`h-[clamp(5.5rem,20svb,14rem)]`, scales with the screen) (`/images/logos/crystalinteriors_logo-white.svg`, SVGO-optimised), eyebrow + serif title (no subtitle unless `hero.text` is filled) + CTAs (white `hero-primary`, extra top spacing ≥lg), staggered motion-safe entrance and a 3× scroll cue (keyframes move only Y – Tailwind 4 centres with the `translate` property).
 - `src/components/ProjectSection.astro` — one project (title, subtitle, rich-text description, gallery) from `getProjectMedia()` (`src/lib/gallery.ts`: CMS list → image sets in `public/gallery/projekty/<slug>/`); tiles ≤800 px with focus crop, Fancybox lightbox with its own srcset (≥1200 px) and 400 px thumbs.
 
 ### Icons
@@ -190,7 +190,7 @@ Measured with Lighthouse 12 on the deployed site (2026-10-21): **100/100/100/100
 - Focus rings via `focus-visible:ring-2 ring-primary ring-offset-2`.
 - Respect `prefers-reduced-motion` (parallax fallback, hover transitions, hero zoom).
 - Scroll reveals are CSS-first (`global.css`): `data-reveal` (rise) / `data-reveal="fade"`, scroll-driven `animation-timeline: view()` with range `entry 0%–40%` (always completes, even at page end); stagger siblings with `style="--reveal-i: n"`. No JS observers.
-- Anchors: `html { scroll-padding-block-start: calc(var(--header-height) + 1rem) }` keeps every `#id` jump clear of the sticky header – don't add per-element `scroll-margin`/`scroll-mt-*`.
+- Anchors: `html { scroll-padding-block-start: var(--header-height) }` – every `#id` jump lands exactly below the sticky header (offset = header height); don't add per-element `scroll-margin`/`scroll-mt-*`.
 - Mobile-first responsive: full-width CTAs on `<sm`, side-by-side `≥sm`.
 
 ## Conventions

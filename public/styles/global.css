@@ -6,9 +6,9 @@
   }
 
   html {
-    /* Every in-page jump (#faq, #project, "Více") lands below the sticky
-       header with breathing room, eyebrow included – no per-element margins. */
-    scroll-padding-block-start: calc(var(--header-height) + 1rem);
+    /* Every in-page jump (#faq, #project, "Více") lands exactly below the
+       sticky header (offset = header height) – no per-element margins. */
+    scroll-padding-block-start: var(--header-height);
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
