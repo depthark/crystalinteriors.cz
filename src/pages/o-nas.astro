@@ -18,14 +18,14 @@ import { site, telHref } from "@/data/site";
   ]}
 >
   <SiteHeader pathname={Astro.url.pathname} />
-  <main id="main" class="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
+  <main id="main" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
     <SectionIntro level={1} eyebrow="O studiu" title={site.about.title} text={site.about.lead} />
 
     <div class="mt-10 space-y-6 rounded-3xl border border-border bg-surface p-6 sm:mt-12 sm:space-y-8 sm:p-8 md:p-12" data-reveal>
       {
         site.about.paragraphs.map((paragraph) => (
           <p
-            class="text-base leading-7 text-muted sm:text-lg sm:leading-9 [&_strong]:font-semibold [&_strong]:text-foreground"
+            class="max-w-[75ch] text-base leading-7 text-muted sm:text-lg sm:leading-9 [&_strong]:font-semibold [&_strong]:text-foreground"
             set:html={paragraph}
           />
         ))
